@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta
+            name="description"
+            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta
+            name="keywords"
+            content="mind map, mind mapping, AI, text to mindmap, free mind map generator, no sign up, no ads">
+
+        <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            property="og:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta property="og:image" content="/img/meta-img.jpg">
+
+        <meta property="og:type" content="website">
+
+        <meta name="twitter:card" content="/img/meta-img.jpg">
+        <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            name="twitter:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta name="twitter:image" content="/img/meta-img.jpg">
+
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="apple-touch-icon" href="/img/logo.png">
+
+        <meta name="theme-color" content="#C667FF">
+        <meta name="language" content="en">
+
+        <title>Text to Mindmap AI - Mind Map Wizard</title>
+        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.16.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
+
+        <style>
+            :root {
+                --primary-color: #C667FF;
+                --secondary-color: #9D34D4;
+                --background-color: #f8fafc;
+                --text-color: #1e293b;
+                --border-color: #e2e8f0;
+                --error-color: #dc2626;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                line-height: 1.6;
+                color: var(--text-color);
+                background-color: var(--background-color);
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+                position: relative;
+                overflow-x: hidden;
+            }
+
+            #mindmap {
+                position: fixed;
+                margin: 0;
+                height: 100vh;
+
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 1;
+                background: #f8fafc;
+            }
+
+            #mindmap svg {
+                width: 100% !important;
+                height: 100% !important;
+                display: block;
+            }
+
+            #loading-animation {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1000;
+                display: none;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+                background-color: #F8FAFC;
+                border-radius: 10px;
+                width: 100vw;
+                height: 100vw;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0;
+                background-color: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(5px);
+                height: 50px;
+                z-index: 1000;
+                box-sizing: border-box;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                z-index: 1001;
+            }
+
+            .text-logo {
+                display: flex !important;
+                align-items: center !important;
+                margin-left: 0;
+            }
+
+            .logo {
+                margin-right: 10px;
+                height: 40px;
+                width: auto;
+            }
+
+            .logo-link {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .logo-text {
+                font-family: 'Open Sans', sans-serif;
+                font-size: 25px;
+                font-weight: 800;
+                width: 100%;
+                color: var(--text-color);
+                margin-left: 0;
+                text-decoration: none !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .navbutton {
+                background-color: var(--primary-color);
+                padding: 3px;
+                height: 40px;
+                border: 2px solid var(--primary-color);
+                padding-left: 8px;
+                padding-right: 10px;
+                border-radius: 6px;
+                color: #fff !important;
+                transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.3s ease;
+            }
+
+            .navbutton:hover {
+                background-color: var(--secondary-color);
+                border: 2px solid var(--secondary-color);
+            }
+
+            @media (max-width: 520px) {
+                .navbutton {
+                    display: none;
+                }
+            }
+
+            .nav-links {
+                margin-left: auto;
+                margin-right: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .nav-links img {
+                position: relative;
+                top: 5px;
+            }
+
+            .nav-links a {
+                margin-left: 0;
+                margin-right: 10px;
+                text-decoration: none;
+                color: black;
+                font-weight: 500;
+                transition: color 0.3s ease;
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            .nav-links a:hover {
+                background-color: rgba(0, 0, 0, 0.032);
+                border-radius: 10px;
+                padding: 5px 10px;
+            }
+
+
+            #app {
+                margin: 40px auto;
+                padding: 0 20px;
+                position: relative;
+                z-index: 100;
+                margin: 40px auto;
+                padding: 0 20px;
+                margin-top: 100px;
+
+            }
+
+            .header {
+                position: relative;
+                text-align: center;
+                margin-bottom: 30px;
+                z-index: 100;
+                padding: 20px;
+                border-radius: 8px;
+                backdrop-filter: blur(5px);
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+                color: var(--text-color);
+                margin-bottom: 30px;
+            }
+
+            /* From Uiverse.io by vinodjangid07 */
+            .input-wrapper {
+                max-width: 400px;
+                height: 60px;
+                border-radius: 8px;
+                padding: 0;
+                border: 2px solid var(--border-color);
+                font-size: 1.1rem;
+                resize: vertical;
+                box-sizing: content-box;
+                display: flex;
+                align-items: center;
+                background-color: #ffffff;
+                transition: border-color 0.3s ease;
+                position: relative;
+                /* Füge dies hinzu */
+                margin: 0 auto;
+                /* Zentriere den Input Wrapper */
+            }
+
+            .input-wrapper:focus-within {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .input {
+                height: 94%;
+                border: none;
+                outline: none;
+                padding-left: 15px;
+                padding-right: 60px;
+                /* Platz für den Button */
+                background-color: #ffffff;
+                color: black;
+                font-size: 1em;
+                border-radius: 8px;
+            }
+
+            .input:-webkit-autofill {
+                -webkit-box-shadow: 0 0 0 1000px #292524 inset;
+                -webkit-text-fill-color: #ffffff;
+            }
+
+            .send-prompt-btn {
+                height: 85%;
+                width: 50px;
+                background-color: #C667FF;
+                border: none;
+                border-radius: 6px;
+                color: rgb(0, 0, 0);
+                cursor: pointer;
+                font-weight: 500;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 4.5px;
+                right: 5px;
+                transition: all 0.3s;
+            }
+
+            .input-wrapper:active .icon {
+                transform: scale(1.3);
+            }
+
+            .send-prompt-btn:hover {
+                color: white;
+            }
+
+            .send-prompt-btn:hover .arrow {
+                margin-right: 0;
+                animation: jello-vertical 0.9s both;
+                transform-origin: right;
+            }
+
+            @keyframes jello-vertical {
+                0% {
+                    transform: scale3d(1, 1, 1);
+                }
+                30% {
+                    transform: scale3d(0.75, 1.25, 1);
+                }
+                40% {
+                    transform: scale3d(1.25, 0.75, 1);
+                }
+                50% {
+                    transform: scale3d(0.85, 1.15, 1);
+                }
+                65% {
+                    transform: scale3d(1.05, 0.95, 1);
+                }
+                75% {
+                    transform: scale3d(0.95, 1.05, 1);
+                }
+                100% {
+                    transform: scale3d(1, 1, 1);
+                }
+            }
+            .send-prompt-btn:active {
+                transform: scale(0.9);
+            }
+
+            #mindmap-title {
+                position: fixed;
+                left: 0;
+                z-index: 100;
+                top: 80px;
+                background-color: rgba(255, 255, 255, 0.9);
+                padding: 10px 10px 10px 20px;
+                border-radius: 0 0 8px 0;
+                backdrop-filter: blur(5px);
+
+                margin: 20px auto;
+                max-width: 600px;
+                transform: translateY(-50px);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .mindmap-title {
+                color: var(--text-color);
+                display: none;
+            }
+
+            .centered-div {
+                justify-content: center;
+                align-items: flex-start;
+                height: auto;
+            }
+            .download-icon {
+                margin-top: 5px;
+            }
+
+            .send-icon {
+                margin: 3px;
+            }
+
+            .ai-content-disclaimer {
+                position: fixed;
+                bottom: 10px;
+                left: 10px;
+                z-index: 100;
+                background-color: rgba(248, 250, 252, 0.9);
+                padding: 5px 10px;
+                border-radius: 4px;
+                backdrop-filter: blur(5px);
+                color: #333333;
+                display: none;
+            }
+
+            /* From Uiverse.io by elijahgummer */
+            .analyze svg path.stick {
+                transform: translate(0);
+                animation: stick 2s ease infinite;
+            }
+
+            .analyze svg path.star-1 {
+                fill: #ff4500;
+                /* OrangeRed color */
+                animation: sparkles 2s ease infinite, scaleStars 2s ease infinite, colorChange 2s ease infinite;
+                animation-delay: 150ms;
+            }
+
+            .analyze svg path.star-2 {
+                fill: #0ff000;
+                /* Lime color */
+                animation: sparkles 2s ease infinite, scaleStars 2s ease infinite, colorChange 2s ease infinite;
+            }
+
+            .board {
+                animation: bounce 2s ease infinite;
+            }
+
+            @keyframes sparkles {
+                0% {
+                    opacity: 1;
+                }
+                35% {
+                    opacity: 1;
+                }
+                55% {
+                    opacity: 0;
+                }
+                75% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes stick {
+                0% {
+                    transform: translate3d(0, 0, 0) rotate(0);
+                }
+                25% {
+                    transform: translate3d(0, 0, 0) rotate(0);
+                }
+                50% {
+                    transform: translate3d(3px, -2px, 0) rotate(8deg);
+                }
+                75% {
+                    transform: translate3d(0, 0, 0) rotate(0);
+                }
+                100% {
+                    transform: translate3d(0, 0, 0) rotate(0);
+                }
+            }
+
+            @keyframes scaleStars {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(0.9);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes bounce {
+                0% {
+                    transform: translateY(0);
+                }
+                25% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(0);
+                }
+                75% {
+                    transform: translateY(-1px);
+                }
+                100% {
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes colorChange {
+                0% {
+                    fill: #ff4500;
+                    /* OrangeRed */
+                }
+                25% {
+                    fill: #ffd700;
+                    /* Gold */
+                }
+                50% {
+                    fill: #00ff00;
+                    /* Lime */
+                }
+                75% {
+                    fill: #1e90ff;
+                    /* DodgerBlue */
+                }
+                100% {
+                    fill: #ff4500;
+                    /* OrangeRed */
+                }
+            }
+
+            .back-arrow {
+                position: relative;
+                top: 3px;
+                border: 0;
+                height: 20px;
+                width: 20px;
+                margin-left: 5px;
+
+            }
+
+            .legals-disclaimer {
+                position: fixed;
+                bottom: 10px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                z-index: 1000;
+                background-color: rgba(248, 250, 252, 0.9);
+                padding: 5px 10px;
+                border-radius: 4px;
+                backdrop-filter: blur(5px);
+                color: #333333;
+                margin: 0 auto;
+            }
+            /* From Uiverse.io by adamgiebl */
+            .cssbuttons-io-button {
+                margin-left: 5px;
+                background: var(--primary-color);
+                color: white;
+                font-family: inherit;
+                padding: 0.45em 0.2em 0.45em 0.5em;
+                font-size: 17px;
+                font-weight: 500;
+                border-radius: 8px;
+                border: none;
+                letter-spacing: 0.05em;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                overflow: hidden;
+                position: relative;
+                height: 40px;
+                cursor: pointer;
+                margin-left: 10px;
+            }
+
+            .cssbuttons-io-button .icon {
+                background: white;
+                margin-left: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 2.2em;
+                border-radius: 6px;
+                transition: all 0.3s;
+            }
+
+            .cssbuttons-io-button .icon svg {
+                width: 1.1em;
+                transition: transform 0.3s;
+                color: var(--secondary-color);
+            }
+
+            .cssbuttons-io-button:hover .icon {
+                transform: scale(0.90);
+            }
+
+            .cssbuttons-io-button:active .icon {
+                transform: scale(0.90);
+            }
+
+            .download-options-popup {
+                display: none;
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+            }
+
+            .download-options-popup-content {
+                background-color: var(--background-color);
+                border-radius: 12px;
+                padding: 24px;
+                width: 90%;
+                max-width: 400px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            }
+
+            .close-button {
+                position: absolute;
+                display: none;
+                right: 16px;
+                top: 16px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: var(--text-color);
+            }
+
+            .download-options {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-top: 24px;
+            }
+
+            .download-button {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 16px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.2s;
+            }
+
+            .download-button:hover {
+                background-color: var(--secondary-color);
+            }
+
+            h2 {
+                margin: 0;
+                color: var(--text-color);
+                font-size: 24px;
+            }
+
+            .regenerate-button {
+                position: fixed;
+                top: 60px;
+                right: 20px;
+                padding: 10px;
+                height: 40px;
+                width: 40px;
+                z-index: 1000;
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                display: none;
+            }
+
+            .regenerate-button svg {
+                margin-bottom: 3px !important;
+            }
+
+            .regenerate-button:hover {
+                background: #f5f5f5;
+            }
+
+            .regenerate-button.rotating svg {
+                animation: spin 1s linear infinite;
+                color: var(--text-color);
+            }
+
+            .edit-mode-button {
+                position: fixed;
+                top: 60px;
+                right: 70px;
+                padding: 10px;
+                height: 40px;
+                width: 40px;
+                z-index: 1000;
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 50%;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .edit-mode-button:hover {
+                background: #f5f5f5;
+            }
+
+            .editor-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.32);
+                z-index: 1200;
+                display: none;
+            }
+            .markdown-editor {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 800px;
+                height: calc(100vh - 140px);
+                z-index: 1201;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+
+            .markdown-editor textarea {
+                width: 100%;
+                height: calc(100% - 50px);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                padding: 10px;
+                font-family: monospace;
+                font-size: 14px;
+                resize: none;
+                margin-bottom: 10px;
+            }
+
+            .markdown-editor textarea:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+
+            .editor-buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+            }
+
+            .editor-button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.2s;
+            }
+
+            .save-button {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .save-button:hover {
+                background-color: var(--secondary-color);
+            }
+
+            .cancel-button {
+                background-color: #e2e8f0;
+                color: var(--text-color);
+            }
+
+            .cancel-button:hover {
+                background-color: #cbd5e1;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navbar">
+            <div class="text-logo">
+                <a href="/" class="logo-link">
+                    <img src="/img/favicon96.png" alt="Logo" class="logo">
+                    <h3 class="logo-text" id="logo-text">
+                        Mind Map Wizard
+                    </h3>
+                </a>
+            </div>
+
+            <div class="nav-links">
+                <a href="/history.html"><img src="/img/icons/history-icon.svg" height="22" width="22">
+                    History</a>
+
+                <a id="download-mindmap-btn"><img
+                    src="/img/icons/download-icon.png"
+                    height="25"
+                    width="25"
+                    alt="Download"
+                    class="download-icon"></a>
+
+                <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
+                    New Mind Map
+                    <div class="icon">
+                        <svg
+                            height="24"
+                            width="24"
+                            viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                                d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                                fill="currentColor"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <p id="mindmap-title" class="mindmap-title"></p>
+    <div id="app">
+
+        <div class="loading-animation" id="loading-animation">
+            <div class="analyze">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewbox="0 0 24 24"
+                    height="54"
+                    width="54">
+                    <rect height="45" width="45"></rect>
+                    <path
+                        stroke-linecap="round"
+                        stroke-width="1.5"
+                        stroke="var(--primary-color)"
+                        d="M19.25 9.25V5.25C19.25 4.42157 18.5784 3.75 17.75 3.75H6.25C5.42157 3.75 4.75 4.42157 4.75 5.25V18.75C4.75 19.5784 5.42157 20.25 6.25 20.25H12.25"
+                        class="board"></path>
+                    <path
+                        d="M9.18748 11.5066C9.12305 11.3324 8.87677 11.3324 8.81234 11.5066L8.49165 12.3732C8.47139 12.428 8.42823 12.4711 8.37348 12.4914L7.50681 12.8121C7.33269 12.8765 7.33269 13.1228 7.50681 13.1872L8.37348 13.5079C8.42823 13.5282 8.47139 13.5714 8.49165 13.6261L8.81234 14.4928C8.87677 14.6669 9.12305 14.6669 9.18748 14.4928L9.50818 13.6261C9.52844 13.5714 9.5716 13.5282 9.62634 13.5079L10.493 13.1872C10.6671 13.1228 10.6671 12.8765 10.493 12.8121L9.62634 12.4914C9.5716 12.4711 9.52844 12.428 9.50818 12.3732L9.18748 11.5066Z"
+                        class="star-2"></path>
+                    <path
+                        d="M11.7345 6.63394C11.654 6.41629 11.3461 6.41629 11.2656 6.63394L10.8647 7.71728C10.8394 7.78571 10.7855 7.83966 10.717 7.86498L9.6337 8.26585C9.41605 8.34639 9.41605 8.65424 9.6337 8.73478L10.717 9.13565C10.7855 9.16097 10.8394 9.21493 10.8647 9.28335L11.2656 10.3667C11.3461 10.5843 11.654 10.5843 11.7345 10.3667L12.1354 9.28335C12.1607 9.21493 12.2147 9.16097 12.2831 9.13565L13.3664 8.73478C13.5841 8.65424 13.5841 8.34639 13.3664 8.26585L12.2831 7.86498C12.2147 7.83966 12.1607 7.78571 12.1354 7.71728L11.7345 6.63394Z"
+                        class="star-1"></path>
+                    <path
+                        class="stick"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        stroke="var(--secondary-color)"
+                        d="M17 14L21.2929 18.2929C21.6834 18.6834 21.6834 19.3166 21.2929 19.7071L20.7071 20.2929C20.3166 20.6834 19.6834 20.6834 19.2929 20.2929L15 16M17 14L15.7071 12.7071C15.3166 12.3166 14.6834 12.3166 14.2929 12.7071L13.7071 13.2929C13.3166 13.6834 13.3166 14.3166 13.7071 14.7071L15 16M17 14L15 16"></path>
+                </svg>
+            </div>
+            <br>
+            <small>Generating Mind Map...</small>
+        </div>
+
+        <div class="centered-div">
+
+            <div class="header" id="header">
+                <h1>Generate a Mind Map with AI</h1>
+                <div class="input-wrapper">
+                    <input
+                        type="text"
+                        name="text"
+                        class="input"
+                        id="prompt"
+                        placeholder="Your mind map topic..."/>
+                    <button id="generate-mindmap-btn" class="send-prompt-btn">
+                        <img
+                            src="/img/icons/send-icon.png"
+                            alt="Generate"
+                            height="26px"
+                            width="26px"
+                            class="send-icon">
+                    </button>
+                </div>
+            </div>
+
+            <small class="legals-disclaimer" id="legals-disclaimer">By sending a topic on Mind Map Wizard, you agree to our
+                <a href="/terms-of-use.html" style="color: var(--text-color)">Terms of use</a>
+                and have read our
+                <a href="/privacy-policy.html" style="color: var(--text-color)">Privacy Policy</a>
+            </small>
+        </div>
+    </div>
+
+    <div id="mindmap"></div>
+    <small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information.</small>
+
+    <div id="download-options-popup" class="download-options-popup">
+        <div class="download-options-popup-content">
+            <h2>Download Mind Map</h2>
+            <button class="close-button" id="close-download-options-popup">×</button>
+            <div class="download-options">
+                <button class="download-button" onclick="downloadMindmap('svg')">
+                    <img src="/img/icons/img-icon.svg" alt="SVG" width="24" height="24">
+                    Download as SVG
+                </button>
+                <button class="download-button" onclick="downloadMindmap('pdf')">
+                    <img src="/img/icons/doc-icon.svg" alt="PDF" width="24" height="24">
+                    Download as PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button class="regenerate-button" id="regenerate-button"><img src="/img/icons/retry-icon.svg" height="20px" width="20px"></button>
+
+    <button class="edit-mode-button" id="edit-mode-button">
+        <img src="/img/icons/edit-icon.svg" height="20px" width="20px" alt="Edit">
+    </button>
+    <div class="editor-overlay" id="editor-overlay"></div>
+    <div class="markdown-editor" id="markdown-editor">
+        <textarea id="markdown-textarea" spellcheck="false"></textarea>
+        <div class="editor-buttons">
+            <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
+            <button class="editor-button save-button" id="save-edit">Save Changes</button>
+        </div>
+    </div>
+    <script>
+        let currentMarkdown = '';
+        function formatMarkdown(text) {
+
+            const topicMatch = text.match(/topic="([^"]+)"/);
+            const markdownMatch = text.match(/markdown="([^"]+)"/);
+
+            if (!topicMatch || !markdownMatch) {
+                console.error("Invalid response format");
+                return {topic: null, markdown: null};
+            }
+
+            const topic = topicMatch[1];
+            let markdown = markdownMatch[1];
+
+            markdown = markdown
+                .replace(/\\n/g, '\n')
+                .trim()
+                .replace(/\n\s*\n/g, '\n\n')
+                .replace(/```/g, '');
+
+            return {topic, markdown};
+        }
+
+        function generateMindmap(mindmapTopic, isRegenerate = false) {
+            if (!mindmapTopic) 
+                return;
+            
+            if (!isRegenerate) {
+                document
+                    .getElementById("header")
+                    .style
+                    .display = "none";
+                document
+                    .getElementById("download-mindmap-btn")
+                    .style
+                    .display = "block";
+                document
+                    .getElementById("mindmap-title")
+                    .style
+                    .display = "block";
+                document
+                    .getElementById("ai-content-disclaimer")
+                    .style
+                    .display = "block";
+                document
+                    .getElementById("legals-disclaimer")
+                    .style
+                    .display = "none";
+                document
+                    .getElementById("mindmap")
+                    .style
+                    .display = "none";
+            }
+
+            document
+                .getElementById("loading-animation")
+                .style
+                .display = "flex";
+
+            if (isRegenerate) {
+                const regenerateBtn = document.getElementById('regenerate-button');
+                regenerateBtn
+                    .classList
+                    .add('rotating');
+            }
+
+            document
+                .getElementById("logo-text")
+                .textContent = mindmapTopic;
+            document
+                .getElementById("mindmap-title")
+                .innerHTML = `
+                <p style="font-size: 20px;"><a href="/"><img src="/img/icons/arrow-back-black.svg" alt="< Back" class="back-arrow" border="0"></a>Back</p>`;
+            document
+                .getElementById("mindmap")
+                .style
+                .display = "block";
+
+            fetch("https://pro-ai.glitch.me/api-chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {input: `Please generate a Markdown text formatted in Markdown so that I can later generate a mindmap out of it using Markmap. You can also use Markdown formatting: - **strong** ~~del~~ *italic*  inline code or even links: - [Link text](URL) But use formatting only if really useful. The answer should be structured like this: topic="Here you formulate a title for the mind map.", markdown="(Here is the Markdown, and the title is repeated at the beginning)" The Mindmap should be about: ${mindmapTopic}`}
+                )
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const {topic, markdown} = formatMarkdown(data.response);
+                    if (markdown) {
+                        renderMindmap(markdown);
+                        if (!isRegenerate) {
+                            saveMindmapToHistory(topic || mindmapTopic, markdown);
+                        }
+                        document
+                            .getElementById("logo-text")
+                            .textContent = topic || mindmapTopic;
+                    }
+
+                    document
+                        .getElementById("regenerate-button")
+                        .style
+                        .display = "block";
+
+                    document
+                        .getElementById('edit-mode-button')
+                        .style
+                        .display = 'flex';
+
+                    document
+                        .getElementById("loading-animation")
+                        .style
+                        .display = "none";
+                    if (isRegenerate) {
+                        const regenerateBtn = document.getElementById('regenerate-button');
+                        regenerateBtn
+                            .classList
+                            .remove('rotating');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error generating the mindmap:", error);
+                    document
+                        .getElementById("loading-animation")
+                        .style
+                        .display = "none";
+                    if (isRegenerate) {
+                        const regenerateBtn = document.getElementById('regenerate-button');
+                        regenerateBtn
+                            .classList
+                            .remove('rotating');
+                    }
+                    alert("Error generating mindmap. Please try again.");
+                });
+        }
+
+        function renderMindmap(markdown) {
+            currentMarkdown = markdown;
+            const mindmapContainer = document.getElementById('mindmap');
+            mindmapContainer.innerHTML = "";
+            try {
+                if (!markdown || typeof markdown !== 'string') {
+                    throw new Error("Invalid markdown input");
+                }
+
+                if (!markdown.trim().startsWith('#')) {
+                    markdown = '# ' + markdown;
+                }
+
+                mindmapContainer.style.position = 'fixed';
+                mindmapContainer.style.top = '0';
+                mindmapContainer.style.left = '0';
+                mindmapContainer.style.width = '100vw';
+                mindmapContainer.style.height = '100vh';
+                mindmapContainer.style.display = 'block';
+
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                svg.setAttribute('id', 'mindmap-svg');
+                mindmapContainer.appendChild(svg);
+
+                const {Transformer} = window.markmap;
+                const transformer = new Transformer();
+                const {root} = transformer.transform(markdown);
+
+                const {Markmap} = window.markmap;
+                Markmap.create(svg, {
+                    autoFit: true
+                }, root);
+
+            } catch (error) {
+                console.error('Mindmap Error:', error);
+                const errorMessage = document.createElement('div');
+                errorMessage.textContent = "Error rendering the mindmap: " + error.message;
+                errorMessage.style.color = 'var(--error-color)';
+                mindmapContainer.appendChild(errorMessage);
+            }
+        }
+        function downloadMindmap(format) {
+            const mindmapContainer = document.getElementById('mindmap');
+            const svg = mindmapContainer.querySelector('svg');
+
+            if (!svg || mindmapContainer.children.length === 0) {
+                alert("No mindmap available to download.");
+                return;
+            }
+
+            const serializer = new XMLSerializer();
+            const svgContent = serializer.serializeToString(svg);
+
+            if (format === 'svg') {
+                const blob = new Blob([svgContent], {type: "image/svg+xml;charset=utf-8"});
+                const url = URL.createObjectURL(blob);
+                downloadFile(url, 'mindmap.svg');
+                URL.revokeObjectURL(url);
+            } else if (format === 'pdf') {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+
+                const img = new Image();
+                const svgBlob = new Blob([svgContent], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+
+                img.onload = function () {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    context.drawImage(img, 0, 0);
+
+                    const pdf = new jsPDF({
+                        orientation: img.width > img.height
+                            ? 'landscape'
+                            : 'portrait',
+                        unit: 'px',
+                        format: [img.width, img.height]
+                    });
+
+                    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, img.width, img.height);
+
+                    pdf.save('mindmap.pdf');
+                    URL.revokeObjectURL(svgUrl);
+                };
+
+                img.src = svgUrl;
+            }
+        }
+
+        function downloadFile(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document
+                .body
+                .appendChild(a);
+            a.click();
+            document
+                .body
+                .removeChild(a);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const downloadBtn = document.getElementById('download-mindmap-btn');
+            const popup = document.getElementById('download-options-popup');
+            const closeBtn = document.getElementById('close-download-options-popup');
+            const prompt = document.getElementById('prompt');
+            const regenerateBtn = document.getElementById('regenerate-button');
+            const generateBtn = document.getElementById('generate-mindmap-btn');
+            const editModeButton = document.getElementById('edit-mode-button');
+            const cancelEditButton = document.getElementById('cancel-edit');
+            const saveEditButton = document.getElementById('save-edit');
+
+            editModeButton.addEventListener('click', () => toggleEditMode(true));
+            cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+            saveEditButton.addEventListener('click', updateMindmapFromEdit);
+
+            generateBtn.addEventListener('click', function () {
+                const mindmapTopic = prompt
+                    .value
+                    .trim();
+                if (mindmapTopic) {
+                    generateMindmap(mindmapTopic);
+                }
+            });
+
+            regenerateBtn.addEventListener('click', function () {
+                console.log('Regenerate-Button clicked!');
+
+                const currentTopic = document
+                    .getElementById("logo-text")
+                    .textContent;
+                if (!currentTopic) {
+                    console.error("No topic available to regenerate the mindmap.");
+                    return;
+                }
+
+                generateMindmap(currentTopic, true);
+            });
+
+            downloadBtn.addEventListener('click', function () {
+                popup.style.display = 'block';
+            });
+
+            closeBtn.addEventListener('click', function () {
+                popup.style.display = 'none';
+            });
+
+            popup.addEventListener('click', function (event) {
+                if (event.target === popup) {
+                    popup.style.display = 'none';
+                }
+            });
+
+            prompt.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    const mindmapTopic = prompt
+                        .value
+                        .trim();
+                    if (mindmapTopic) {
+                        generateMindmap(mindmapTopic);
+                    }
+                }
+            });
+
+            const mindmapTopic = getQueryParameter('q');
+            if (mindmapTopic) {
+                generateMindmap(mindmapTopic);
+            }
+        });
+
+        document
+            .getElementById('download-mindmap-btn')
+            .onclick = function () {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'block';
+            }
+
+        document
+            .getElementById('download-options-popup')
+            .onclick = function () {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'none';
+            }
+
+        document
+            .getElementById('close-download-options-popup')
+            .onclick = function () {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'none';
+            }
+
+        window.onclick = function (event) {
+            const popup = document.getElementById('download-options-popup');
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        }
+
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return decodeURIComponent(urlParams.get(name) || '');
+        }
+
+        prompt.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                const mindmapTopic = prompt
+                    .value
+                    .trim();
+                if (mindmapTopic) {
+                    generateMindmap(mindmapTopic);
+                }
+            }
+
+            const mindmapTopic = getQueryParameter('q');
+            if (mindmapTopic) {
+                generateMindmap(mindmapTopic);
+            }
+        });
+
+        function saveMindmapToHistory(topic, markdown) {
+            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+            const timestamp = new Date().toISOString();
+
+            history.push({topic, markdown, timestamp, id: Date.now()});
+
+            if (history.length > 100) {
+                history.shift();
+            }
+
+            localStorage.setItem('mindmap-history', JSON.stringify(history));
+        }
+
+        document
+            .getElementById('download-mindmap-btn')
+            .onclick = function () {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'block';
+            }
+        document
+            .getElementById('download-options-popup')
+            .onclick = function () {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'none';
+            }
+
+        document
+            .getElementById('close-download-options-popup')
+            .onclick = function () {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'none';
+            }
+
+        window.onclick = function (event) {
+            const popup = document.getElementById('download-options-popup');
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        }
+
+        function downloadAsImage() {
+            const mindmapContainer = document.getElementById('mindmap');
+            const svg = mindmapContainer.querySelector('svg');
+
+            if (!svg) {
+                alert("No mindmap available to export.");
+                return;
+            }
+
+            const svgCopy = svg.cloneNode(true);
+
+            const bbox = svg.getBBox();
+            svgCopy.setAttribute('width', bbox.width + 100);
+            svgCopy.setAttribute('height', bbox.height + 100);
+
+            const serializer = new XMLSerializer();
+            const svgStr = serializer.serializeToString(svgCopy);
+            const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
+
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                canvas.width = this.width;
+                canvas.height = this.height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(this, 0, 0);
+
+                canvas.toBlob(function (blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'mindmap.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            };
+
+            img.src = URL.createObjectURL(svgBlob);
+            document
+                .getElementById('download-options-popup')
+                .style
+                .display = 'none';
+        }
+
+        function toggleEditMode(show) {
+            const mindmapElement = document.getElementById('mindmap');
+            const editorElement = document.getElementById('markdown-editor');
+            const textarea = document.getElementById('markdown-textarea');
+            const editorOverlay = document.getElementById('editor-overlay');
+
+            if (show) {
+                mindmapElement.style.display = 'none';
+                editorElement.style.display = 'block';
+                editorOverlay.style.display = 'block';
+                textarea.value = currentMarkdown;
+                textarea.focus();
+            } else {
+                mindmapElement.style.display = 'block';
+                editorElement.style.display = 'none';
+                editorOverlay.style.display = 'none';
+            }
+        }
+
+        function updateMindmapFromEdit() {
+            const textarea = document.getElementById('markdown-textarea');
+            const newMarkdown = textarea.value;
+
+            if (newMarkdown !== currentMarkdown) {
+                currentMarkdown = newMarkdown;
+                renderMindmap(currentMarkdown);
+
+                const topic = document
+                    .getElementById('logo-text')
+                    .textContent;
+                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                const currentItem = history.find(item => item.topic === topic);
+
+                if (currentItem) {
+                    currentItem.markdown = currentMarkdown;
+                    localStorage.setItem('mindmap-history', JSON.stringify(history));
+                }
+            }
+
+            toggleEditMode(false);
+        }
+    </script>
+</body>
+</html>
