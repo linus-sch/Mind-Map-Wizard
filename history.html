@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mind Map Wizard - History</title>
+        <meta
+            name="description"
+            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta
+            name="keywords"
+            content="mind map, mind mapping, AI, text to mindmap, free mind map generator, no sign up, no ads">
+
+        <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            property="og:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta property="og:image" content="/img/meta-img.jpg">
+
+        <meta property="og:type" content="website">
+
+        <meta name="twitter:card" content="/img/meta-img.jpg">
+        <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            name="twitter:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta name="twitter:image" content="/img/meta-img.jpg">
+
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="apple-touch-icon" href="/img/logo.png">
+        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
+
+        <meta name="theme-color" content="#C667FF">
+        <meta name="language" content="en">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.16.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
+        <style>
+            :root {
+                --primary-color: #C667FF;
+                --secondary-color: #9D34D4;
+                --background-color: #f8fafc;
+                --text-color: #1e293b;
+                --border-color: #e2e8f0;
+                --card-background: #ffffff;
+                --error-color: #dc2626;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: var(--background-color);
+                color: var(--text-color);
+            }
+
+            .header {
+                background: var(--card-background);
+                justify-content: space-between;
+                position: sticky;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                background-color: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(5px);
+                position: fixed;
+                top: 0;
+                right: 0;
+                left: 0;
+                height: 50px;
+                z-index: 1000;
+                box-sizing: border-box;
+                padding: 15px;
+                width: 100%;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .header-left h1 {
+                font-family: 'Open Sans', sans-serif;
+                font-size: 25px;
+                font-weight: 800;
+                width: 100%;
+                color: var(--text-color);
+                margin-bottom: 10px !important;
+                margin-left: 0;
+                text-decoration: none !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .navbutton {
+                background-color: var(--primary-color);
+                padding: 3px;
+                height: 30px;
+                border: 2px solid var(--primary-color);
+                padding-left: 8px;
+                padding-right: 10px;
+                border-radius: 6px;
+                color: #fff !important;
+                transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+            }
+
+            .navbutton:hover {
+                background-color: var(--secondary-color);
+                border: 2px solid var(--secondary-color);
+
+            }
+            .logo {
+                position: relative;
+                top: 5px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 1.5rem;
+                color: var(--text-color);
+            }
+
+            .options {
+                position: relative;
+                display: flex;
+                margin: 15px;
+                font-size: 1.2rem;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .back-link {
+                text-decoration: none;
+                margin-top: 40px;
+                color: var(--primary-color);
+                display: flex;
+                align-items: center;
+                padding: 0.5rem 1rem;
+                border-radius: 10px;
+            }
+
+            .back-link:hover {
+                background-color: rgba(0, 0, 0, 0.035);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+            .clear-history {
+                color: #ef4444;
+                position: relative;
+                margin-bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                border: none;
+                background-color: transparent;
+                padding: 0.5rem 1rem;
+                border-radius: 0.375rem;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background-color 0.2s;
+            }
+
+            .clear-history:hover {
+                background-color: rgba(254, 226, 226, 0.55);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+            .container {
+                max-width: 800px;
+                padding: 0 1rem;
+                margin-top: 50px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .mindmap-list {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-bottom: 30px;
+            }
+
+            .mindmap-item {
+                background: var(--card-background);
+                border-radius: 0.5rem;
+                padding: 1rem;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .mindmap-item:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .mindmap-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .mindmap-title {
+                font-weight: 600;
+                font-size: 1.35rem;
+                color: var(--text-color);
+                white-space: normal;
+                /* Erlaubt Zeilenumbrüche */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+
+            }
+
+            .mindmap-date {
+                color: #64748b;
+                font-size: 0.875rem;
+            }
+
+            .mindmap-viewer {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: white;
+                z-index: 1000;
+                display: none;
+            }
+
+            .viewer-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                height: 50px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                z-index: 1001;
+            }
+
+            .viewer-title {
+                margin: 0;
+                font-size: 1.25rem;
+                flex-grow: 1;
+                text-align: center;
+            }
+
+            .viewer-controls {
+                display: flex;
+                gap: 0.5rem;
+                margin-right: 15px;
+            }
+
+            .viewer-back-button {
+                background-color: transparent;
+                color: var(--primary-color);
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 0.375rem;
+                cursor: pointer;
+                font-size: 1.2rem;
+                transition: color 0.2s;
+            }
+
+            .viewer-back-button:hover {
+                background-color: rgba(0, 0, 0, 0.035);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+            .viewer-back-button-icon {
+                position: relative;
+                top: 4.5px;
+                right: -5px;
+            }
+            .viewer-content {
+                position: absolute;
+                background-color: var(--background-color);
+                top: 50px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                overflow: hidden;
+            }
+
+            .no-mindmaps {
+                text-align: center;
+                padding: 4rem 2rem;
+                color: #64748b;
+            }
+            .download-icon {
+                position: relative;
+                margin-top: 5px;
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+            .download-icon:hover {
+                background-color: rgba(0, 0, 0, 0.035);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+            .mindmap-item {
+                position: relative;
+            }
+
+            .mindmap-actions {
+                position: absolute;
+                right: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                display: flex;
+                gap: 0.75rem;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            }
+
+            .mindmap-item:hover .mindmap-actions {
+                opacity: 1;
+            }
+
+            .action-button {
+                background: none;
+                border: none;
+                color: #64748b;
+                font-size: 1rem;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                background-color: var(--background-color);
+
+            }
+
+            .action-button:hover {
+                background-color: #f1f5f9;
+            }
+
+            .action-button.delete {
+                color: #ef4444;
+            }
+
+            .action-button.delete:hover {
+                background-color: #fee2e2;
+            }
+
+            .rename-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                width: 90%;
+                max-width: 400px;
+                z-index: 1100;
+            }
+
+            .rename-dialog input {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 0.375rem;
+                margin: 1rem 0;
+                font-size: 1rem;
+            }
+
+            .dialog-buttons {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+
+            .dialog-button {
+                padding: 0.5rem 1rem;
+                border-radius: 0.375rem;
+                border: none;
+                cursor: pointer;
+                font-size: 0.875rem;
+                transition: background-color 0.2s ease;
+            }
+
+            .dialog-button.cancel {
+                background-color: #f1f5f9;
+                color: #64748b;
+            }
+
+            .dialog-button.cancel:hover {
+                background-color: #e2e8f0;
+            }
+
+            .dialog-button.confirm {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .dialog-button.confirm:hover {
+                background-color: var(--secondary-color);
+            }
+
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.32);
+                display: none;
+                z-index: 1050;
+            }
+
+            /* From Uiverse.io by adamgiebl */
+            .cssbuttons-io-button {
+                margin-left: 5px;
+                background: var(--primary-color);
+                color: white;
+                font-family: inherit;
+                padding: 0.45em 0.2em 0.45em 0.5em;
+                font-size: 17px;
+                font-weight: 500;
+                border-radius: 8px;
+                border: none;
+                letter-spacing: 0.05em;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                /* Text links ausrichten */
+                overflow: hidden;
+                position: relative;
+                height: 40px;
+                cursor: pointer;
+                margin-left: 10px;
+            }
+
+            .cssbuttons-io-button .icon {
+                background: white;
+                margin-left: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 35px;
+                width: 2.2em;
+                border-radius: 6px;
+                transition: all 0.3s;
+            }
+
+            .cssbuttons-io-button .icon svg {
+                width: 1.1em;
+                transition: transform 0.3s;
+                color: var(--secondary-color);
+            }
+
+            .cssbuttons-io-button:hover .icon {
+                transform: scale(0.90);
+            }
+
+            .cssbuttons-io-button:active .icon {
+                transform: scale(0.90);
+            }
+
+            .edit-mode-button {
+                position: relative;
+                margin-top: 5px;
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+                border: none;
+                margin-right: -15px;
+                background: white;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .edit-mode-button:hover {
+                background-color: rgba(0, 0, 0, 0.035);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+            .editor-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.32);
+                z-index: 1200;
+                display: none;
+            }
+            .markdown-editor {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                max-width: 800px;
+                height: calc(100vh - 140px);
+                z-index: 1201;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+
+            .markdown-editor textarea {
+                width: 96%;
+                height: calc(100% - 60px);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                padding: 10px;
+                font-family: monospace;
+                font-size: 14px;
+                resize: none;
+                margin-bottom: 10px;
+            }
+
+            .markdown-editor textarea:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+
+            .editor-buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+            }
+
+            .editor-button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.2s;
+            }
+
+            .save-button {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .save-button:hover {
+                background-color: var(--secondary-color);
+            }
+
+            .cancel-button {
+                background-color: #e2e8f0;
+                color: var(--text-color);
+            }
+
+            .cancel-button:hover {
+                background-color: #cbd5e1;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="history-view">
+            <div class="header">
+                <div class="header-left">
+                    <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
+                        Mind Map History</h1>
+                </div>
+
+                <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
+                    New Mind Map
+                    <div class="icon">
+                        <svg
+                            height="24"
+                            width="24"
+                            viewbox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                                d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                                fill="currentColor"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+            <div class="options">
+                <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
+                    Back</a>
+            </div>
+
+            <div class="container">
+                <div class="mindmap-list" id="mindmap-list"></div>
+                <button class="clear-history" onclick="clearHistory()">Clear History</button>
+            </div>
+        </div>
+
+        <div id="mindmap-viewer" class="mindmap-viewer">
+            <div class="editor-overlay" id="editor-overlay"></div>
+            <div class="markdown-editor" id="markdown-editor">
+                <textarea id="markdown-textarea" spellcheck="false"></textarea>
+                <div class="editor-buttons">
+                    <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
+                    <button class="editor-button save-button" id="save-edit">Save Changes</button>
+                </div>
+            </div>
+            <div class="viewer-header">
+                <button class="viewer-back-button" onclick="closeViewer()"><img
+                    src="/img/icons/arrow-back-primary.svg"
+                    height="22px"
+                    width="22px"
+                    class="viewer-back-button-icon">
+                    Back</button>
+                <h2 class="viewer-title" id="viewer-title"></h2>
+                <div class="viewer-controls">
+                    <button class="edit-mode-button" id="edit-mode-button">
+                        <img src="/img/icons/edit-icon.svg" height="20px" width="20px" alt="Edit">
+                    </button>
+                    <a onclick="downloadCurrentMindmap()"><img
+                        src="/img/icons/download-icon.png"
+                        height="25"
+                        width="25"
+                        alt="Download"
+                        class="download-icon"></a>
+
+                </div>
+
+            </div>
+
+            <div class="viewer-content" id="viewer-content"></div>
+        </div>
+
+        <div id="mindmap-viewer"></div>
+    </body>
+
+    <script>
+        let currentMarkdown = '';
+        const {Transformer} = window.markmap;
+        const transformer = new Transformer();
+
+        function loadMindmaps() {
+            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+            const list = document.getElementById('mindmap-list');
+
+            if (history.length === 0) {
+                list.innerHTML = `
+                    <div class="no-mindmaps">
+                        <h2>No mindmaps yet</h2>
+                        <p>Create your first mindmap to see it here!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = history
+                .reverse()
+                .map(
+                    item => `
+                <div class="mindmap-item" onclick="handleMindmapClick(event, ${item.id})">
+                    <div class="mindmap-info">
+                        <div class="mindmap-title">${escapeHtml(item.topic)}</div>
+                        <div class="mindmap-date">${formatDate(item.timestamp)}</div>
+                    </div>
+                    <div class="mindmap-actions">
+                        <button class="action-button" onclick="renameMindmap(event, ${item.id})">Rename</button>
+                        <button class="action-button delete" onclick="deleteMindmap(event, ${item.id})">Delete</button>
+                    </div>
+                </div>
+            `
+                )
+                .join('');
+        }
+
+        function handleMindmapClick(event, id) {
+
+            if (event.target.closest('.mindmap-actions')) {
+                return;
+            }
+            showMindmap(id);
+        }
+
+        function showMindmap(id) {
+            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+            const item = history.find(item => item.id === id);
+
+            if (item) {
+                const viewer = document.getElementById('mindmap-viewer');
+                const content = document.getElementById('viewer-content');
+                const title = document.getElementById('viewer-title');
+                document
+                    .getElementById('edit-mode-button')
+                    .style
+                    .display = 'flex';
+
+                viewer.dataset.currentMindmap = JSON.stringify(item);
+
+                title.textContent = item.topic;
+                viewer.style.display = 'block';
+
+                viewer.style.position = 'fixed';
+                content.style.top = '0';
+                content.style.left = '0';
+                content.style.width = '100vw';
+                content.style.height = '100vh';
+                content.style.display = 'block';
+
+                content.innerHTML = '';
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                content.appendChild(svg);
+
+                const {root} = transformer.transform(item.markdown);
+                const {Markmap} = window.markmap;
+                Markmap.create(svg, {
+                    autoFit: true,
+                    zoom: true
+                }, root);
+            }
+        }
+
+        function closeViewer() {
+            const viewer = document.getElementById('mindmap-viewer');
+            viewer.style.display = 'none';
+            viewer.dataset.currentMindmap = '';
+        }
+
+        function downloadCurrentMindmap() {
+            const viewer = document.getElementById('mindmap-viewer');
+            const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+
+            if (currentMindmap.topic) {
+                const svg = document.querySelector('#viewer-content svg');
+                const serializer = new XMLSerializer();
+                const svgContent = serializer.serializeToString(svg);
+                const blob = new Blob([svgContent], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentMindmap
+                    .topic
+                    .replace(/[^a-z0-9]/gi, '_')
+                    .toLowerCase()}-mindmap.svg`;
+                a.click();
+
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all mindmap history? This cannot be undone.')) {
+                localStorage.removeItem('mindmap-history');
+                loadMindmaps();
+            }
+        }
+
+        function formatDate(timestamp) {
+            return new Date(timestamp).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeViewer();
+                closeRenameDialog();
+            }
+        });
+
+        function renameMindmap(event, id) {
+            event.stopPropagation();
+            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+            const mindmap = history.find(item => item.id === id);
+
+            if (!mindmap) 
+                return;
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            overlay.style.display = 'block';
+
+            const dialog = document.createElement('div');
+            dialog.className = 'rename-dialog';
+            dialog.innerHTML = `
+                <h3>Rename Mindmap</h3>
+                <input type="text" value="${escapeHtml(
+                mindmap.topic
+            )}" id="rename-input">
+                <div class="dialog-buttons">
+                    <button class="dialog-button cancel" onclick="closeRenameDialog()">Cancel</button>
+                    <button class="dialog-button confirm" onclick="confirmRename(${id})">Rename</button>
+                </div>
+            `;
+
+            document
+                .body
+                .appendChild(overlay);
+            document
+                .body
+                .appendChild(dialog);
+
+            const input = dialog.querySelector('input');
+            input.select();
+        }
+
+        function closeRenameDialog() {
+            const dialog = document.querySelector('.rename-dialog');
+            const overlay = document.querySelector('.overlay');
+            if (dialog) 
+                dialog.remove();
+            if (overlay) 
+                overlay.remove();
+            }
+        
+        function confirmRename(id) {
+            const input = document.querySelector('#rename-input');
+            const newName = input
+                .value
+                .trim();
+
+            if (!newName) 
+                return;
+            
+            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+            const mindmapIndex = history.findIndex(item => item.id === id);
+
+            if (mindmapIndex !== -1) {
+                history[mindmapIndex].topic = newName;
+                localStorage.setItem('mindmap-history', JSON.stringify(history));
+                loadMindmaps();
+            }
+
+            closeRenameDialog();
+        }
+
+        function deleteMindmap(event, id) {
+            event.stopPropagation();
+
+            if (confirm('Are you sure you want to delete this mindmap?')) {
+                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                const updatedHistory = history.filter(item => item.id !== id);
+                localStorage.setItem('mindmap-history', JSON.stringify(updatedHistory));
+                loadMindmaps();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadMindmaps);
+
+        function toggleEditMode(show) {
+            const viewer = document.getElementById('mindmap-viewer');
+            const viewerContent = document.getElementById('viewer-content');
+            const editorElement = document.getElementById('markdown-editor');
+            const textarea = document.getElementById('markdown-textarea');
+            const editorOverlay = document.getElementById('editor-overlay');
+
+            if (show) {
+                viewerContent.style.display = 'none';
+                editorElement.style.display = 'block';
+                editorOverlay.style.display = 'block';
+                const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+                currentMarkdown = currentMindmap.markdown || '';
+                textarea.value = currentMarkdown;
+                textarea.focus();
+            } else {
+                viewerContent.style.display = 'block';
+                editorElement.style.display = 'none';
+                editorOverlay.style.display = 'none';
+            }
+        }
+
+        function updateMindmapFromEdit() {
+            const textarea = document.getElementById('markdown-textarea');
+            const newMarkdown = textarea.value;
+            const viewer = document.getElementById('mindmap-viewer');
+            const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+
+            if (newMarkdown !== currentMarkdown) {
+                currentMarkdown = newMarkdown;
+
+                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                const mindmapIndex = history.findIndex(item => item.id === currentMindmap.id);
+
+                if (mindmapIndex !== -1) {
+                    history[mindmapIndex].markdown = newMarkdown;
+                    localStorage.setItem('mindmap-history', JSON.stringify(history));
+                    showMindmap(currentMindmap.id);
+                    loadMindmaps();
+                }
+            }
+
+            toggleEditMode(false);
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const editModeButton = document.getElementById('edit-mode-button');
+            const cancelEditButton = document.getElementById('cancel-edit');
+            const saveEditButton = document.getElementById('save-edit');
+
+            editModeButton.addEventListener('click', () => toggleEditMode(true));
+            cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+            saveEditButton.addEventListener('click', updateMindmapFromEdit);
+        });
+    </script>
+</body>
+</html>
