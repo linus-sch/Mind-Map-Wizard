@@ -1,4 +1,5 @@
 # Mind-Map-Wizard
+<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/meta-img.jpg" alt="Mind Map Wizard" style="width: 70%;">
 
 ## Mind Map Generation Process
 
