@@ -48,7 +48,7 @@
             :root {
                 --primary-color: #C667FF;
                 --secondary-color: #9D34D4;
-                --background-color: #f8fafc;
+                --background-color: #F5F5F7;
                 --text-color: #1e293b;
                 --border-color: #e2e8f0;
                 --error-color: #dc2626;
@@ -123,7 +123,7 @@
                 left: 0;
                 right: 0;
                 background: white;
-                padding: 1rem;
+                padding: 0.8rem;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);
                 display: flex;
                 align-items: center;
@@ -151,9 +151,9 @@
 
             .logo-text {
                 font-family: 'Open Sans', sans-serif;
-                font-size: 25px;
+                font-size: 1.8em;
                 font-weight: 800;
-                width: 100%;
+                width: calc(100vw - 400px);
                 color: var(--text-color);
                 margin-left: 0;
                 text-decoration: none !important;
@@ -218,7 +218,6 @@
                 padding: 5px 10px;
             }
 
-
             #app {
                 margin: 40px auto;
                 padding: 0 20px;
@@ -250,7 +249,7 @@
             .input-wrapper {
                 max-width: 400px;
                 height: 60px;
-                border-radius: 8px;
+                border-radius: 10px;
                 padding: 0;
                 border: 2px solid var(--border-color);
                 font-size: 1.1rem;
@@ -261,9 +260,7 @@
                 background-color: #ffffff;
                 transition: border-color 0.3s ease;
                 position: relative;
-                /* Füge dies hinzu */
                 margin: 0 auto;
-                /* Zentriere den Input Wrapper */
             }
 
             .input-wrapper:focus-within {
@@ -273,15 +270,15 @@
             }
 
             .input {
+                flex-grow: 1;
                 height: 94%;
                 border: none;
                 outline: none;
                 padding-left: 15px;
                 padding-right: 60px;
-                /* Platz für den Button */
                 background-color: #ffffff;
                 color: black;
-                font-size: 1em;
+                font-size: 1.2rem;
                 border-radius: 8px;
             }
 
@@ -376,9 +373,6 @@
                 align-items: flex-start;
                 height: auto;
             }
-            .download-icon {
-                margin-top: 5px;
-            }
 
             .send-icon {
                 margin: 3px;
@@ -405,14 +399,12 @@
 
             .analyze svg path.star-1 {
                 fill: #ff4500;
-                /* OrangeRed color */
                 animation: sparkles 2s ease infinite, scaleStars 2s ease infinite, colorChange 2s ease infinite;
                 animation-delay: 150ms;
             }
 
             .analyze svg path.star-2 {
                 fill: #0ff000;
-                /* Lime color */
                 animation: sparkles 2s ease infinite, scaleStars 2s ease infinite, colorChange 2s ease infinite;
             }
 
@@ -539,10 +531,10 @@
                 background: var(--primary-color);
                 color: white;
                 font-family: inherit;
-                padding: 0.45em 0.2em 0.45em 0.5em;
+                padding: 0.45em 0.25em 0.45em 0.5em;
                 font-size: 17px;
                 font-weight: 500;
-                border-radius: 8px;
+                border-radius: 6px;
                 border: none;
                 letter-spacing: 0.05em;
                 display: flex;
@@ -561,9 +553,9 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                height: 35px;
-                width: 2.2em;
-                border-radius: 6px;
+                height: 32px;
+                width: 2em;
+                border-radius: 4px;
                 transition: all 0.3s;
             }
 
@@ -588,8 +580,8 @@
                 top: 0;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1000;
+                background-color: rgba(0, 0, 0, 0.32);
+                z-index: 1500;
             }
 
             .download-options-popup-content {
@@ -697,8 +689,38 @@
                 justify-content: center;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
+            .download-icon {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                margin-bottom: 0;
+                margin-right: 0;
+            }
+
+            .download-mindmap-btn {
+                position: fixed;
+                top: 60px;
+                right: 120px;
+                padding: 10px;
+                height: 40px;
+                width: 40px;
+                z-index: 1000;
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 50%;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
 
             .edit-mode-button:hover {
+                background: #f5f5f5;
+            }
+
+            .download-mindmap-btn:hover {
                 background: #f5f5f5;
             }
 
@@ -777,6 +799,58 @@
             .cancel-button:hover {
                 background-color: #cbd5e1;
             }
+            .recent-mindmaps {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .recent-mindmaps h2 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+                color: var(--text-color);
+            }
+
+            .recent-list {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .recent-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                background-color: var(--background-color);
+                border-radius: 8px;
+                transition: all 0.2s ease;
+                cursor: pointer;
+                text-decoration: none;
+                color: var(--text-color);
+            }
+
+            .recent-item:hover {
+                background-color: #f1f5f9;
+                transform: translateY(-1px);
+            }
+
+            .recent-item-title {
+                font-weight: 500;
+                flex-grow: 1;
+            }
+
+            .recent-item-time {
+                font-size: 0.9em;
+                color: #64748b;
+                margin-left: 16px;
+            }
+
+            .no-recent {
+                text-align: center;
+                color: #64748b;
+                padding: 20px;
+            }
         </style>
     </head>
     <body>
@@ -793,13 +867,6 @@
             <div class="nav-links">
                 <a href="/history.html"><img src="/img/icons/history-icon.svg" height="22" width="22">
                     History</a>
-
-                <a id="download-mindmap-btn"><img
-                    src="/img/icons/download-icon.png"
-                    height="25"
-                    width="25"
-                    alt="Download"
-                    class="download-icon"></a>
 
                 <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
                     New Mind Map
@@ -863,6 +930,8 @@
         <div class="centered-div">
 
             <div class="header" id="header">
+                <div class="whitespace" style="height: 80px;"></div>
+
                 <h1>Generate a Mind Map with AI</h1>
                 <div class="input-wrapper">
                     <input
@@ -887,6 +956,35 @@
                 and have read our
                 <a href="/privacy-policy.html" style="color: var(--text-color)">Privacy Policy</a>
             </small>
+            <div class="recent-mindmaps" id="recent-mindmaps">
+                <h2><img
+                    src="/img/icons/history-icon.svg"
+                    height="28"
+                    width="28"
+                    style="margin-bottom: -5px; margin-right: 5px; opacity: 0.8;">Recent Mind Maps</h2>
+                <small>
+                    <a href="/history.html" style="text-decoration: none; color: #1e293b;">View history
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="6"
+                            height="11"
+                            viewbox="0 0 6 11"
+                            style="margin-left: 3px;">
+                            <polyline
+                                points=".675 .925 5.323 5.5 .675 10.075"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.1"></polyline>
+                        </svg>
+                    </a>
+                </small>
+                <div class="recent-list" id="recent-list">
+                    <!-- Items will be added here dynamically -->
+
+                </div>
+            </div>
         </div>
     </div>
 
@@ -909,6 +1007,12 @@
             </div>
         </div>
     </div>
+    <button id="download-mindmap-btn" class="download-mindmap-btn"><img
+        src="/img/icons/download-icon.png"
+        height="25"
+        width="25"
+        alt="Download"
+        class="download-icon"></button>
 
     <button class="regenerate-button" id="regenerate-button"><img src="/img/icons/retry-icon.svg" height="20px" width="20px"></button>
 
@@ -956,10 +1060,6 @@
                     .getElementById("header")
                     .style
                     .display = "none";
-                document
-                    .getElementById("download-mindmap-btn")
-                    .style
-                    .display = "block";
                 document
                     .getElementById("mindmap-title")
                     .style
@@ -1033,6 +1133,13 @@
                         .getElementById('edit-mode-button')
                         .style
                         .display = 'flex';
+
+                    document
+                       .getElementById("download-mindmap-btn")
+                       .style
+                       .display = "flex";
+
+                       document.getElementById("recent-mindmaps").style.display = "none";
 
                     document
                         .getElementById("loading-animation")
@@ -1176,6 +1283,7 @@
             const editModeButton = document.getElementById('edit-mode-button');
             const cancelEditButton = document.getElementById('cancel-edit');
             const saveEditButton = document.getElementById('save-edit');
+            loadRecentMindmaps();
 
             editModeButton.addEventListener('click', () => toggleEditMode(true));
             cancelEditButton.addEventListener('click', () => toggleEditMode(false));
@@ -1393,8 +1501,7 @@
                 mindmapElement.style.display = 'none';
                 editorElement.style.display = 'block';
                 editorOverlay.style.display = 'block';
-                textarea.value = currentMarkdown;
-                textarea.focus();
+                textarea.value = currentMarkdown;         textarea.focus();
             } else {
                 mindmapElement.style.display = 'block';
                 editorElement.style.display = 'none';
@@ -1423,7 +1530,55 @@
             }
 
             toggleEditMode(false);
+        }        function loadRecentMindmaps() {
+    const recentList = document.getElementById('recent-list');
+    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+    
+    if (history.length === 0) {
+        recentList.innerHTML = '<div class="no-recent">No recent mind maps</div>';
+        return;
+    }
+
+    const sortedHistory = history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    const recentItems = sortedHistory.slice(0, 5);
+
+    recentList.innerHTML = recentItems.map(item => {
+        const date = new Date(item.timestamp);
+        const timeAgo = getTimeAgo(date);
+        
+        return `
+            <a href="/history.html?id=${item.id}" class="recent-item">
+                <span class="recent-item-title">${item.topic}</span>
+                <span class="recent-item-time">${timeAgo}</span>
+            </a>
+        `;
+    }).join('');
+}
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            const intervals = {
+                year: 31536000,
+                month: 2592000,
+                week: 604800,
+                day: 86400,
+                hour: 3600,
+                minute: 60
+            };
+
+            for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+                const interval = Math.floor(seconds / secondsInUnit);
+                
+                if (interval >= 1) {
+                    return interval === 1 ? `1 ${unit} ago` : `${interval} ${unit}s ago`;
+                }
+            }
+            
+            return 'Just now';
         }
+
     </script>
 </body>
 </html>
