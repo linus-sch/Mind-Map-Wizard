@@ -1,234 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mind Map Wizard -  Terms of use</title>
-    <meta name="description" content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
-    <meta name="keywords" content="mind map, mind mapping, AI, text to mindmap, free mind map generator, no sign up, no ads">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mind Map Wizard - Terms of use</title>
+        <meta
+            name="description"
+            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta
+            name="keywords"
+            content="mind map, mind mapping, AI, text to mindmap, free mind map generator, no sign up, no ads">
 
-    <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
-    <meta property="og:description" content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
-    <meta property="og:image" content="/img/meta-img.jpg">
+        <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            property="og:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta property="og:image" content="/img/meta-img.jpg">
 
-    <meta property="og:type" content="website">
+        <meta property="og:type" content="website">
 
-    <meta name="twitter:card" content="/img/meta-img.jpg">
-    <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
-    <meta name="twitter:description" content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
-    <meta name="twitter:image" content="/img/meta-img.jpg">
+        <meta name="twitter:card" content="/img/meta-img.jpg">
+        <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            name="twitter:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta name="twitter:image" content="/img/meta-img.jpg">
 
-    <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
-    <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
-    <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
-    <link rel="apple-touch-icon" href="/img/logo.png">
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="apple-touch-icon" href="/img/logo.png">
+        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
 
-    <meta name="theme-color" content="#C667FF">
-    <meta name="language" content="en">
-    <style>
-        :root {
-            --primary-color: #C667FF;
-            --secondary-color: #9D34D4;
-            --background-color: #f8fafc;
-            --text-color: #1e293b;
-            --border-color: #e2e8f0;
-            --card-background: #ffffff;
-            --error-color: #dc2626;
-        }
+        <meta name="theme-color" content="#C667FF">
+        <meta name="language" content="en">
+        <style>
+            :root {
+                --primary-color: #C667FF;
+                --secondary-color: #9D34D4;
+                --background-color: #F5F5F7;
+                --text-color: #1e293b;
+                --border-color: #e2e8f0;
+                --card-background: #ffffff;
+                --error-color: #dc2626;
+            }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: var(--background-color);
-            color: var(--text-color);
-        }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: var(--background-color);
+                color: var(--text-color);
+            }
 
-        .header {
-            background: var(--card-background);
-            justify-content: space-between;
-            position: sticky;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: 0;
-            height: 50px;
-            z-index: 1000;
-            box-sizing: border-box;
-            padding: 15px;
-            width: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+            .header {
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                background-color: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(5px);
+                position: fixed;
+                top: 0;
+                height: 50px;
+                left: 0;
+                z-index: 1000;
+                box-sizing: border-box;
+                padding: 15px 3 10px 10px;
+                width: 100%;
+                left: 0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 
-        .navbutton {
-            background-color: var(--primary-color);
-            padding: 3px;
-            height: 30px;
-            border: 2px solid var(--primary-color);
-            padding-left: 8px;
-            padding-right: 10px;
-            border-radius: 6px;
-            color: #fff !important;
-            transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
+            }
 
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
 
-        .navbutton:hover {
-            background-color: var(--secondary-color);
-            border: 2px solid var(--secondary-color);
+            .navbutton {
+                background-color: var(--primary-color);
+                padding: 3px;
+                height: 30px;
+                border: 2px solid var(--primary-color);
+                padding-left: 8px;
+                padding-right: 10px;
+                border-radius: 6px;
+                color: #fff !important;
+                transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+            }
 
-        }
-        .logo {
-            position: relative;
-            top: 5px;
-        }
+            .navbutton:hover {
+                background-color: var(--secondary-color);
+                border: 2px solid var(--secondary-color);
 
+            }
+            .logo {
+                position: relative;
+                top: 5px;
+            }
 
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--text-color);
-        }
+            .header h1 {
+                margin: 0;
+                font-size: 1.8rem;
+                color: var(--text-color);
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 800;
+            }
 
-        .container {
-            width: 90%;
-            max-width: 550px;
-            margin: 70px auto;
+            .container {
+                width: 90%;
+                max-width: 550px;
+                margin: 70px auto;
 
+            }
 
-        }
+            h1 {
+                text-align: center;
+                font-size: 30px;
+                margin-bottom: 20px;
+                margin-top: 0;
+                color: var(--primary-color);
+            }
 
-        h1 {
-            text-align: center;
-            font-size: 30px;
-            margin-bottom: 20px;
-            margin-top: 0;
-            color: var(--primary-color);
-        }
+            p {
+                line-height: 1.6;
+                text-align: left;
+            }
 
-        p {
-            line-height: 1.6;
-            text-align: left;
-        }
+            .back-link {
+                display: block;
+                margin-bottom: 20px;
+                text-align: left;
+                color: var(--text-color);
+                text-decoration: none;
+            }
 
-        .back-link {
-            display: block;
-            margin-bottom: 20px;
-            text-align: left;
-            color: var(--text-color);
-            text-decoration: none;
-        }
+            .back-link:hover {
+                text-decoration: underline;
+            }
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+            a {
+                color: var(--text-color);
+            }
 
-        a {
-            color: var(--text-color);
-        }
-    </style>
-</head>
+            footer {
+                background-color: #F2F2F7;
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.8em;
+                margin-top: 40px;
+                position: relative;
+            }
 
-<body>
-    <div class="header">
-        <div class="header-left">
-            <h1><img src="/img/favicon96.png" height="25" width="25" class="logo"> Mind Map Wizard</h1>
+            .footer-content {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 30px;
+            }
+
+            .footer-links {
+                display: flex;
+                align-items: center;
+            }
+
+            .separator {
+                color: #9b9999;
+                margin: 0 3px;
+                font-size: 1em;
+                font-weight: 200;
+            }
+
+            .footer-link {
+                color: #333;
+                transition: color 0.3s;
+                text-decoration: none;
+                font-size: 15px;
+
+            }
+
+            .footer-link:hover {
+                color: var(--primary-color);
+                text-decoration: none;
+            }
+
+            .copyright {
+                margin: 0;
+                font-size: 15px;
+            }
+
+            @media (max-width: 720px) {
+                .footer-content {
+                    flex-direction: column;
+                    margin-bottom: 20px;
+                }
+
+                .footer-links {
+                    margin-bottom: 10px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+            <div class="header-left">
+                <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
+                    Mind Map Wizard</h1>
+            </div>
+
+            <a class="navbutton" href="/">New Mindmap</a>
         </div>
+        <div class="container">
+            <h1>TERMS OF USE</h1>
+            <h3 style="text-align: center;">Mind Map Wizard</h3>
+            <br>
+            <p>Last Updated: 2025-01-12</p>
 
+            <h2>1. Introduction</h2>
+            <p>Welcome to Mind Map Wizard (“Service” - “we,” “us,” or “our”). Mind Map
+                Wizard is an AI tool that creates mind maps based on user-specified topics. By
+                accessing or using Mind Map Wizard, you agree to comply with and be bound by
+                these Terms of Service (“Terms”).</p>
+            <p>If you do not agree with any part of these Terms, you must not access or use
+                Mind Map Wizard.</p>
 
-        <a class="navbutton" href="/">New Mindmap</a>
-    </div>
-    <div class="container">
-        <h1>TERMS OF USE</h1>
-        <h3 style="text-align: center;">Mind Map Wizard</h3>
-        <br>
-        <p>Last Updated: 2025-01-12</p>
+            <h2>2. Eligibility</h2>
+            <p>You may only use Mind Map Wizard if:</p>
+            <ol>
+                <li>You are at least the age of majority in your jurisdiction; and</li>
+                <li>You have the legal capacity and authority to enter into these Terms.</li>
+            </ol>
+            <p>By using Mind Map Wizard, you represent and warrant that you meet all the
+                eligibility criteria stated above.</p>
 
-        <h2>1. Introduction</h2>
-            <p>Welcome to Mind Map Wizard (“Service” - “we,” “us,” or “our”). Mind Map Wizard is an AI tool that creates mind maps based on user-specified topics. By accessing or using Mind Map Wizard, you agree to comply with and be bound by these Terms of Service (“Terms”).</p>
-        <p>If you do not agree with any part of these Terms, you must not access or use Mind Map Wizard.</p>
+            <h2>3. Acceptance of Terms</h2>
+            <p>By accessing or using Mind Map Wizard, you confirm that you have read,
+                understood, and agree to be bound by these Terms and all applicable laws. If you
+                do not agree, you should immediately stop using the Service.</p>
 
-        <h2>2. Eligibility</h2>
-        <p>You may only use Mind Map Wizard if:</p>
-        <ol>
-            <li>You are at least the age of majority in your jurisdiction; and</li>
-            <li>You have the legal capacity and authority to enter into these Terms.</li>
-        </ol>
-        <p>By using Mind Map Wizard, you represent and warrant that you meet all the eligibility criteria stated above.</p>
+            <h2>4. Modifications to the Terms</h2>
+            <p>We reserve the right, in our sole discretion, to change, modify, or update
+                these Terms at any time. When we do, we will post the updated Terms on our
+                website or within the Service and update the “Last Updated” date at the top of
+                this page. Your continued use of Mind Map Wizard after any such changes
+                constitute your acceptance of the revised Terms.</p>
 
-        <h2>3. Acceptance of Terms</h2>
-        <p>By accessing or using Mind Map Wizard, you confirm that you have read, understood, and agree to be bound by these Terms and all applicable laws. If you do not agree, you should immediately stop using the Service.</p>
+            <h2>5. Description of the Service</h2>
+            <h3>5.1. General Functionality</h3>
+            <p>Mind Map Wizard is an AI-powered mind map generator that allows users to
+                interact with artificial intelligence language models. It can provide responses
+                to user queries, facilitate discussions, and offer information and ideas.
+                However, Mind Map Wizard is not a substitute for professional or expert advice.</p>
 
-        <h2>4. Modifications to the Terms</h2>
-        <p>We reserve the right, in our sole discretion, to change, modify, or update these Terms at any time. When we do, we will post the updated Terms on our website or within the Service and update the “Last Updated” date at the top of this page. Your continued use of Mind Map Wizard after any such changes constitute your acceptance of the revised Terms.</p>
+            <h3>5.2. AI Outputs</h3>
+            <p>The outputs from Mind Map Wizard are generated using large language models.
+                These outputs might not always be accurate, complete, or up-to-date. You
+                acknowledge that all outputs and responses are provided on an “as is” basis.</p>
 
-        <h2>5. Description of the Service</h2>
-        <h3>5.1. General Functionality</h3>
-        <p>Mind Map Wizard is an AI-powered mind map generator that allows users to interact with artificial intelligence language models. It can provide responses to user queries, facilitate discussions, and offer information and ideas. However, Mind Map Wizard is not a substitute for professional or expert advice.</p>
+            <h3>5.3. Updates and Improvements</h3>
+            <p>We may, at our discretion and without obligation, update, improve, or change
+                the functionality of Mind Map Wizard. We do not guarantee that any specific
+                feature or part of the Service will always be available.</p>
 
-        <h3>5.2. AI Outputs</h3>
-        <p>The outputs from Mind Map Wizard are generated using large language models. These outputs might not always be accurate, complete, or up-to-date. You acknowledge that all outputs and responses are provided on an “as is” basis.</p>
+            <h2>6. User Conduct</h2>
+            <p>When using Mind Map Wizard, you agree NOT to:</p>
+            <ol>
+                <li>Violate any applicable laws, regulations, or these Terms.</li>
+                <li>Use the Service for any unlawful, harmful, threatening, abusive, harassing,
+                    defamatory, or otherwise objectionable purpose.</li>
+                <li>Attempt to gain unauthorized access to, interfere with, or disrupt any
+                    servers or networks connected to Mind Map Wizard.</li>
+                <li>Transmit viruses, malware, or other malicious code that could harm Mind Map
+                    Wizard, other users, or third parties.</li>
+                <li>Collect or harvest any personal data about other users.</li>
+                <li>Use Mind Map Wizard to generate or share content that infringes on any
+                    intellectual property or privacy rights of a third party.</li>
+            </ol>
 
-        <h3>5.3. Updates and Improvements</h3>
-        <p>We may, at our discretion and without obligation, update, improve, or change the functionality of Mind Map Wizard. We do not guarantee that any specific feature or part of the Service will always be available.</p>
+            <h2>7. Privacy</h2>
+            <p>Your use of Mind Map Wizard is also subject to our Privacy Policy, which
+                describes how we collect, use, and protect your personal information. By using
+                Mind Map Wizard, you consent to all actions taken by us concerning your
+                information in compliance with our Privacy Policy.</p>
+            <p
+                style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">Refrain
+                from entering any sensitive information unless it is in a secure context, such
+                as a contact form. We cannot guarantee the complete security of your data when
+                handled by our partners.</p>
 
-        <h2>6. User Conduct</h2>
-        <p>When using Mind Map Wizard, you agree NOT to:</p>
-        <ol>
-            <li>Violate any applicable laws, regulations, or these Terms.</li>
-            <li>Use the Service for any unlawful, harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable purpose.</li>
-            <li>Attempt to gain unauthorized access to, interfere with, or disrupt any servers or networks connected to Mind Map Wizard.</li>
-            <li>Transmit viruses, malware, or other malicious code that could harm Mind Map Wizard, other users, or third parties.</li>
-            <li>Collect or harvest any personal data about other users.</li>
-            <li>Use Mind Map Wizard to generate or share content that infringes on any intellectual property or privacy rights of a third party.</li>
-        </ol>
-
-        <h2>7. Privacy</h2>
-        <p>Your use of Mind Map Wizard is also subject to our Privacy Policy, which describes how we collect, use, and protect your personal information. By using Mind Map Wizard, you consent to all actions taken by us concerning your information in compliance with our Privacy Policy.</p>
-        <p style="background-color: #f0f0f0; padding: 10px; border-radius: 5px;"">Refrain from entering any sensitive information unless it is in a secure context, such as a contact form. We cannot guarantee the complete security of your data when handled by our partners.</p>
-
-        <h2>8. Intellectual Property</h2>
+            <h2>8. Intellectual Property</h2>
 
             <h3>User Content License.</h3>
-            <p>By submitting or transmitting any content (“User Content”) to Mind Map Wizard, you grant Mind Map Wizard. a non-exclusive, worldwide, royalty-free, sublicensable, and transferable license to store, display, process, and use your User Content in connection with providing and improving the Service.</p>
+            <p>By submitting or transmitting any content (“User Content”) to Mind Map
+                Wizard, you grant Mind Map Wizard. a non-exclusive, worldwide, royalty-free,
+                sublicensable, and transferable license to store, display, process, and use your
+                User Content in connection with providing and improving the Service.</p>
 
             <h2>9. Disclaimers</h2>
             <h3>No Warranty.</h3>
-            <p>The Service is provided on an “as is” and “as available” basis. To the fullest extent permitted by applicable law, we disclaim all warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+            <p>The Service is provided on an “as is” and “as available” basis. To the
+                fullest extent permitted by applicable law, we disclaim all warranties of any
+                kind, whether express or implied, including but not limited to implied
+                warranties of merchantability, fitness for a particular purpose, and
+                non-infringement.</p>
 
             <h3>Accuracy of Information.</h3>
-            <p>We do not guarantee the accuracy, completeness, or timeliness of any information or data provided by Mind Map Wizard. Any reliance on such information is at your own risk.</p>
+            <p>We do not guarantee the accuracy, completeness, or timeliness of any
+                information or data provided by Mind Map Wizard. Any reliance on such
+                information is at your own risk.</p>
 
             <h3>No Professional Advice.</h3>
-            <p>Mind Map Wizard is not a substitute for professional advice (legal, medical, financial, or otherwise). Always seek the guidance of qualified professionals before making decisions based on the outputs generated by Mind Map Wizard.</p>
+            <p>Mind Map Wizard is not a substitute for professional advice (legal, medical,
+                financial, or otherwise). Always seek the guidance of qualified professionals
+                before making decisions based on the outputs generated by Mind Map Wizard.</p>
 
             <h2>10. Limitation of Liability</h2>
             <p>To the fullest extent permitted by applicable law:</p>
             <h3>No Liability for Indirect Damages.</h3>
-            <p>Mind Map Wizard will not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, use, or goodwill, arising from or related to your use of Mind Map Wizard.</p>
+            <p>Mind Map Wizard will not be liable for any indirect, incidental, special,
+                consequential, or punitive damages, including but not limited to loss of
+                profits, data, use, or goodwill, arising from or related to your use of Mind Map
+                Wizard.</p>
 
             <h2>11. Indemnification</h2>
-            <p>You agree to defend, indemnify, and hold harmless Mind Map Wizard and its affiliates, officers, directors, employees, and agents, from and against all claims, damages, liabilities, losses, costs, and expenses (including reasonable attorneys’ fees) arising out of or in any way connected with:</p>
+            <p>You agree to defend, indemnify, and hold harmless Mind Map Wizard and its
+                affiliates, officers, directors, employees, and agents, from and against all
+                claims, damages, liabilities, losses, costs, and expenses (including reasonable
+                attorneys’ fees) arising out of or in any way connected with:</p>
             <ol>
                 <li>Your use of Mind Map Wizard or any activities under your account;</li>
                 <li>Your breach or alleged breach of these Terms;</li>
@@ -236,7 +348,10 @@
             </ol>
 
             <h2>12. Third-Party Services</h2>
-            <p>Mind Map Wizard may integrate, incorporate, or otherwise link to third-party services or content. We do not endorse or assume responsibility for such third-party services. Your interactions with these third-party services are governed by their own terms and policies.</p>
+            <p>Mind Map Wizard may integrate, incorporate, or otherwise link to third-party
+                services or content. We do not endorse or assume responsibility for such
+                third-party services. Your interactions with these third-party services are
+                governed by their own terms and policies.</p>
 
             <h2>13. Term and Termination</h2>
             <h3>Term.</h3>
@@ -246,36 +361,61 @@
             <p>You may stop using Mind Map Wizard at any time.</p>
 
             <h3>Termination by Us.</h3>
-            <p>We may suspend or terminate your access to Mind Map Wizard at any time for any reason, including but not limited to violation of these Terms.</p>
+            <p>We may suspend or terminate your access to Mind Map Wizard at any time for
+                any reason, including but not limited to violation of these Terms.</p>
 
             <h3>Effect of Termination.</h3>
-            <p>Upon termination, your rights to use Mind Map Wizard will immediately cease, and you must discontinue all use of the Service.</p>
+            <p>Upon termination, your rights to use Mind Map Wizard will immediately cease,
+                and you must discontinue all use of the Service.</p>
 
             <h2>14. Governing Law and Dispute Resolution</h2>
-            <p>These Terms and your use of Mind Map Wizard will be governed by and construed in accordance with the laws of the jurisdiction where Mind Map Wizard is incorporated, without regard to its conflict of law provisions. Any disputes arising out of or in connection with these Terms will be resolved exclusively in the courts located in that jurisdiction, unless otherwise required by applicable law.</p>
+            <p>These Terms and your use of Mind Map Wizard will be governed by and construed
+                in accordance with the laws of the jurisdiction where Mind Map Wizard is
+                incorporated, without regard to its conflict of law provisions. Any disputes
+                arising out of or in connection with these Terms will be resolved exclusively in
+                the courts located in that jurisdiction, unless otherwise required by applicable
+                law.</p>
 
             <h2>15. Changes to the Service</h2>
-            <p>We reserve the right to modify, suspend, or discontinue Mind Map Wizard (in whole or in part) at any time, with or without notice to you. We will not be liable to you or any third party for any such modifications, suspension, or discontinuation.</p>
+            <p>We reserve the right to modify, suspend, or discontinue Mind Map Wizard (in
+                whole or in part) at any time, with or without notice to you. We will not be
+                liable to you or any third party for any such modifications, suspension, or
+                discontinuation.</p>
 
             <h2>16. General</h2>
-                                 <h3>Severability.</h3>
-                                 <p>If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions will continue in full force and effect.</p>
+            <h3>Severability.</h3>
+            <p>If any provision of these Terms is found to be invalid or unenforceable, the
+                remaining provisions will continue in full force and effect.</p>
 
-                                 <h3>No Waiver.</h3>
-                                 <p>Any failure by us to enforce any right or provision under these Terms does not constitute a waiver of future enforcement of that right or provision.</p>
+            <h3>No Waiver.</h3>
+            <p>Any failure by us to enforce any right or provision under these Terms does
+                not constitute a waiver of future enforcement of that right or provision.</p>
 
-                                 <h3>Entire Agreement.</h3>
-                                 <p>These Terms, along with any other agreements referenced herein (including our Privacy Policy), constitute the entire agreement between you and Mind Map Wizard regarding your use of Mind Map Wizard</p>
+            <h3>Entire Agreement.</h3>
+            <p>These Terms, along with any other agreements referenced herein (including our
+                Privacy Policy), constitute the entire agreement between you and Mind Map Wizard
+                regarding your use of Mind Map Wizard</p>
 
-                                 <h3>Assignment.</h3>
-                                 <p>You may not assign or transfer these Terms or any rights or obligations herein without our prior written consent. We may freely assign or transfer these Terms.</p>
+            <h3>Assignment.</h3>
+            <p>You may not assign or transfer these Terms or any rights or obligations
+                herein without our prior written consent. We may freely assign or transfer these
+                Terms.</p>
 
-                
-                        <p style="text-align: center;">
-                            <a href="mailto:contact@mindmapwizard.com" style="text-decoration: none; color: #000;">Email</a>
-                            |
-                            <a href="/privacy-policy.html" style="text-decoration: none; color: #000;">Privacy Policy</a>
-                        </p>
-
-                        </body>
-                        </html>
+            <div style="height: 30px;"></div>
+        </div>
+        <footer>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <p style="margin: 0;">
+                        <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
+                        <span class="separator">|</span>
+                        <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
+                        <span class="separator">|</span>
+                        <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
+                    </p>
+                </div>
+                <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
+            </div>
+        </footer>
+    </body>
+</html>
