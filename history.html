@@ -45,7 +45,7 @@
             :root {
                 --primary-color: #C667FF;
                 --secondary-color: #9D34D4;
-                --background-color: #f8fafc;
+                --background-color: #F5F5F7;
                 --text-color: #1e293b;
                 --border-color: #e2e8f0;
                 --card-background: #ffffff;
@@ -90,9 +90,9 @@
 
             .header-left h1 {
                 font-family: 'Open Sans', sans-serif;
-                font-size: 25px;
+                font-size: 1.8em;
                 font-weight: 800;
-                width: 100%;
+                width: calc(100vw - 400px);
                 color: var(--text-color);
                 margin-bottom: 10px !important;
                 margin-left: 0;
@@ -109,7 +109,7 @@
                 border: 2px solid var(--primary-color);
                 padding-left: 8px;
                 padding-right: 10px;
-                border-radius: 6px;
+                border-radius: 8px;
                 color: #fff !important;
                 transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
                 display: flex;
@@ -126,7 +126,7 @@
             }
             .logo {
                 position: relative;
-                top: 5px;
+                top: 8px;
             }
 
             .header h1 {
@@ -223,7 +223,6 @@
                 font-size: 1.35rem;
                 color: var(--text-color);
                 white-space: normal;
-                /* Erlaubt Zeilenumbrüche */
                 overflow: hidden;
                 text-overflow: ellipsis;
                 width: 100%;
@@ -351,11 +350,9 @@
                 color: #64748b;
                 font-size: 1rem;
                 padding: 0.25rem 0.5rem;
-                border-radius: 0.25rem;
+                border-radius: 0.5rem;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                background-color: var(--background-color);
-
             }
 
             .action-button:hover {
@@ -444,16 +441,15 @@
                 background: var(--primary-color);
                 color: white;
                 font-family: inherit;
-                padding: 0.45em 0.2em 0.45em 0.5em;
+                padding: 0.45em 0.25em 0.45em 0.5em;
                 font-size: 17px;
                 font-weight: 500;
-                border-radius: 8px;
+                border-radius: 6px;
                 border: none;
                 letter-spacing: 0.05em;
                 display: flex;
                 align-items: center;
                 justify-content: flex-start;
-                /* Text links ausrichten */
                 overflow: hidden;
                 position: relative;
                 height: 40px;
@@ -467,9 +463,9 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                height: 35px;
-                width: 2.2em;
-                border-radius: 6px;
+                height: 32px;
+                width: 2em;
+                border-radius: 4px;
                 transition: all 0.3s;
             }
 
@@ -588,8 +584,10 @@
         <div id="history-view">
             <div class="header">
                 <div class="header-left">
-                    <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
-                        Mind Map History</h1>
+                    <a href="/" style="text-decoration: none;">
+                        <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
+                            Mind Map History</h1>
+                    </a>
                 </div>
 
                 <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
@@ -706,47 +704,43 @@
             }
             showMindmap(id);
         }
-
         function showMindmap(id) {
-            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-            const item = history.find(item => item.id === id);
+    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+    const item = history.find(item => item.id === id);
 
-            if (item) {
-                const viewer = document.getElementById('mindmap-viewer');
-                const content = document.getElementById('viewer-content');
-                const title = document.getElementById('viewer-title');
-                document
-                    .getElementById('edit-mode-button')
-                    .style
-                    .display = 'flex';
+    if (item) {
+        const viewer = document.getElementById('mindmap-viewer');
+        const content = document.getElementById('viewer-content');
+        const title = document.getElementById('viewer-title');
+        document.getElementById('edit-mode-button').style.display = 'flex';
 
-                viewer.dataset.currentMindmap = JSON.stringify(item);
+        viewer.dataset.currentMindmap = JSON.stringify(item);
+        title.textContent = item.topic;
+        viewer.style.display = 'block';
 
-                title.textContent = item.topic;
-                viewer.style.display = 'block';
+        // Reset content styles to properly position the mindmap
+        content.style.position = 'absolute';
+        content.style.top = '50px';  // Account for the header height
+        content.style.left = '0';
+        content.style.right = '0';
+        content.style.bottom = '0';
+        content.style.overflow = 'hidden';
+        content.style.display = 'block';
 
-                viewer.style.position = 'fixed';
-                content.style.top = '0';
-                content.style.left = '0';
-                content.style.width = '100vw';
-                content.style.height = '100vh';
-                content.style.display = 'block';
+        content.innerHTML = '';
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        content.appendChild(svg);
 
-                content.innerHTML = '';
-                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute('width', '100%');
-                svg.setAttribute('height', '100%');
-                content.appendChild(svg);
-
-                const {root} = transformer.transform(item.markdown);
-                const {Markmap} = window.markmap;
-                Markmap.create(svg, {
-                    autoFit: true,
-                    zoom: true
-                }, root);
-            }
-        }
-
+        const {root} = transformer.transform(item.markdown);
+        const {Markmap} = window.markmap;
+        Markmap.create(svg, {
+            autoFit: true,
+            zoom: true
+        }, root);
+    }
+}
         function closeViewer() {
             const viewer = document.getElementById('mindmap-viewer');
             viewer.style.display = 'none';
@@ -885,7 +879,32 @@
                 loadMindmaps();
             }
         }
-        document.addEventListener('DOMContentLoaded', loadMindmaps);
+        document.addEventListener('DOMContentLoaded', function () {
+         loadMindmaps();
+    
+    // Check URL parameters after loading mindmaps
+    const urlParams = new URLSearchParams(window.location.search);
+    const mindmapId = urlParams.get('id');
+    
+    if (mindmapId) {
+        const id = parseInt(mindmapId);
+        if (!isNaN(id)) {
+            // Add a small delay to ensure the mindmaps are loaded
+            setTimeout(() => {
+                showMindmap(id);
+            }, 100);
+        }
+    }
+
+    const editModeButton = document.getElementById('edit-mode-button');
+    const cancelEditButton = document.getElementById('cancel-edit');
+    const saveEditButton = document.getElementById('save-edit');
+
+    editModeButton.addEventListener('click', () => toggleEditMode(true));
+    cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+    saveEditButton.addEventListener('click', updateMindmapFromEdit);
+});
+
 
         function toggleEditMode(show) {
             const viewer = document.getElementById('mindmap-viewer');
@@ -930,16 +949,6 @@
             }
 
             toggleEditMode(false);
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            const editModeButton = document.getElementById('edit-mode-button');
-            const cancelEditButton = document.getElementById('cancel-edit');
-            const saveEditButton = document.getElementById('save-edit');
-
-            editModeButton.addEventListener('click', () => toggleEditMode(true));
-            cancelEditButton.addEventListener('click', () => toggleEditMode(false));
-            saveEditButton.addEventListener('click', updateMindmapFromEdit);
-        });
-    </script>
+        }    </script>
 </body>
 </html>
