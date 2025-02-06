@@ -107,19 +107,21 @@
                 @media (max-width: 830px) {
                     .container {
                         margin-top: 0;
-                        padding: 0 15px;
+                        padding: 0 !important;
                     }
                     .header {
                         height: auto;
                         min-height: 300px;
                         padding: 40px 20px;
                         margin-bottom: 50px;
+                        border-radius: 0;
+                        width: 100%;
                     }
                     .header h1 {
                         font-size: 2rem !important;
                         line-height: 1.3;
                         margin-bottom: 25px;
-                        padding: 0 10px;
+                        padding: 0;
                     }
                     .input-wrapper {
                         width: 100%;
@@ -437,6 +439,11 @@
                     position: relative;
                 }
 
+                @media (max-width: 500px) {
+                    .input-wrapper {
+                        width: 100%;
+                    }
+                }
                 .input-wrapper:focus-within {
                     outline: none;
                     border-color: var(--primary-color);
@@ -739,7 +746,7 @@
                     max-width: 350px;
                     padding: 20px;
                     background-color: #F5F5F7;
-                    border-radius: 20px;
+                    border-radius: 25px;
                     text-align: left;
                 }
 
@@ -1562,6 +1569,23 @@ const topics = [
 "color": "#FF4F9D"
 }, {
 "text": "The Future of Work",
+"color": "#8A4FFF"
+},
+
+{
+"text": "Enter topic here...",
+"color": "#FF4F7D"
+}, {
+"text": "Enter topic here...",
+"color": "#2EDB7D"
+}, {
+"text": "Enter topic here...",
+"color": "#FFC300"
+}, {
+"text": "Enter topic here...",
+"color": "#FF4F9D"
+}, {
+"text": "Enter topic here...",
 "color": "#8A4FFF"
 }
 ];
