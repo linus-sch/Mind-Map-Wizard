@@ -122,7 +122,7 @@
                         padding: 0 10px;
                     }
                     .input-wrapper {
-                        width: 90%;
+                        width: 100%;
                         height: 50px;
                         min-height: 50px;
                         margin-bottom: 20px !important;
@@ -196,19 +196,7 @@
                     .pack-container {
                         width: 95%;
                     }
-                    .footer-content {
-                        flex-direction: column;
-                        text-align: center;
-                    }
-                    .footer-links {
-                        flex-wrap: wrap;
-                        justify-content: center;
-                        gap: 10px;
-                    }
 
-                    .footer-link {
-                        margin: 5px;
-                    }
                     .header {
                         padding: 20px 10px;
                         height: auto;
@@ -258,18 +246,14 @@
 
                 .navbutton {
                     background-color: var(--primary-color);
-                    padding: 0;
-                    height: 30px;
+                    padding: 2px 14px;
                     border: 2px solid var(--primary-color);
-                    padding-left: 8px;
-                    padding-right: 10px;
                     border-radius: 20px;
                     color: #fff !important;
-                    transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+                    transition: background-color 0.5s ease, border 0.5s ease, color 0.5s ease;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: background-color 0.3s ease;
                 }
 
                 .navbutton:hover {
@@ -296,10 +280,6 @@
                     color: black;
                     font-weight: 500;
                     transition: color 0.3s ease;
-                }
-
-                .nav-links a:hover {
-                    color: var(--secondary-color);
                 }
 
                 @media (max-width: 800px) {
@@ -682,8 +662,23 @@
                 }
 
                 @media (max-width: 768px) {
+                    .roadmap-container {
+                        padding: 15px;
+                        /* Reduziertes Padding für mobile Geräte */
+                    }
+
                     .roadmap-ul {
-                        padding: 0 20px;
+                        padding: 0 10px;
+                        /* Reduziertes Padding */
+                    }
+
+                    .roadmap-li {
+                        font-size: 0.9rem;
+                        /* Kleinere Schriftgröße für mobile Geräte */
+                        margin: 8px 0;
+                        /* Reduzierte Margin */
+                        white-space: normal;
+                        /* Textumbruch aktivieren */
                     }
                 }
 
@@ -694,11 +689,13 @@
                     border-radius: 15px;
                     text-align: left !important;
                 }
+
                 .roadmap-li {
                     margin: 11px 0;
                     color: #333;
                     font-size: 1rem;
-                    white-space: nowrap;
+                    white-space: normal;
+                    /* Textumbruch aktivieren */
                 }
 
                 .roadmap-item-done {
@@ -707,6 +704,7 @@
                     border-radius: 20px;
                     margin-right: 10px;
                 }
+
                 .roadmap-item-soon {
                     background-color: #f8e786;
                     padding: 3px 8px;
@@ -951,7 +949,6 @@
                     will-change: opacity, max-height;
                     text-align: left !important;
                     padding: 0 10px;
-                    /* Added padding for better readability */
                 }
                 .accordion .accordion-content p {
                     font-size: 1rem;
@@ -969,7 +966,7 @@
                 }
 
                 footer {
-                    background-color: #F2F2F7;
+                    background-color: var(--text-color);
                     padding: 20px;
                     display: flex;
                     justify-content: space-between;
@@ -977,6 +974,7 @@
                     font-size: 0.8em;
                     margin-top: 40px;
                     position: relative;
+                    color: #ffffff;
                 }
 
                 .footer-content {
@@ -995,11 +993,10 @@
                     color: #9b9999;
                     margin: 0 3px;
                     font-size: 1em;
-                    font-weight: 200;
                 }
 
                 .footer-link {
-                    color: #333;
+                    color: #ffffff;
                     transition: color 0.3s;
                     text-decoration: none;
                     font-size: 15px;
@@ -1009,6 +1006,22 @@
                 .footer-link:hover {
                     color: var(--primary-color);
                     text-decoration: none;
+                }
+
+                .copyright {
+                    margin: 0;
+                    font-size: 15px;
+                }
+
+                @media (max-width: 720px) {
+                    .footer-content {
+                        flex-direction: column;
+                        margin-bottom: 20px;
+                    }
+
+                    .footer-links {
+                        margin-bottom: 10px;
+                    }
                 }
 
                 .copyright {
@@ -1160,7 +1173,7 @@
                             class="process-img">
                         <div class="process-title">
                             <span class="process-number">3</span>
-                            <h3>Get Your Mind Map</h3>
+                            <h3>Share Your Mind Map</h3>
                         </div>
                         <p>Quickly view, edit, and share your beautifully crafted mind map in just seconds.</p>
                     </div>
@@ -1244,7 +1257,7 @@
                                     </svg>
                                 </span>
                                 <p>
-                                    No shady tracking
+                                    Share mind maps
                                 </p>
                             </li>
                         </ul>
@@ -1336,7 +1349,8 @@
                                 Yes, you can easily export your mind maps in various formats. Just click on the
                                 download icon in the top right corner, and you'll be able to select the format
                                 you want to export your mind map to. You can then share and use it on other
-                                platforms.
+                                platforms. But you can also send others a link to your mind map, so they can see
+                                it.
                             </p>
                         </div>
                     </div>
@@ -1372,38 +1386,40 @@
 <li class="roadmap-li">
     <span class="roadmap-item-done">Done</span>Editing Mind Maps</li>
 <li class="roadmap-li">
-    <span class="roadmap-item-done">Done</span>Downloading Mind Maps</li>
+<li >
+    <span class="roadmap-item-done">Done</span>Sharing Mind Maps</li>
+<span class="roadmap-item-done">Done</span>Downloading Mind Maps</li>
 <li class="roadmap-li">
-    <span class="roadmap-item-done">Done</span>Renaming Mind Maps</li>
+<span class="roadmap-item-done">Done</span>Renaming Mind Maps</li>
 <li class="roadmap-li">
-    <span class="roadmap-item-done">Done</span>Inline code support for Mind Maps</li>
+<span class="roadmap-item-done">Done</span>Inline code support for Mind Maps</li>
 <li class="roadmap-li">
-    <span class="roadmap-item-soon">Soon</span>More export options e.g. PNG or PDF</li>
+<span class="roadmap-item-soon">Soon</span>More export options e.g. PNG or PDF</li>
 <li class="roadmap-li">
-    <span class="roadmap-item-soon">Soon</span>Explore further from specific branches</li>
+<span class="roadmap-item-soon">Soon</span>Explore further from specific branches</li>
+<li class="roadmap-li">
+<span class="roadmap-item-soon">Soon</span>Upload files for reference or summarize Videos</li>
 
-<li class="roadmap-li">
-    <span class="roadmap-item-soon">Soon</span>Sharing Mind Maps</li>
 <div style="height: 15px;"></div>
 <p class="roadmap-github-link">
-    <a
-        href="https://github.com/linus-sch/Mind-Map-Wizard"
-        style="text-decoration: none;">Contribute on Github
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="6"
-            height="11"
-            viewbox="0 0 6 11"
-            style="margin-left: 3px;">
-            <polyline
-                points=".675 .925 5.323 5.5 .675 10.075"
-                fill="none"
-                stroke="currentcolor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.1"></polyline>
-        </svg>
-    </a>
+<a
+    href="https://github.com/linus-sch/Mind-Map-Wizard"
+    style="text-decoration: none;">Contribute on Github
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="6"
+        height="11"
+        viewbox="0 0 6 11"
+        style="margin-left: 3px;">
+        <polyline
+            points=".675 .925 5.323 5.5 .675 10.075"
+            fill="none"
+            stroke="currentcolor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.1"></polyline>
+    </svg>
+</a>
 </p>
 </ul>
 <div class="whitespace"></div>
@@ -1412,15 +1428,15 @@
 <footer>
 <div class="footer-content">
 <div class="footer-links">
-    <p style="margin: 0;">
-        <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
-        <span class="separator">|</span>
-        <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
-        <span class="separator">|</span>
-        <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
-        <span class="separator">|</span>
-        <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
-    </p>
+<p style="margin: 0;">
+    <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
+    <span class="separator">|</span>
+    <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
+    <span class="separator">|</span>
+    <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
+    <span class="separator">|</span>
+    <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
+</p>
 </div>
 <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
 </div>
@@ -1428,140 +1444,126 @@
 
 <script>
 function showPopup() {
-    if (!localStorage.getItem('disclaimerAccepted')) {
-        document
-            .getElementById('legalPopup')
-            .style
-            .display = 'flex';
-    }
+if (!localStorage.getItem('disclaimerAccepted')) {
+document
+    .getElementById('legalPopup')
+    .style
+    .display = 'flex';
+}
 }
 
 function closePopup() {
-    document
-        .getElementById('legalPopup')
-        .style
-        .display = 'none';
+document
+.getElementById('legalPopup')
+.style
+.display = 'none';
 }
 
 function acceptDisclaimer() {
-    localStorage.setItem('disclaimerAccepted', 'true');
-    closePopup();
-    generateMindmap();
+localStorage.setItem('disclaimerAccepted', 'true');
+closePopup();
+generateMindmap();
 }
 
 function generateMindmap() {
-    console.log("generateMindmap called");
-    if (localStorage.getItem('disclaimerAccepted')) {
-        const query = document
-            .getElementById('prompt')
-            .value;
-        console.log("Query value:", query);
-        if (query) {
-            window.location.href = `/new.html?q=${encodeURIComponent(query)}`;
-        } else {
-            console.log("Query is empty or undefined");
-        }
-    } else {
-        showPopup();
-    }
+console.log("generateMindmap called");
+if (localStorage.getItem('disclaimerAccepted')) {
+const query = document
+    .getElementById('prompt')
+    .value;
+console.log("Query value:", query);
+if (query) {
+    window.location.href = `/new.html?q=${encodeURIComponent(query)}`;
+} else {
+    console.log("Query is empty or undefined");
+}
+} else {
+showPopup();
+}
 }
 
 $(document).on('keypress', function (event) {
-    if (event.key === 'Enter') {
-        generateMindmap();
-    }
+if (event.key === 'Enter') {
+generateMindmap();
+}
 });
 
 const items = document.querySelectorAll('.accordion button');
 
 function toggleAccordion() {
-    const itemToggle = this.getAttribute('aria-expanded');
+const itemToggle = this.getAttribute('aria-expanded');
 
-    for (i = 0; i < items.length; i++) {
-        items[i].setAttribute('aria-expanded', 'false');
-    }
+for (i = 0; i < items.length; i++) {
+items[i].setAttribute('aria-expanded', 'false');
+}
 
-    if (itemToggle == 'false') {
-        this.setAttribute('aria-expanded', 'true');
-    }
+if (itemToggle == 'false') {
+this.setAttribute('aria-expanded', 'true');
+}
 }
 
 items.forEach((item) => item.addEventListener('click', toggleAccordion));
 
 window.addEventListener('scroll', function () {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 30) {
-        navbar
-            .classList
-            .add('scrolled');
-    } else {
-        navbar
-            .classList
-            .remove('scrolled');
-    }
+const navbar = document.querySelector('.navbar');
+if (window.scrollY > 30) {
+navbar
+    .classList
+    .add('scrolled');
+} else {
+navbar
+    .classList
+    .remove('scrolled');
+}
 });
 
 const topics = [
-    {
-        "text": "Solar System and Planets",
-        "color": "#FF8661"
-    },
-    {
-        "text": "Digital Marketing 101",
-        "color": "#61C3FF"
-    },
-    {
-        "text": "Ancient Egyptian Civilization",
-        "color": "#6DE77B"
-    },
-    {
-        "text": "Artificial Intelligence Basics",
-        "color": "#DA75FF"
-    },
-    {
-        "text": "Nutrition and Wellness",
-        "color": "#34DEC7"
-    },
-    {
-        "text": "Renaissance Period Masters",
-        "color": "#7B91FF"
-    },
-    {
-        "text": "Understanding Emotions",
-        "color": "#FF7BCC"
-    },
-    {
-        "text": "Climate Change Impact",
-        "color": "#FF7B7B"
-    },
-    {
-        "text": "The Art of Storytelling",
-        "color": "#FFB75B"
-    },
-    {
-        "text": "Mindfulness and Meditation",
-        "color": "#9CD958"
-    },
-    {
-        "text": "The Evolution of Technology",
-        "color": "#FF61A8"
-    },
-    {
-        "text": "Cultural Diversity and Inclusion",
-        "color": "#32E38D"
-    },
-    {
-        "text": "The Science of Happiness",
-        "color": "#FFC60C"
-    },
-    {
-        "text": "Exploring World Cuisines",
-        "color": "#FF61C3"
-    },
-    {
-        "text": "The Future of Work",
-        "color": "#A161FF"
-    }
+{
+"text": "Solar System and Planets",
+"color": "#FF6F40"
+}, {
+"text": "Digital Marketing 101",
+"color": "#4DB8E1"
+}, {
+"text": "Ancient Egyptian Civilization",
+"color": "#4CD65E"
+}, {
+"text": "Artificial Intelligence Basics",
+"color": "#A45ED9"
+}, {
+"text": "Nutrition and Wellness",
+"color": "#2ED6B5"
+}, {
+"text": "Renaissance Period Masters",
+"color": "#6A8BFF"
+}, {
+"text": "Understanding Emotions",
+"color": "#FF4F8B"
+}, {
+"text": "Climate Change Impact",
+"color": "#FF4F4F"
+}, {
+"text": "The Art of Storytelling",
+"color": "#FFB74D"
+}, {
+"text": "Mindfulness and Meditation",
+"color": "#A8D94D"
+}, {
+"text": "The Evolution of Technology",
+"color": "#FF4F7D"
+}, {
+"text": "Cultural Diversity and Inclusion",
+"color": "#2EDB7D"
+}, {
+"text": "The Science of Happiness",
+"color": "#FFC300"
+}, {
+"text": "Exploring World Cuisines",
+"color": "#FF4F9D"
+}, {
+"text": "The Future of Work",
+"color": "#8A4FFF"
+}
 ];
 
 const input = document.getElementById('prompt');
@@ -1570,41 +1572,43 @@ let isTyping = true;
 
 let lastTopicIndex = -1;
 function getRandomTopic() {
-    let newIndex;
-    do {
-        newIndex = Math.floor(Math.random() * topics.length);
-    } while (newIndex === lastTopicIndex && topics.length > 1);
-    
-    lastTopicIndex = newIndex;
-    return topics[newIndex];
+let newIndex;
+do {
+newIndex = Math.floor(Math.random() * topics.length);
+} while (newIndex === lastTopicIndex && topics.length > 1);
+
+lastTopicIndex = newIndex;
+return topics[newIndex];
 }
 
 async function typeText(text) {
-    for (let i = 0; i <= text.length; i++) {
-        currentText = text.slice(0, i);
-        input.placeholder = currentText;
-        await new Promise(resolve => setTimeout(resolve, 50));
-    }
+for (let i = 0; i <= text.length; i++) {
+currentText = text.slice(0, i);
+input.placeholder = currentText;
+await new Promise(resolve => setTimeout(resolve, 50));
+}
 }
 
 async function eraseText(text) {
-    for (let i = text.length; i >= 0; i--) {
-        currentText = text.slice(0, i);
-        input.placeholder = currentText;
-        await new Promise(resolve => setTimeout(resolve, 30));
-    }
+for (let i = text.length; i >= 0; i--) {
+currentText = text.slice(0, i);
+input.placeholder = currentText;
+await new Promise(resolve => setTimeout(resolve, 30));
+}
 }
 
 async function animatePlaceholder() {
-    while (true) {
-        const currentTopic = getRandomTopic();
-        input.style.setProperty('--placeholder-color', currentTopic.color);
+while (true) {
+const currentTopic = getRandomTopic();
+input
+    .style
+    .setProperty('--placeholder-color', currentTopic.color);
 
-        await typeText(currentTopic.text);
-        await new Promise(resolve => setTimeout(resolve, 2000));
+await typeText(currentTopic.text);
+await new Promise(resolve => setTimeout(resolve, 2000));
 
-        await eraseText(currentTopic.text);
-    }
+await eraseText(currentTopic.text);
+}
 }
 
 const style = document.createElement('style');
@@ -1613,7 +1617,9 @@ style.textContent = `
         color: var(--placeholder-color);
     }
 `;
-document.head.appendChild(style);
+document
+.head
+.appendChild(style);
 
 animatePlaceholder();
 </script>
