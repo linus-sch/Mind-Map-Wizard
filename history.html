@@ -34,7 +34,7 @@
         <link rel="apple-touch-icon" href="/img/logo.png">
         <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
 
-        <meta name="theme-color" content="#C667FF">
+        <meta name="theme-color" content="#F5F5F7">
         <meta name="language" content="en">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
@@ -649,6 +649,15 @@
             }
         </style>
     </head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4RTLM6HX39');
+</script>
     <body>
         <div id="history-view">
             <div class="header">
@@ -1102,7 +1111,8 @@
             const dialog = document.querySelector('.share-dialog');
             const overlay = document.querySelector('.overlay');
             if (dialog) 
-                dialog.remove();     if (overlay) 
+                dialog.remove();
+            if (overlay) 
                 overlay.remove();
             }
     </script>
