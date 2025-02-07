@@ -365,6 +365,10 @@
                 transition: opacity 0.2s ease;
             }
 
+            .show-all-actions .mindmap-actions {
+                opacity: 1;
+            }
+
             .mindmap-item:hover .mindmap-actions {
                 opacity: 1;
             }
@@ -647,6 +651,22 @@
                 margin-top: 1rem;
                 background: #f8fafc;
             }
+
+            .options-toggle {
+                margin-bottom: 5px;
+                border-radius: 10px;
+                background-color: var(--background-color);
+                padding: 0.5rem 1rem;
+                border: none;
+                color: var(--primary-color);
+                font-size: 1rem;
+            }
+
+            .options-toggle:hover {
+                background-color: rgba(0, 0, 0, 0.035);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
         </style>
     </head>
     <!-- Google tag (gtag.js) -->
@@ -693,11 +713,12 @@
                 </button>
             </div>
             <div class="options">
-                <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
-                    Back</a>
+                <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px"> Back</a>
             </div>
 
             <div class="container">
+                <button class="options-toggle" id="optionsToggle">Options</button>
+
                 <div class="mindmap-list" id="mindmap-list"></div>
                 <button class="clear-history" onclick="clearHistory()" id="clearHistory">Clear History</button>
             </div>
@@ -986,6 +1007,13 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             const mindmapId = urlParams.get('id');
+            const optionsToggle = document.getElementById('optionsToggle');
+            const mindmapList = document.getElementById('mindmap-list');
+
+            optionsToggle.addEventListener('click', function() {
+                const isShowingOptions = mindmapList.classList.toggle('show-all-actions');
+                optionsToggle.textContent = isShowingOptions ? 'Hide Options' : 'Options';
+            });
 
             if (mindmapId) {
                 const id = parseInt(mindmapId);
