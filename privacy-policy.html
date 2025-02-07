@@ -85,22 +85,24 @@
             font-family: 'Open Sans', sans-serif;
 
         }
+        @media (max-width: 500px) {
+            .logo-text {
+                display: none !important;
+            }
+        }
 
         .navbutton {
             background-color: var(--primary-color);
-            padding: 3px;
-            height: 30px;
+            padding: 6px 14px;
+            font-size: 1.1rem;
             border: 2px solid var(--primary-color);
-            padding-left: 8px;
-            padding-right: 10px;
-            border-radius: 6px;
+            border-radius: 40px;
             color: #fff !important;
             transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: background-color 0.3s ease;
         }
 
         .navbutton:hover {
@@ -129,10 +131,17 @@
 
         h1 {
             text-align: center;
-            font-size: 30px;
-            margin-bottom: 20px;
+            font-size: 2.6rem;
+            margin-bottom: 10px;
             margin-top: 0;
             color: var(--primary-color);
+        }
+
+        .mmw-title {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            margin-top: 0;
         }
 
         p {
@@ -157,7 +166,7 @@
         }
 
         footer {
-            background-color: #F2F2F7;
+            background-color: var(--text-color);
             padding: 20px;
             display: flex;
             justify-content: space-between;
@@ -165,6 +174,7 @@
             font-size: 0.8em;
             margin-top: 40px;
             position: relative;
+            color: #ffffff;
         }
 
         .footer-content {
@@ -183,11 +193,10 @@
             color: #9b9999;
             margin: 0 3px;
             font-size: 1em;
-            font-weight: 200;
         }
 
         .footer-link {
-            color: #333;
+            color: #ffffff;
             transition: color 0.3s;
             text-decoration: none;
             font-size: 15px;
@@ -216,19 +225,29 @@
         }
     </style>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-4RTLM6HX39');
+</script>
 <body>
     <div class="header">
         <div class="header-left">
-            <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
-                Mind Map Wizard</h1>
+            <a href="/" style="text-decoration: none;">
+                <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
+                    <span class="logo-text">Mind Map Wizard</span></h1>
+            </a>
         </div>
 
         <a class="navbutton" href="/">New Mindmap</a>
     </div>
     <div class="container">
-        <h1>PRIVACY POLICY</h1>
-        <h3 style="text-align: center;">Mind Map Wizard</h3>
+        <h1>Privacy Policy</h1>
+        <h3 class="mmw-title">Mind Map Wizard</h3>
         <br>
         <p>Last Updated: 2025-01-12</p>
         <h2>1. Introduction</h2>
@@ -313,8 +332,9 @@
                 <p>
                     <strong>Service Providers</strong>: We share your information with third-party
                     service providers who perform services on our behalf (e.g., hosting, analytics,
-                    customer support, mind map generation). These service providers are authorized
-                    to use your information to provide services to us. For example,
+                    customer support, mind map generation or storing of shared mind maps). These
+                    service providers are authorized to use your information to provide services to
+                    us. For example,
                     <a
                         href="https://pro-ai.glitch.me"
                         style="color: #000; background-color: #f0f0f0; border-radius: 8px; padding: 3px 8px 3px 8px;  border: 1px solid #ddd; text-decoration: none;">Pro AI</a>
