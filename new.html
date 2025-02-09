@@ -65,6 +65,80 @@
                 padding: 0;
             }
 
+            .popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.32);
+                justify-content: center;
+                align-items: center;
+                z-index: 1100;
+            }
+
+            .popup-content {
+                background-color: white;
+                padding: 20px;
+                border-radius: 20px;
+                text-align: left;
+                max-width: 350px;
+                display: flex;
+                line-height: 1.5;
+                flex-direction: column;
+                align-items: space-between;
+            }
+
+            .accept-terms-button,
+            .decline-terms-button {
+                margin: 5px;
+                padding: 12px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+
+            .accept-terms-button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .decline-terms-button {
+                background-color: var(--border-color);
+                color: black;
+                border: none;
+            }
+
+            .accept-terms-button:hover {
+                background-color: #b73cfe;
+            }
+
+            .decline-terms-button:hover {
+                background-color: rgb(215, 215, 215);
+            }
+
+            .legal-purposes {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .popup-content a {
+                background-color: #f0f0f0;
+                padding: 3px;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.1s ease;
+            }
+            .popup-content a:hover {
+                background-color: #e6e6e6;
+            }
+
+            .whitespace {
+                height: 40px;
+            }
+
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
                 margin: 0;
@@ -92,6 +166,11 @@
                 width: 100% !important;
                 height: 100% !important;
                 display: block;
+            }
+
+            #mindmap svg path {
+                stroke-opacity: 1 !important;
+                fill-opacity: 1 !important;
             }
 
             #loading-animation {
@@ -541,6 +620,7 @@
                 backdrop-filter: blur(5px);
                 color: #333333;
                 margin: 0 auto;
+                display: none;
             }
 
             .dialog-buttons {
@@ -978,6 +1058,35 @@
         gtag('config', 'G-4RTLM6HX39');
     </script>
     <body>
+        <div class="popup" id="legalPopup">
+            <div class="popup-content">
+                <div>
+                    <h2>🍪 Cookies</h2>
+                    <p>To proceed, you need to agree to our
+                        <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
+                        and
+                        <a
+                            href="/privacy-policy.html"
+                            onclick="event.preventDefault();"
+                            style="color: var(--text-color);">Privacy Policy</a>
+                        <br>
+                        <div class="whitespace"></div>
+
+                        <strong>Purposes:</strong>
+                        <ul class="legal-purposes">
+                            <li>Functionality</li>
+                            <li>Analytics</li>
+                        </ul>
+                    </p>
+                    <div class="whitespace"></div>
+                </div>
+                <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+                <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
+
+            </div>
+
+        </div>
+
         <div class="navbar">
             <div class="text-logo">
                 <a href="/" class="logo-link">
@@ -1021,7 +1130,7 @@
             Back
         </a>
 
-    </p>`;
+    </p>
 
 </p>
 <div id="app">
@@ -1125,7 +1234,7 @@
 </div>
 
 <div id="mindmap"></div>
-<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information.</small>
+<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information. / Pro AI</small>
 
 <div id="download-options-popup" class="download-options-popup">
     <div class="download-options-popup-content">
@@ -1173,7 +1282,9 @@
 <div class="markdown-editor" id="markdown-editor">
     <textarea id="markdown-textarea" spellcheck="false"></textarea>
     <div class="editor-buttons">
-        <small>Use markdown formatting.</small>
+        <small>Use markdown formatting.
+            <a href="/help/markdown-formatting.html" style="color: #1e293b;">Help</a>
+        </small>
 
         <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
         <button class="editor-button save-button" id="save-edit">Save Changes</button>
@@ -1295,10 +1406,37 @@
         return {topic, markdown};
     }
 
+    function showPopup() {
+        if (!localStorage.getItem('disclaimerAccepted')) {
+            document
+                .getElementById('legalPopup')
+                .style
+                .display = 'flex';
+        }
+    }
+
+    function closePopup() {
+        document
+            .getElementById('legalPopup')
+            .style
+            .display = 'none';
+    }
+
+    function acceptDisclaimer() {
+        localStorage.setItem('disclaimerAccepted', 'true');
+        closePopup();
+        generateMindmap();
+    }
+
     function generateMindmap(mindmapTopic, isRegenerate = false) {
         if (!mindmapTopic) 
             return;
         
+        if (!localStorage.getItem('disclaimerAccepted') && !isRegenerate) {
+            showPopup();
+            return;
+        }
+
         if (!isRegenerate) {
             document
                 .getElementById("header")
@@ -1430,14 +1568,19 @@
             svg.setAttribute('height', '100%');
             mindmapContainer.appendChild(svg);
 
-            const {Transformer} = window.markmap;
+            const {Markmap, Transformer} = window.markmap;
             const transformer = new Transformer();
             const {root} = transformer.transform(markdown);
 
-            const {Markmap} = window.markmap;
-            Markmap.create(svg, {
-                autoFit: true
+            const mm = Markmap.create(svg, {
+                autoFit: true,
+                duration: 500,
+                maxWidth: 300,
+                zoom: true,
+                pan: true
             }, root);
+
+            mm.fit(); // Ensure the mindmap fits in the viewport
 
         } catch (error) {
             console.error('Mindmap Error:', error);
@@ -1538,6 +1681,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        if (!localStorage.getItem('disclaimerAccepted')) {
+            showPopup();
+        }
         const downloadBtn = document.getElementById('download-mindmap-btn');
         const popup = document.getElementById('download-options-popup');
         const closeBtn = document.getElementById('close-download-options-popup');
@@ -1913,6 +2059,14 @@
         if (overlay) 
             overlay.remove();
         }
+    
+    window.onload = function () {
+        if (localStorage.getItem('disclaimerAccepted') !== "true" && !localStorage.getItem('mindmap-history')) {
+            document
+                .getElementById('legalPopup')
+                .style
+                .display = 'flex';
+        }
+    };
 </script>
 </body>
-</html>
