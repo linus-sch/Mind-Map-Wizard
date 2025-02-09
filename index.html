@@ -35,10 +35,10 @@
             <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
             <link rel="apple-touch-icon" href="/img/logo.png">
 
-            <meta name="theme-color" content="#C667FF">
+            <meta name="theme-color" content="#e0aaff">
             <meta name="language" content="en">
 
-            <title>Text to Mindmap AI - Mind Map Wizard</title>
+            <title>AI Mind Map Maker | Mind Map Wizard</title>
             <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
@@ -74,6 +74,133 @@
                     overflow-x: hidden;
                 }
 
+                @media (max-width: 830px) {
+                    .container {
+                        margin-top: 0;
+                        padding: 0 15px;
+                    }
+                    .header {
+                        height: auto;
+                        min-height: 300px;
+                        padding: 40px 0 !important;
+                        margin-bottom: 50px;
+                    }
+
+                    .header h1 {
+                        font-size: 2rem !important;
+                        line-height: 1.3;
+                        padding: 0 10px;
+                        color: var(--text-color);
+                        margin-bottom: 0;
+                    }
+                    .topic-input-cta {
+                        margin-bottom: 30px;
+                        color: var(--text-color);
+                        font-size: 1.2;
+                    }
+                    .input-wrapper {
+                        width: 100%;
+                        height: 50px;
+                        min-height: 50px;
+                        margin-bottom: 20px !important;
+                    }
+                    .pink-section,
+                    .pricing-section,
+                    .process-section {
+                        padding: 40px 15px;
+                    }
+                    .section-title {
+                        font-size: 1.8rem !important;
+                        margin: 20px 0;
+                    }
+                    .faq-container-centered h1 {
+                        font-size: 1.6rem !important;
+                        margin: 20px 0;
+                    }
+
+                    .process-boxes {
+                        gap: 20px;
+                    }
+                    .process-box {
+                        padding: 20px;
+                    }
+                    .features-grid {
+                        gap: 20px;
+                        padding: 0;
+                    }
+                    .feature-item {
+                        padding: 15px;
+                    }
+                    .white-p {
+                        font-size: 1.2rem !important;
+                        margin-bottom: 30px;
+                    }
+                    .faq-container-centered {
+                        width: 95%;
+                        padding: 20px 0;
+                    }
+                    .accordion {
+                        width: 100%;
+                    }
+                    .accordion-title {
+                        font-size: 17px !important;
+                    }
+
+                }
+
+                @media (min-width: 480px) {
+                    .container {
+                        margin-top: 60px;
+                        padding: 0 10px;
+                    }
+
+                    .input-wrapper {
+                        width: 100%;
+                        height: 60px;
+                        min-height: 60px;
+                        margin-bottom: 30px !important;
+                    }
+                    .feature-item,
+                    .process-box {
+                        padding: 20px;
+                    }
+                    .section-title {
+                        font-size: 2rem;
+                    }
+                    .white-p {
+                        font-size: 1.1rem;
+                        padding: 0 15px;
+                    }
+                    .pack-container {
+                        width: 95%;
+                    }
+
+                    .header {
+                        padding: 20px 0 !important;
+                        height: auto;
+                        min-height: 400px;
+                        background-image: none;
+                    }
+
+                }
+
+                @media (max-width: 400px) {
+                    .logo-text {
+                        font-size: 1.2rem;
+                    }
+                    .logo {
+                        height: 28px;
+                    }
+
+                    .container {
+                        margin-top: 100px !important;
+                    }
+
+                    .topic-input-cta {
+                        font-size: 1.1rem !important;
+                    }
+                }
+
                 a {
                     color: #b656ee;
                 }
@@ -102,119 +229,6 @@
                     background-color: rgba(255, 255, 255, 0.9);
                     backdrop-filter: blur(50px);
                     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                }
-
-                @media (max-width: 830px) {
-                    .container {
-                        margin-top: 0;
-                        padding: 0 !important;
-                    }
-                    .header {
-                        height: auto;
-                        min-height: 300px;
-                        padding: 40px 20px;
-                        margin-bottom: 50px;
-                        border-radius: 0;
-                        width: 100%;
-                    }
-                    .header h1 {
-                        font-size: 2rem !important;
-                        line-height: 1.3;
-                        margin-bottom: 25px;
-                        padding: 0;
-                    }
-                    .input-wrapper {
-                        width: 100%;
-                        height: 50px;
-                        min-height: 50px;
-                        margin-bottom: 20px !important;
-                    }
-                    .pink-section,
-                    .pricing-section,
-                    .process-section {
-                        padding: 40px 15px;
-                    }
-                    .section-title {
-                        font-size: 1.8rem !important;
-                        margin: 20px 0;
-                    }
-                    .process-boxes {
-                        gap: 20px;
-                    }
-                    .process-box {
-                        padding: 20px;
-                    }
-                    .features-grid {
-                        gap: 20px;
-                        padding: 0;
-                    }
-                    .feature-item {
-                        padding: 15px;
-                    }
-                    .white-p {
-                        font-size: 1rem;
-                        margin-bottom: 30px;
-                    }
-                    .faq-container-centered {
-                        width: 95%;
-                        padding: 20px 0;
-                    }
-                    .accordion {
-                        width: 100%;
-                    }
-                    .accordion-title {
-                        font-size: 16px;
-                    }
-
-                }
-
-                @media (min-width: 480px) {
-                    .container {
-                        margin-top: 80px;
-                        padding: 0 10px;
-                    }
-
-                    .header h1 {
-                        font-size: 2.5rem !important;
-                        line-height: 1.;
-                    }
-                    .input-wrapper {
-                        width: 95%;
-                        height: 60px;
-                        min-height: 60px;
-                        margin-bottom: 30px !important;
-                    }
-                    .feature-item,
-                    .process-box {
-                        padding: 20px;
-                    }
-                    .section-title {
-                        font-size: 2rem;
-                    }
-                    .white-p {
-                        font-size: 1.1rem;
-                        padding: 0 15px;
-                    }
-                    .pack-container {
-                        width: 95%;
-                    }
-
-                    .header {
-                        padding: 20px 10px;
-                        height: auto;
-                        min-height: 400px;
-                        background-image: none;
-                    }
-
-                }
-
-                @media (max-width: 350px) {
-                    .logo-text {
-                        font-size: 1.2rem;
-                    }
-                    .logo {
-                        height: 28px;
-                    }
                 }
 
                 .text-logo {
@@ -302,14 +316,14 @@
 
                 @media (max-width: 700px) {
                     .pricing-section h1 {
-                        font-size: 2rem !important;
+                        font-size: 1.6rem !important;
                         margin-top: 0;
                         margin-bottom: 10px;
                         padding: 0 !important;
                     }
 
                     .section-title {
-                        font-size: 2rem !important;
+                        font-size: 1.6rem !important;
                         margin-bottom: 10px;
                         padding: 0;
                     }
@@ -347,12 +361,19 @@
                         display: none;
                     }
                 }
-
                 .header h1 {
-                    font-size: 2.5rem;
+                    font-size: 3rem;
+                    line-height: 1.3;
+                    padding: 0 10px;
                     color: var(--text-color);
-                    margin-bottom: 30px;
+                    margin-bottom: 15px;
+                    margin-top: 20px;
+                }
 
+                .topic-input-cta {
+                    margin-bottom: 20px;
+                    color: var(--text-color);
+                    font-size: 1.3rem;
                 }
 
                 .centered-div {
@@ -374,7 +395,6 @@
                 .popup {
                     display: none;
                     position: fixed;
-                    left: 0;
                     top: 0;
                     width: 100%;
                     height: 100%;
@@ -400,12 +420,15 @@
                     margin: 5px;
                     padding: 12px 20px;
                     border-radius: 20px;
+                    cursor: pointer;
+                    font-size: 0.9rem;
                 }
 
                 .accept-terms-button {
                     background-color: var(--primary-color);
                     color: white;
                     border: none;
+                    transition: all 0.3s ease;
                 }
 
                 .decline-terms-button {
@@ -414,13 +437,37 @@
                     border: none;
                 }
 
+                .accept-terms-button:hover {
+                    background-color: #b73cfe;
+                }
+
+                .decline-terms-button:hover {
+                    background-color: rgb(215, 215, 215);
+                }
+
+                .legal-purposes {
+                    margin: 0;
+                    padding-left: 20px;
+                }
+
+                .popup-content a {
+                    background-color: #f0f0f0;
+                    padding: 3px;
+                    border-radius: 6px;
+                    text-decoration: none;
+                    transition: all 0.1s ease;
+                }
+                .popup-content a:hover {
+                    background-color: #e6e6e6;
+                }
+
                 .whitespace {
                     height: 40px;
                 }
 
                 /* From Uiverse.io by vinodjangid07 */
                 .input-wrapper {
-                    width: 90%;
+                    width: 100%;
                     max-width: 500px;
                     height: 60px;
                     position: relative;
@@ -439,11 +486,6 @@
                     position: relative;
                 }
 
-                @media (max-width: 500px) {
-                    .input-wrapper {
-                        width: 100%;
-                    }
-                }
                 .input-wrapper:focus-within {
                     outline: none;
                     border-color: var(--primary-color);
@@ -536,7 +578,7 @@
                     padding-left: 10px;
                     padding-right: 10px;
                     color: var(--text-color);
-                    font-size: 2.5rem;
+                    font-size: 2rem;
                 }
 
                 /* From Uiverse.io by Yaya12085 */
@@ -569,7 +611,6 @@
                     font-family: sans-serif;
                     font-size: 1rem;
                     line-height: 1.25rem;
-                    text-transform: uppercase;
                     color: var(--text-color);
                 }
 
@@ -671,21 +712,15 @@
                 @media (max-width: 768px) {
                     .roadmap-container {
                         padding: 15px;
-                        /* Reduziertes Padding für mobile Geräte */
                     }
 
                     .roadmap-ul {
                         padding: 0 10px;
-                        /* Reduziertes Padding */
                     }
 
                     .roadmap-li {
-                        font-size: 0.9rem;
-                        /* Kleinere Schriftgröße für mobile Geräte */
+                        font-size: 1rem !important;
                         margin: 8px 0;
-                        /* Reduzierte Margin */
-                        white-space: normal;
-                        /* Textumbruch aktivieren */
                     }
                 }
 
@@ -698,11 +733,15 @@
                 }
 
                 .roadmap-li {
-                    margin: 11px 0;
-                    color: #333;
                     font-size: 1rem;
+                    margin: 8px 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 1;
                     white-space: normal;
-                    /* Textumbruch aktivieren */
+                    max-width: 100%;
                 }
 
                 .roadmap-item-done {
@@ -721,7 +760,7 @@
 
                 .section-title {
                     text-align: center;
-                    font-size: 2.5rem;
+                    font-size: 2rem;
                     color: var(--text-color);
                     margin: 10px 0 20px;
                 }
@@ -779,7 +818,7 @@
                     width: 100%;
                     height: auto;
                     margin-bottom: 20px;
-                    border-radius: 15px;
+                    border-radius: 10px;
                 }
                 .pink-section {
                     padding: 40px 20px;
@@ -839,6 +878,7 @@
                 .faq-container-centered h1 {
                     margin-bottom: 40px;
                     line-height: 1.4;
+                    font-size: 2.5rem;
                 }
 
                 .accordion {
@@ -883,7 +923,8 @@
                 }
 
                 .accordion button .accordion-title {
-                    padding: 1em 1.5em 1em 0;
+                    padding: 1em 2em 1em 0;
+
                 }
 
                 .accordion button .icon {
@@ -895,6 +936,7 @@
                     height: 22px;
                     border: 1px solid;
                     border-radius: 22px;
+                    background-color: var(--background-color);
                 }
 
                 .accordion button .icon::before {
@@ -905,7 +947,7 @@
                     left: 5px;
                     width: 10px;
                     height: 2px;
-                    background-color: #969696;
+                    background-color: var(--background-color);
                 }
                 .accordion button .icon::after {
                     display: block;
@@ -1071,8 +1113,68 @@
                     border: 1px solid #70348f95;
                     color: white;
                 }
+                /* From Uiverse.io by vinodjangid07 */
+                .button {
+                    width: 135px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 10px;
+                    background-color: var(--primary-color);
+                    border-radius: 30px;
+                    color: #ffffff;
+                    font-weight: 600;
+                    border: none;
+                    position: relative;
+                    cursor: pointer;
+                    transition-duration: 0.2s;
+                    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.116);
+                    padding-left: 8px;
+                    transition-duration: 0.5s;
+                    text-decoration: none;
+                }
+
+                .svgIcon {
+                    height: 28px;
+                    transition-duration: 1.5s;
+                    fill: rgb(255, 255, 255);
+
+                }
+
+                .bell path {
+                    fill: rgb(255, 255, 255);
+                }
+
+                .button:hover {
+                    background-color: var(--text-color);
+                    transition-duration: 0.5s;
+                }
+
+                .button:active {
+                    transform: scale(0.97);
+                    transition-duration: 0.2s;
+                }
+
+                .button:hover .svgIcon {
+                    transform: rotate(250deg);
+                    transition-duration: 1.5s;
+                }
             </style>
         </head>
+        <!-- Google tag (gtag.js) -->
+        <script
+            async="async"
+            src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'G-4RTLM6HX39');
+        </script>
         <body>
             <div class="navbar">
                 <div class="text-logo">
@@ -1083,34 +1185,20 @@
                 </div>
                 <div class="nav-links">
                     <a>100% free, no sign up</a>
-                    <a class="navbutton" href="/new.html">Get started</a>
+                    <a class="navbutton" href="/new.html">Get Started</a>
                 </div>
             </div>
             <div class="container">
                 <div class="centered-div">
                     <div class="header" id="header">
                         <div class="header-badge">
-                            <a href="#roadmap" style="color: #ffffff; text-decoration: none;">
-                                <p>Just launched! 🚀 View Roadmap<svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="6"
-                                    height="11"
-                                    viewbox="0 0 6 11"
-                                    style="margin-left: 3px;">
-                                        <polyline
-                                            points=".675 .925 5.323 5.5 .675 10.075"
-                                            fill="none"
-                                            stroke="currentcolor"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="1.5"></polyline>
-                                    </svg>
+                            <a href="" style="color: #ffffff; text-decoration: none;">
+                                <p>Just launched! 🚀
                                 </a>
                             </p>
                         </div>
-
-                        <div class="whitespace"></div>
                         <h1>Generate a Mind Map with AI</h1>
+                        <p class="topic-input-cta">Type a topic for your mind map!</p>
                         <div class="input-wrapper">
                             <input
                                 type="text"
@@ -1142,328 +1230,403 @@
                                 href="/privacy-policy.html"
                                 onclick="event.preventDefault();"
                                 style="color: var(--text-color);">Privacy Policy</a>
-
+                            <br>
                             <div class="whitespace"></div>
-                        </div>
-                        <button onclick="closePopup()" class="decline-terms-button">Close</button>
-                        <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
 
-                    </div>
-
-                </div>
-
-            </div>
-            <div class="process-section">
-                <h2 class="section-title">How It Works</h2>
-                <div class="process-boxes">
-                    <div class="process-box">
-                        <img src="/img/p1-enter-topic.png" alt="Topic Input Box" class="process-img">
-                        <div class="process-title">
-                            <span class="process-number">1</span>
-                            <h3>Enter Your Topic</h3>
-                        </div>
-                        <p>Just type any topic you'd like to explore in the input field.</p>
-                    </div>
-
-                    <div class="process-box">
-                        <img src="/img/p2-gen-mind-map.png" alt="AI Generation Bot" class="process-img">
-                        <div class="process-title">
-                            <span class="process-number">2</span>
-                            <h3>AI Processing</h3>
-                        </div>
-                        <p>Our AI will examine your topic and create a comprehensive mind map.</p>
-                    </div>
-                    <div class="process-box">
-                        <img
-                            src="/img/p3-edit-mind-map.png"
-                            alt="Mind Map Editing Screenshot"
-                            class="process-img">
-                        <div class="process-title">
-                            <span class="process-number">3</span>
-                            <h3>Share Your Mind Map</h3>
-                        </div>
-                        <p>Quickly view, edit, and share your beautifully crafted mind map in just seconds.</p>
-                    </div>
-                </div>
-                <div style="height: 50px;"></div>
-
-            </div>
-
-            <div class="pricing-section">
-                <h1>Choose a plan</h1>
-                <div class="pack-container">
-                    <div class="pricing-header">
-                        <p class="title">
-                            Premium
+                            <strong>Purposes:</strong>
+                            <ul class="legal-purposes">
+                                <li>Functionality</li>
+                                <li>Analytics</li>
+                            </ul>
                         </p>
-                        <div class="price-container">
-                            <span>$</span>0
-                            <span>/mo</span>
-                        </div>
+                        <div class="whitespace"></div>
                     </div>
-                    <div>
-                        <ul class="lists">
-                            <li class="list">
-                                <span>
-                                    <svg
-                                        aria-hidden="true"
-                                        stroke="#1e293b"
-                                        stroke-width="2"
-                                        viewbox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                                    </svg>
-                                </span>
-                                <p>
-                                    Unlimited mind maps
-                                </p>
-                            </li>
-                            <li class="list">
-                                <span>
-                                    <svg
-                                        aria-hidden="true"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        viewbox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                                    </svg>
-                                </span>
-                                <p>
-                                    No account needet
-                                </p>
-                            </li>
-                            <li class="list">
-                                <span>
-                                    <svg
-                                        aria-hidden="true"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        viewbox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                                    </svg>
-                                </span>
-                                <p>
-                                    Ad-free
-                                </p>
-                            </li>
-                            <li class="list">
-                                <span>
-                                    <svg
-                                        aria-hidden="true"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        viewbox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                                    </svg>
-                                </span>
-                                <p>
-                                    Share mind maps
-                                </p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="button-container">
-                        <a href="/new.html">
-                            Get started!
-                        </a>
-                    </div>
+                    <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+                    <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
+
                 </div>
-                <div class="whitespace"></div>
-                <div class="whitespace"></div>
-            </div>
-            <div class="pink-section">
-                <h2 class="section-title">Why Choose Mind Map Wizard?</h2>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <span class="feature-icon">💰</span>
-                        <h3>100% Free</h3>
-                        <p>No hidden costs or premium features. Everything is completely free.</p>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🚀</span>
-                        <h3>No Sign Up</h3>
-                        <p>Begin creating mind maps right away. No account needed.</p>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🎯</span>
-                        <h3>No Ads</h3>
-                        <p>Enjoy a clean, distraction-free interface without any advertisements.</p>
-                    </div>
-                </div>
-                <div class="whitespace" style="height: 30px;"></div>
-                <div class="whitespace" style="height: 30px;"></div>
 
             </div>
-            <div class="faq-container-centered">
-                <div style="height: 30px;"></div>
-                <h1>Frequently Asked Questions</h1>
-                <div class="accordion">
-                    <div class="accordion-item">
-                        <button id="accordion-button-1" aria-expanded="false">
-                            <span class="accordion-title">How can Mind Map Wizard be free? There must be a catch.</span>
-                            <svg
-                                class="accordion-icon"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="18"
-                                viewbox="0 0 6 11">
-                                <polyline
-                                    points=".675 .925 5.323 5.5 .675 10.075"
-                                    fill="none"
-                                    stroke="currentcolor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="1.5"></polyline>
-                            </svg>
 
-                        </button>
-                        <div class="accordion-content">
-                            <p>
-                                Mind Map Wizard is completely free, even though we utilize very powerful AI. We
-                                have perfected our process, which allows us to offer our service at no cost. We
-                                also do not sell any data!
-                            </p>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <button id="accordion-button-1" aria-expanded="false">
-                            <span class="accordion-title">Can I export my mind maps to other apps?</span>
-                            <svg
-                                class="accordion-icon"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="18"
-                                viewbox="0 0 6 11">
-                                <polyline
-                                    points=".675 .925 5.323 5.5 .675 10.075"
-                                    fill="none"
-                                    stroke="currentcolor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="1.5"></polyline>
-                            </svg>
-
-                        </button>
-                        <div class="accordion-content">
-                            <p>
-                                Yes, you can easily export your mind maps in various formats. Just click on the
-                                download icon in the top right corner, and you'll be able to select the format
-                                you want to export your mind map to. You can then share and use it on other
-                                platforms. But you can also send others a link to your mind map, so they can see
-                                it.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <p style="margin-top: 30px;">Still have a question?
-                    <a href="mailto:contact@mindmapwizard.com">Get in touch with us!</a>
-                </p>
-
-            </div>
         </div>
-        <div class="whitespace" style="height: 30px;"></div>
-        <div class="whitespace" style="height: 30px;"></div>
+        <div class="process-section">
+            <h2 class="section-title">How It Works</h2>
+            <div class="process-boxes">
+                <div class="process-box">
+                    <img src="/img/p1-enter-topic.png" alt="Topic Input Box" class="process-img">
+                    <div class="process-title">
+                        <span class="process-number">1</span>
+                        <h3>Enter Your Topic</h3>
+                    </div>
+                    <p>Just type any topic you'd like to explore in the input field.</p>
+                </div>
 
+                <div class="process-box">
+                    <img src="/img/p2-gen-mind-map.png" alt="AI Generation Bot" class="process-img">
+                    <div class="process-title">
+                        <span class="process-number">2</span>
+                        <h3>AI Processing</h3>
+                    </div>
+                    <p>Our AI will examine your topic and create a comprehensive mind map.</p>
+                </div>
+                <div class="process-box">
+                    <img
+                        src="/img/p3-edit-mind-map.png"
+                        alt="Mind Map Editing Screenshot"
+                        class="process-img">
+                    <div class="process-title">
+                        <span class="process-number">3</span>
+                        <h3>Share Your Mind Map</h3>
+                    </div>
+                    <p>Quickly view, edit, and share your beautifully crafted mind map in just seconds.</p>
+                </div>
+            </div>
+            <div style="height: 50px;"></div>
+
+        </div>
+
+        <div class="pricing-section">
+            <h1>Choose a plan</h1>
+            <div class="pack-container">
+                <div class="pricing-header">
+                    <p class="title">
+                        Completely Free
+                    </p>
+                    <div class="price-container">
+                        <span>$</span>0
+                        <span>/mo</span>
+                    </div>
+                </div>
+                <div>
+                    <ul class="lists">
+                        <li class="list">
+                            <span>
+                                <svg
+                                    aria-hidden="true"
+                                    stroke="#1e293b"
+                                    stroke-width="2"
+                                    viewbox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                </svg>
+                            </span>
+                            <p>
+                                Unlimited mind maps
+                            </p>
+                        </li>
+                        <li class="list">
+                            <span>
+                                <svg
+                                    aria-hidden="true"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewbox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                </svg>
+                            </span>
+                            <p>
+                                No account needet
+                            </p>
+                        </li>
+                        <li class="list">
+                            <span>
+                                <svg
+                                    aria-hidden="true"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewbox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                </svg>
+                            </span>
+                            <p>
+                                Ad-free
+                            </p>
+                        </li>
+                        <li class="list">
+                            <span>
+                                <svg
+                                    aria-hidden="true"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewbox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                </svg>
+                            </span>
+                            <p>
+                                Share mind maps
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="button-container">
+                    <a href="/new.html">
+                        Get Started!
+                    </a>
+                </div>
+            </div>
+            <div class="whitespace"></div>
+            <div class="whitespace"></div>
+        </div>
+        <div class="pink-section">
+            <h2 class="section-title">Why Choose Mind Map Wizard?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">💰</span>
+                    <h3>100% Free</h3>
+                    <p>No hidden costs or premium features. Everything is completely free.</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🚀</span>
+                    <h3>No Sign Up</h3>
+                    <p>Begin creating mind maps right away. No account needed.</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎯</span>
+                    <h3>No Ads</h3>
+                    <p>Enjoy a clean, distraction-free interface without any advertisements.</p>
+                </div>
+            </div>
+            <div class="whitespace" style="height: 30px;"></div>
+            <div class="whitespace" style="height: 30px;"></div>
+
+        </div>
+        <div class="faq-container-centered">
+            <div style="height: 30px;"></div>
+            <h1>Frequently Asked Questions</h1>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <button id="accordion-button-1" aria-expanded="false">
+                        <span class="accordion-title">How can Mind Map Wizard be free? There must be a catch.</span>
+                        <svg
+                            class="accordion-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="10"
+                            height="18"
+                            viewbox="0 0 6 11">
+                            <polyline
+                                points=".675 .925 5.323 5.5 .675 10.075"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"></polyline>
+                        </svg>
+
+                    </button>
+                    <div class="accordion-content">
+                        <p>
+                            Mind Map Wizard is completely free, even though we utilize very powerful AI. We
+                            have perfected our process, which allows us to offer our service at no cost. We
+                            also do not sell any data!
+                        </p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button id="accordion-button-1" aria-expanded="false">
+                        <span class="accordion-title">Can I export my mind maps to other apps?</span>
+                        <svg
+                            class="accordion-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="10"
+                            height="18"
+                            viewbox="0 0 6 11">
+                            <polyline
+                                points=".675 .925 5.323 5.5 .675 10.075"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"></polyline>
+                        </svg>
+
+                    </button>
+                    <div class="accordion-content">
+                        <p>
+                            Yes, you can easily export your mind maps in various formats. Just click on the
+                            download icon in the top right corner, and you'll be able to select the format
+                            you want to export your mind map to. You can then share and use it on other
+                            platforms. But you can also send others a link to your mind map, so they can see
+                            it.
+                        </p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button id="accordion-button-1" aria-expanded="false">
+                        <span class="accordion-title">What is a mind map used for?</span>
+                        <svg
+                            class="accordion-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="10"
+                            height="18"
+                            viewbox="0 0 6 11">
+                            <polyline
+                                points=".675 .925 5.323 5.5 .675 10.075"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"></polyline>
+                        </svg>
+
+                    </button>
+                    <div class="accordion-content">
+                        <p>
+                            Mind maps visually organize ideas for both personal and professional
+                            development. They can be used for setting goals, planning, brainstorming new
+                            concepts, or collaborating in teams—making them a versatile tool for home,
+                            school, or work.
+                        </p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button id="accordion-button-1" aria-expanded="false">
+                        <span class="accordion-title">What is the difference betwen a mind map and an outline?</span>
+                        <svg
+                            class="accordion-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="10"
+                            height="18"
+                            viewbox="0 0 6 11">
+                            <polyline
+                                points=".675 .925 5.323 5.5 .675 10.075"
+                                fill="none"
+                                stroke="currentcolor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"></polyline>
+                        </svg>
+
+                    </button>
+                    <div class="accordion-content">
+                        <p>
+                            Both tools organize ideas, but mind maps use visual elements like shapes and
+                            colors, while outlines follow a linear text format.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 30px;">Still have a question?
+                <a href="mailto:contact@mindmapwizard.com">Get in touch with us!</a>
+            </p>
+
+        </div>
     </div>
-</div>
-</div>
+    <div class="whitespace" style="height: 30px;"></div>
+    <div class="whitespace" style="height: 30px;"></div>
+
 </div>
 <div class="whitespace" style="height: 10px;"></div>
-
 <div class="pink-section">
-<h2 class="section-title">Try it out!</h2>
-<p class="white-p">Now you know everything about our service. Give it a try!</p>
-<!-- From Uiverse.io by SteveBloX -->
-<a href="/new.html" class="get-started-button">Get Started</a>
+    <h2 class="section-title">Try it out!</h2>
+    <p class="white-p">Now you know everything about our service. Give it a try!</p>
+    <!-- From Uiverse.io by SteveBloX -->
+    <a href="/new.html" class="get-started-button">Get Started</a>
 </div>
 
 <div class="roadmap-container" style="background-color: ffffff;">
 
-<h1 id="roadmap" style="margin-top: 30px;">Roadmap</h1>
-<div class="whitespace" style="height: 10px;"></div>
+    <h1 id="roadmap" style="margin-top: 30px;">Roadmap</h1>
+    <div class="whitespace" style="height: 10px;"></div>
 
-<ul class="roadmap-ul">
-<li class="roadmap-li">
-    <span class="roadmap-item-done">Done</span>Editing Mind Maps</li>
-<li class="roadmap-li">
-<li >
-    <span class="roadmap-item-done">Done</span>Sharing Mind Maps</li>
-<span class="roadmap-item-done">Done</span>Downloading Mind Maps</li>
-<li class="roadmap-li">
-<span class="roadmap-item-done">Done</span>Renaming Mind Maps</li>
-<li class="roadmap-li">
-<span class="roadmap-item-done">Done</span>Inline code support for Mind Maps</li>
-<li class="roadmap-li">
-<span class="roadmap-item-soon">Soon</span>More export options e.g. PNG or PDF</li>
-<li class="roadmap-li">
-<span class="roadmap-item-soon">Soon</span>Explore further from specific branches</li>
-<li class="roadmap-li">
-<span class="roadmap-item-soon">Soon</span>Upload files for reference or summarize Videos</li>
+    <ul class="roadmap-ul">
+        <li class="roadmap-li">
+            <span class="roadmap-item-done">Done</span>Editing Mind Maps</li>
 
-<div style="height: 15px;"></div>
-<p class="roadmap-github-link">
-<a
-    href="https://github.com/linus-sch/Mind-Map-Wizard"
-    style="text-decoration: none;">Contribute on Github
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="6"
-        height="11"
-        viewbox="0 0 6 11"
-        style="margin-left: 3px;">
-        <polyline
-            points=".675 .925 5.323 5.5 .675 10.075"
-            fill="none"
-            stroke="currentcolor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.1"></polyline>
-    </svg>
-</a>
-</p>
+        <li class="roadmap-li">
+            <span class="roadmap-item-done">Done</span>Sharing Mind Maps</li>
+
+        <li class="roadmap-li">
+            <span class="roadmap-item-done">Done</span>Downloading Mind Maps</li>
+
+        <li class="roadmap-li">
+            <span class="roadmap-item-done">Done</span>Renaming Mind Maps</li>
+
+        <li class="roadmap-li">
+            <span class="roadmap-item-done">Done</span>Inline code support for Mind Maps</li>
+
+        <li class="roadmap-li">
+            <span class="roadmap-item-soon">Soon</span>More export options e.g. PNG or PDF</li>
+
+        <li class="roadmap-li">
+            <span class="roadmap-item-soon">Soon</span>Explore further from specific branches</li>
+
+        <li class="roadmap-li">
+            <span class="roadmap-item-soon">Soon</span>Upload files for reference or summarize Videos</li>
+    </ul>
+
+    <div style="height: 15px;"></div>
+    <p class="roadmap-github-link">
+        <a
+            href="https://github.com/linus-sch/Mind-Map-Wizard"
+            style="text-decoration: none;">Contribute on Github
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="6"
+                height="11"
+                viewbox="0 0 6 11"
+                style="margin-left: 3px;">
+                <polyline
+                    points=".675 .925 5.323 5.5 .675 10.075"
+                    fill="none"
+                    stroke="currentcolor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.1"></polyline>
+            </svg>
+        </a>
+    </p>
 </ul>
 <div class="whitespace"></div>
 </div>
-
 <footer>
 <div class="footer-content">
 <div class="footer-links">
-<p style="margin: 0;">
-    <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
-    <span class="separator">|</span>
-    <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
-    <span class="separator">|</span>
-    <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
-    <span class="separator">|</span>
-    <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
-</p>
+    <p style="margin: 0;">
+        <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
+        <span class="separator">|</span>
+        <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
+        <span class="separator">|</span>
+        <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
+        <span class="separator">|</span>
+        <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
+    </p>
 </div>
 <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
 </div>
+
 </footer>
 
 <script>
 function showPopup() {
 if (!localStorage.getItem('disclaimerAccepted')) {
-document
-    .getElementById('legalPopup')
-    .style
-    .display = 'flex';
+    document
+        .getElementById('legalPopup')
+        .style
+        .display = 'flex';
 }
 }
 
+window.onload = function () {
+if (localStorage.getItem('disclaimerAccepted') !== "true" && !localStorage.getItem('mindmap-history')) {
+    document
+        .getElementById('legalPopup')
+        .style
+        .display = 'flex';
+}
+};
+
 function closePopup() {
 document
-.getElementById('legalPopup')
-.style
-.display = 'none';
+    .getElementById('legalPopup')
+    .style
+    .display = 'none';
 }
 
 function acceptDisclaimer() {
@@ -1475,23 +1638,23 @@ generateMindmap();
 function generateMindmap() {
 console.log("generateMindmap called");
 if (localStorage.getItem('disclaimerAccepted')) {
-const query = document
-    .getElementById('prompt')
-    .value;
-console.log("Query value:", query);
-if (query) {
-    window.location.href = `/new.html?q=${encodeURIComponent(query)}`;
+    const query = document
+        .getElementById('prompt')
+        .value;
+    console.log("Query value:", query);
+    if (query) {
+        window.location.href = `/new.html?q=${encodeURIComponent(query)}`;
+    } else {
+        console.log("Query is empty or undefined");
+    }
 } else {
-    console.log("Query is empty or undefined");
-}
-} else {
-showPopup();
+    showPopup();
 }
 }
 
 $(document).on('keypress', function (event) {
 if (event.key === 'Enter') {
-generateMindmap();
+    generateMindmap();
 }
 });
 
@@ -1501,11 +1664,11 @@ function toggleAccordion() {
 const itemToggle = this.getAttribute('aria-expanded');
 
 for (i = 0; i < items.length; i++) {
-items[i].setAttribute('aria-expanded', 'false');
+    items[i].setAttribute('aria-expanded', 'false');
 }
 
 if (itemToggle == 'false') {
-this.setAttribute('aria-expanded', 'true');
+    this.setAttribute('aria-expanded', 'true');
 }
 }
 
@@ -1514,79 +1677,62 @@ items.forEach((item) => item.addEventListener('click', toggleAccordion));
 window.addEventListener('scroll', function () {
 const navbar = document.querySelector('.navbar');
 if (window.scrollY > 30) {
-navbar
-    .classList
-    .add('scrolled');
+    navbar
+        .classList
+        .add('scrolled');
 } else {
-navbar
-    .classList
-    .remove('scrolled');
+    navbar
+        .classList
+        .remove('scrolled');
 }
 });
 
 const topics = [
 {
-"text": "Solar System and Planets",
-"color": "#FF6F40"
+    "text": "Solar System and Planets",
+    "color": "#FF6F40"
 }, {
-"text": "Digital Marketing 101",
-"color": "#4DB8E1"
+    "text": "Digital Marketing 101",
+    "color": "#4DB8E1"
 }, {
-"text": "Ancient Egyptian Civilization",
-"color": "#4CD65E"
+    "text": "Ancient Egyptian Civilization",
+    "color": "#4CD65E"
 }, {
-"text": "Artificial Intelligence Basics",
-"color": "#A45ED9"
+    "text": "Artificial Intelligence Basics",
+    "color": "#A45ED9"
 }, {
-"text": "Nutrition and Wellness",
-"color": "#2ED6B5"
+    "text": "Nutrition and Wellness",
+    "color": "#2ED6B5"
 }, {
-"text": "Renaissance Period Masters",
-"color": "#6A8BFF"
+    "text": "Renaissance Period Masters",
+    "color": "#6A8BFF"
 }, {
-"text": "Understanding Emotions",
-"color": "#FF4F8B"
+    "text": "Understanding Emotions",
+    "color": "#FF4F8B"
 }, {
-"text": "Climate Change Impact",
-"color": "#FF4F4F"
+    "text": "Climate Change Impact",
+    "color": "#FF4F4F"
 }, {
-"text": "The Art of Storytelling",
-"color": "#FFB74D"
+    "text": "The Art of Storytelling",
+    "color": "#FFB74D"
 }, {
-"text": "Mindfulness and Meditation",
-"color": "#A8D94D"
+    "text": "Mindfulness and Meditation",
+    "color": "#A8D94D"
 }, {
-"text": "The Evolution of Technology",
-"color": "#FF4F7D"
+    "text": "The Evolution of Technology",
+    "color": "#FF4F7D"
 }, {
-"text": "Cultural Diversity and Inclusion",
-"color": "#2EDB7D"
+    "text": "Cultural Diversity and Inclusion",
+    "color": "#2EDB7D"
 }, {
-"text": "The Science of Happiness",
-"color": "#FFC300"
+    "text": "The Science of Happiness",
+    "color": "#FFC300"
 }, {
-"text": "Exploring World Cuisines",
-"color": "#FF4F9D"
+    "text": "Exploring World Cuisines",
+    "color": "#FF4F9D"
 }, {
-"text": "The Future of Work",
-"color": "#8A4FFF"
-},
-
-{
-"text": "Enter topic here...",
-"color": "#FF4F7D"
-}, {
-"text": "Enter topic here...",
-"color": "#2EDB7D"
-}, {
-"text": "Enter topic here...",
-"color": "#FFC300"
-}, {
-"text": "Enter topic here...",
-"color": "#FF4F9D"
-}, {
-"text": "Enter topic here...",
-"color": "#8A4FFF"
+    "text": "The Future of Work",
+    "color": "#8A4FFF"
 }
 ];
 
@@ -1598,7 +1744,7 @@ let lastTopicIndex = -1;
 function getRandomTopic() {
 let newIndex;
 do {
-newIndex = Math.floor(Math.random() * topics.length);
+    newIndex = Math.floor(Math.random() * topics.length);
 } while (newIndex === lastTopicIndex && topics.length > 1);
 
 lastTopicIndex = newIndex;
@@ -1607,31 +1753,31 @@ return topics[newIndex];
 
 async function typeText(text) {
 for (let i = 0; i <= text.length; i++) {
-currentText = text.slice(0, i);
-input.placeholder = currentText;
-await new Promise(resolve => setTimeout(resolve, 50));
+    currentText = text.slice(0, i);
+    input.placeholder = currentText;
+    await new Promise(resolve => setTimeout(resolve, 50));
 }
 }
 
 async function eraseText(text) {
 for (let i = text.length; i >= 0; i--) {
-currentText = text.slice(0, i);
-input.placeholder = currentText;
-await new Promise(resolve => setTimeout(resolve, 30));
+    currentText = text.slice(0, i);
+    input.placeholder = currentText;
+    await new Promise(resolve => setTimeout(resolve, 30));
 }
 }
 
 async function animatePlaceholder() {
 while (true) {
-const currentTopic = getRandomTopic();
-input
-    .style
-    .setProperty('--placeholder-color', currentTopic.color);
+    const currentTopic = getRandomTopic();
+    input
+        .style
+        .setProperty('--placeholder-color', currentTopic.color);
 
-await typeText(currentTopic.text);
-await new Promise(resolve => setTimeout(resolve, 2000));
+    await typeText(currentTopic.text);
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
-await eraseText(currentTopic.text);
+    await eraseText(currentTopic.text);
 }
 }
 
