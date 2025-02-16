@@ -1,5 +1,4 @@
-### Features
-
+# Mind Map Wizard
 Mind Map Wizard is a free and open-source AI-powered mind mapping tool that allows you to easily create comprehensive mind maps without any sign-up or account required.
 <br>
 
