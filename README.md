@@ -48,6 +48,7 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 ## Contact
 
 If you have any questions or feedback, please get in touch with us.
-contact<at>mindmapwizard.com
+contact @ mindmapwizard.com
+
 
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/generation-process.jpg" alt="Mind Map Generation Process" style="width: 50%;">
