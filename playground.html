@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mind Map Wizard -  Playground</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta
+            name="description"
+            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta
+            name="keywords"
+            content="mind map, mind mapping, AI, text to mind map, free mind map generator, no sign up, no ads">
+
+        <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            property="og:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta property="og:image" content="/img/meta-img.jpg">
+
+        <meta property="og:type" content="website">
+
+        <meta name="twitter:card" content="/img/meta-img.jpg">
+        <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            name="twitter:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta name="twitter:image" content="/img/meta-img.jpg">
+
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="apple-touch-icon" href="/img/logo.png">
+        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
+
+        <meta name="theme-color" content="#C667FF">
+        <meta name="language" content="en">
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer'
+                        ? '&l=' + l
+                        : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f
+                    .parentNode
+                    .insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TF3MJBX9');
+        </script>
+        <!-- End Google Tag Manager -->
+    <style >
+            :root {
+                --primary-color: #C667FF;
+                --secondary-color: #9D34D4;
+                --background-color: #F5F5F7;
+                --text-color: #1e293b;
+                --border-color: #e2e8f0;
+                --error-color: #dc2626;
+            }
+
+            @font-face {
+                    font-family: 'Open Sans';
+                    src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
+                    font-weight: 800;
+                    font-style: normal;
+                    font-display: swap;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                }
+
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                min-height: 100vh;
+                overflow: hidden;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                background-color: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(5px);
+                position: fixed;
+                top: 0;
+                height: 50px;
+                left: 0;
+                z-index: 1000;
+                box-sizing: border-box;
+                width: 100%;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .navbutton {
+                background-color: var(--primary-color);
+                padding: 6px 14px;
+                font-size: 1.1rem;
+                border: 2px solid var(--primary-color);
+                border-radius: 40px;
+                color: #fff !important;
+                transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+            }
+
+            .navbutton:hover {
+                background-color: var(--secondary-color);
+                border: 2px solid var(--secondary-color);
+            }
+
+            .nav-links {
+                margin-left: auto;
+                margin-right: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .nav-links img {
+                position: relative;
+                top: 5px;
+            }
+
+            .nav-links a {
+                margin-left: 0;
+                margin-right: 10px;
+                text-decoration: none;
+                color: black;
+                font-weight: 500;
+                transition: color 0.3s ease;
+                border-radius: 10px;
+                padding: 5px 10px 10px;
+            }
+
+            .nav-links a:hover {
+                background-color: rgba(0, 0, 0, 0.032);
+                border-radius: 10px;
+                padding: 5px 10px 10px;
+            }
+
+            .share-button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 5px 15px !important;
+                border-radius: 20px !important;
+                margin: 0;
+                width: 40px !important;
+                height: 40px !important;
+                cursor: pointer;
+                background-color: var(--background-color) !important;
+                color: #ffffff !important;
+                font-size: 1.2rem;
+                border: none;
+                position: absolute;
+                top: 110px;
+                right: 20px;
+            }
+
+            .share-button:hover {
+                background-color: #ffffff;
+            }
+
+            .share-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                width: 90%;
+                max-width: 400px;
+                z-index: 1100;
+            }
+
+            .share-dialog h3 {
+                font-size: 1.5rem;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+
+            .share-link {
+                width: 96%;
+                padding: 0.5rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 0.375rem;
+                font-size: 1rem;
+                margin-top: 1rem;
+                background: #f8fafc;
+            }
+
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.32);
+                display: none;
+                z-index: 1050;
+            }
+
+            .dialog-buttons {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+
+            .dialog-button {
+                padding: 0.5rem 1rem;
+                border-radius: 0.52rem;
+                border: none;
+                cursor: pointer;
+                font-size: 0.875rem;
+                transition: background-color 0.2s ease;
+            }
+
+            .dialog-button.cancel {
+                background-color: #f1f5f9;
+                color: #64748b;
+            }
+
+            .dialog-button.cancel:hover {
+                background-color: #e2e8f0;
+            }
+
+            .dialog-button.confirm {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .dialog-button.confirm:hover {
+                background-color: var(--secondary-color);
+            }
+            .logo {
+                position: relative;
+                top: 5px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 1.8rem;
+                color: var(--text-color);
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 800;
+            }
+
+            .logo-text {
+                bottom: 4px;
+                position: relative;
+            }
+
+            @media (max-width: 500px) {
+                .logo-text {
+                    display: none !important;
+                }
+            }
+
+            .container {
+                display: flex;
+                flex: 1;
+                padding-top: 80px;
+                box-sizing: border-box;
+                height: 100vh;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    flex-direction: column-reverse;
+                    height: 100vh;
+                    padding-bottom: 20px;
+                }
+
+                .input-section,
+                .mindmap-section {
+                    flex: 1;
+                    min-height: 0;
+                    max-width: 100%;
+                    width: 95%;
+                    margin: 0 auto;
+                    padding: 20px 0;
+                }
+
+                .input-section {
+                    box-sizing: border-box;
+                    background-color: transparent;
+                }
+
+                #markdown-input {
+                    width: 100%;
+                    box-sizing: border-box;
+                    margin: 10px 0;
+                }
+
+                .markmap {
+                    height: 100%;
+                }
+            }
+
+            .input-section {
+                flex: 1;
+                display: flex;
+                padding: 20px 0 0 20px;
+                flex-direction: column;
+                background-color: #ffffff;
+                max-width: 33.333%;
+            }
+
+            @media (max-width: 950px) {
+                .input-section {
+                    max-width: 100%;
+                    padding: 20px 0 0 0;
+                }
+
+            }
+            @media (max-width: 650px) {
+               .logo-text {
+                    display: none;
+                }
+            }
+  
+            .mindmap-section {
+                flex: 2;
+                display: flex;
+                flex-direction: column;
+                padding: 35px 0 0 7px;
+            }
+
+            #markdown-input {
+                width: 97%;
+                flex: 1;
+                padding: 10px;
+                border: none;
+                border-radius: 10px;
+                font-family: monospace;
+                resize: none;
+                margin-top: 10px;
+                outline: none;
+                background-color: var(--background-color);
+            }
+
+            #markdown-input:active,
+            #markdown-input:focus,
+            #markdown-input:hover {
+                border: none;
+                outline: none;
+            }
+
+            .markmap {
+                flex: 1;
+                position: relative;
+                border: none;
+                border-radius: 4px;
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            .markmap > svg {
+                width: 100%;
+                height: 100%;
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .popup {
+                display: flex;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.32);
+                justify-content: center;
+                align-items: center;
+                z-index: 1100;
+            }
+
+            .popup-content {
+                background-color: white;
+                padding: 20px;
+                border-radius: 20px;
+                text-align: left;
+                max-width: 300px;
+                display: flex;
+                line-height: 1.5;
+                flex-direction: column;
+                align-items: space-between;
+            }
+
+            .accept-terms-button,
+            .decline-terms-button {
+                margin: 5px;
+                padding: 12px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+
+            .accept-terms-button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .decline-terms-button {
+                background-color: var(--border-color);
+                color: black;
+                border: none;
+            }
+
+            .accept-terms-button:hover {
+                background-color: #b73cfe;
+            }
+
+            .decline-terms-button:hover {
+                background-color: rgb(215, 215, 215);
+            }
+
+            .legal-purposes {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .popup-content a {
+                background-color: #f0f0f0;
+                padding: 3px;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.1s ease;
+                font-size: 1rem;
+            }
+            .popup-content a:hover {
+                background-color: #e6e6e6;
+            }
+
+            .help-button {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: #f0f0f0;
+                border: none;
+                cursor: pointer;
+                position: fixed;
+                left: 5px;
+                bottom: 5px;
+                align-items: center;
+                justify-content: center;
+                font-size: 25px;
+                padding: 5px;
+                color: #1e293b;
+                margin-left: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .help-button:hover {
+                background-color: #e0e0e0;
+            }
+
+    </style>
+            <script async="async" src="/consent.js"></script>
+
+        <!-- Google tag (gtag.js) -->
+        <script
+        async="async"
+        src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-4RTLM6HX39');
+    </script>
+    </head>
+    <body>
+                <!-- Google Tag Manager (noscript) -->
+                <noscript>
+                    <iframe
+                        src="https://www.googletagmanager.com/ns.html?id=GTM-TF3MJBX9"
+                        height="0"
+                        width="0"
+                        style="display:none;visibility:hidden"></iframe>
+                </noscript>
+                <!-- End Google Tag Manager (noscript) -->
+        <div class="popup" id="legalPopup">
+            <div class="popup-content">
+                <div>
+                    <h2>🍪 Cookies</h2>
+                    <p>To proceed, you need to agree to our
+                        <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
+                        and
+                        <a href="/privacy-policy.html" style="color: var(--text-color);">Privacy Policy</a>
+                        <br>
+                        <div class="whitespace"></div>
+
+                        <strong>Purposes:</strong>
+                        <ul class="legal-purposes">
+                            <li>Functionality</li>
+                            <li>Analytics</li>
+                        </ul>
+                    </p>
+                    <div class="whitespace"></div>
+                </div>
+                <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+                <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
+            </div>
+        </div>
+        <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TF3MJBX9"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+      <div class="share-dialog" style="display: none;">
+        <h3>Share Mind Map</h3>
+        <input type="text" class="share-link" readonly="readonly">
+            <div class="dialog-buttons">
+                <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
+                <button class="dialog-button confirm" onclick="copyShareLink()">Copy link</button>
+            </div>
+        </div>
+        <div class="overlay" onclick="closeShareDialog()"></div>
+        <div class="header">
+            <div class="header-left">
+                <a href="/" style="text-decoration: none;">
+                    <h1>
+                        <img src="/img/favicon96.png" height="40" width="40" class="logo">
+                            <span class="logo-text">Mind Map Wizard</span>
+                        </h1>
+                    </a>
+                </div>
+                <div class="nav-links">
+                    <a href="/history.html">
+                        <img src="/img/icons/history-icon.svg" height="22" width="22">
+                            History</a>
+                    </div>
+                    <a class="navbutton" href="/">Create with AI</a>
+                </div>
+                <div class="container">
+                    <div class="input-section">
+                        <h1>Input</h1>
+                <textarea id="markdown-input" placeholder="Enter your markdown here...">
+# Playground 
+
+## Links 
+
+- [New Mind Map](https://mindmapwizard.com/new) 
+- [Mind Map History](https://mindmapwizard.com/history) 
+
+## Features
+
+Note that if blocks and lists appear at the same level, the lists will be ignored. 
+
+### Lists 
+
+- **strong** 
+- ~~del~~ 
+- *italic* 
+- `inline code` 
+- Ordered list 
+  1. item 1
+  2. item 2 
+
+### Blocks
+
+```js
+console.log('hello, JavaScript')
+```
+  
+![](https://mindmapwizard.com/img/favicon64.png)
+                </textarea>
+            </div>
+            <a class="help-button" href="/help/mind-map-editing.html" style="text-decoration: none;">?</a>
+
+            <div class="mindmap-section">
+            <button onclick="shareMindmap()" class="share-button">
+                <img src="/img/icons/share-icon-black.svg" height="25" alt="Share"></button>
+                <h1>Mind Map</h1>
+                <div class="markmap" id="markmap-container"></div>
+            </div>
+            </div>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@latest"></script>
+        <script>
+            window.onload = function() {
+                showPopup();
+            };
+
+            const textarea = document.getElementById('markdown-input');
+            const container = document.getElementById('markmap-container');
+
+            const sessionId = Date.now();
+
+            function toggleHelp() {
+                const helpContent = document.querySelector('.markdown-help');
+                helpContent.classList.toggle('visible');
+            }
+
+            function updateMindmap() {
+                container.innerHTML = '';
+            
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                container.appendChild(svg);
+            
+                const {Markmap, Transformer} = window.markmap;
+                const transformer = new Transformer();
+                const {root} = transformer.transform(textarea.value);
+            
+                const mindmapData = {
+                    id: sessionId,
+                    markdown: textarea.value,
+                    timestamp: new Date().toISOString(),
+                    topic: textarea.value.split('\n')[0].replace('# ', '')
+                };
+                localStorage.setItem('mindmap-playground', JSON.stringify(mindmapData));
+                
+                window.removeEventListener('beforeunload', saveToHistory);
+                window.addEventListener('beforeunload', saveToHistory, { once: true });
+
+            
+                const mm = Markmap.create(svg, {
+                    autoFit: true,
+                    duration: 500,
+                    maxWidth: 300,
+                    zoom: true,
+                    pan: true
+                }, root);
+            
+                mm.fit();
+            }
+            
+            window.addEventListener('load', () => {
+                const savedMindmap = localStorage.getItem('mindmap-playground');
+                if (savedMindmap) {
+                    const mindmapData = JSON.parse(savedMindmap);
+                    textarea.value = mindmapData.markdown;
+                }
+                updateMindmap();
+            });
+            textarea.addEventListener('input', updateMindmap);
+
+            window.addEventListener('load', updateMindmap);
+            updateMindmap();
+
+            function generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = Math.random() * 16 | 0,
+                        v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            async function shareMindmap() {
+                const mindmapData = {
+                    id: sessionId,
+                    markdown: textarea.value,
+                    timestamp: new Date().toISOString(),
+                    topic: textarea.value.split('\n')[0].replace('# ', '')
+                };
+
+                try {
+                    const response = await fetch('https://api.mindmapwizard.com/share', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            topic: mindmapData.topic,
+                            markdown: mindmapData.markdown,
+                            timestamp: mindmapData.timestamp
+                        })
+                    });
+
+                    const data = await response.json();
+                    const shareUrl = `${window.location.origin}/view.html?id=${data.id || sessionId}`;
+                    const shareDialog = document.querySelector('.share-dialog');
+                    const overlay = document.querySelector('.overlay');
+                    const shareLink = document.querySelector('.share-link');
+                    
+                    shareLink.value = shareUrl;
+                    shareDialog.style.display = 'block';
+                    overlay.style.display = 'block';
+                } catch (error) {
+                    console.error('Error sharing mindmap:', error);
+                    alert('Failed to share mindmap. Please try again.');
+                }
+            }
+
+            function copyShareLink() {
+                const shareLink = document.querySelector('.share-link');
+                shareLink.select();
+                document.execCommand('copy');
+
+                if (window.dataLayer) {
+                    window.dataLayer.push({
+                        'event': 'mindmap_share_link_copy',
+                        'mindmap_category': 'User Interaction',
+                        'mindmap_action': 'Copy Share Link'
+                    });
+                }
+            }
+
+            function closeShareDialog() {
+                const shareDialog = document.querySelector('.share-dialog');
+                const overlay = document.querySelector('.overlay');
+                
+                shareDialog.style.display = 'none';
+                overlay.style.display = 'none';
+            }
+
+            function saveToHistory() {
+                const mindmapData = JSON.parse(localStorage.getItem('mindmap-playground'));
+                if (mindmapData) {
+                    const existingHistory = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                    existingHistory.unshift(mindmapData);
+                    if (existingHistory.length > 100) {
+                        existingHistory.pop();
+                    }
+                    localStorage.setItem('mindmap-history', JSON.stringify(existingHistory));
+                }
+            }
+        </script>
+    </body>
+</html>
