@@ -1,4 +1,6 @@
 Mind Map Wizard is a free and open-source AI-powered mind mapping tool that allows you to easily create comprehensive mind maps without any sign-up or account required.
+<br>
+
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/meta-img.jpg" alt="Mind Map Wizard" style="width: 60%;">
 
 ## Mind Map Generation Process
@@ -50,5 +52,5 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 If you have any questions or feedback, please get in touch with us.
 contact @ mindmapwizard.com
 
-
+<br>
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/generation-process.jpg" alt="Mind Map Generation Process" style="width: 50%;">
