@@ -41,6 +41,24 @@
         <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
         <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.16.0"></script>
         <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer'
+                        ? '&l=' + l
+                        : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f
+                    .parentNode
+                    .insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TF3MJBX9');
+        </script>
+        <!-- End Google Tag Manager -->
         <style>
             :root {
                 --primary-color: #C667FF;
@@ -50,6 +68,16 @@
                 --border-color: #e2e8f0;
                 --card-background: #ffffff;
                 --error-color: #dc2626;
+            }
+
+            @font-face {
+                font-family: 'Open Sans';
+                src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
+                font-weight: 800;
+                font-style: normal;
+                font-display: swap;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
 
             body {
@@ -267,6 +295,12 @@
                 font-size: 1.4rem;
                 flex-grow: 1;
                 text-align: center;
+            }
+
+            @media (max-width: 580px) {
+                .viewer-title {
+                    color: transparent;
+                }
             }
 
             .viewer-controls {
@@ -658,7 +692,7 @@
                 background-color: var(--background-color);
                 padding: 0.5rem 1rem;
                 border: none;
-                color: var(--primary-color);
+                color: var(--text-color);
                 font-size: 1rem;
             }
 
@@ -667,8 +701,89 @@
                 border-radius: 10px;
                 padding: 0.5rem 1rem;
             }
+            .popup {
+                display: flex;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.32);
+                justify-content: center;
+                align-items: center;
+                z-index: 1100;
+            }
+
+            .popup-content {
+                background-color: white;
+                padding: 20px;
+                border-radius: 20px;
+                text-align: left;
+                max-width: 300px;
+                display: flex;
+                flex-direction: column;
+                line-height: 1.5;
+                align-items: space-between;
+            }
+
+            .accept-terms-button,
+            .decline-terms-button {
+                margin: 5px;
+                padding: 12px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+
+            .accept-terms-button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .decline-terms-button {
+                background-color: var(--border-color);
+                color: var(--text-color);
+                border: none;
+            }
+
+            .accept-terms-button:hover {
+                background-color: #b73cfe;
+            }
+
+            .decline-terms-button:hover {
+                background-color: rgb(215, 215, 215);
+            }
+
+            .legal-purposes {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .popup-content a {
+                background-color: #f0f0f0;
+                padding: 3px;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.1s ease;
+            }
+            .popup-content a:hover {
+                background-color: #e6e6e6;
+            }
+            .help-link {
+                padding: 5px;
+                border-radius: 10px;
+                background-color: #f0f0f0;
+                border: 1px solid #f0f0f0;
+                text-decoration: none;
+            }
+
+            .help-link:hover {
+                border: 1px solid #ddd;
+            }
         </style>
     </head>
+    <script async="async" src="/consent.js"></script>
     <!-- Google tag (gtag.js) -->
     <script
         async="async"
@@ -683,6 +798,15 @@
         gtag('config', 'G-4RTLM6HX39');
     </script>
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-TF3MJBX9"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <div id="history-view">
             <div class="header">
                 <div class="header-left">
@@ -713,7 +837,8 @@
                 </button>
             </div>
             <div class="options">
-                <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px"> Back</a>
+                <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
+                    Back</a>
             </div>
 
             <div class="container">
@@ -730,10 +855,27 @@
                 <textarea id="markdown-textarea" spellcheck="false"></textarea>
 
                 <div class="editor-buttons">
-                    <small class="markdown-disclaimer">Use markdown formatting.</small>
+                    <small
+                        class="markdown-disclaimer"
+                        style="display: inline-block; vertical-align: middle;">Use markdown formatting.
+                        <a href="/help/mind-map-editing.html" style="color: #1e293b;" class="help-link">
+                            Help
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="help-link-svg"
+                                height="16px"
+                                viewbox="0 -960 960 960"
+                                width="16px"
+                                fill="#1e293b"
+                                style="vertical-align: middle; margin-top: -3px;">
+                                <path
+                                    d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm560-584L416-360q-11 11-28 11t-28-11q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104Z"/>
+                            </svg>
+                        </a>
+                    </small>
 
                     <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
-                    <button class="editor-button save-button" id="save-edit">Save Changes</button>
+                    <button class="editor-button save-button" id="save-edit">Save</button>
                 </div>
             </div>
             <div class="viewer-header">
@@ -773,6 +915,35 @@
             <div class="viewer-content" id="viewer-content"></div>
         </div>
 
+        <div class="popup" id="legalPopup">
+            <div class="popup-content">
+                <div>
+                    <h2>🍪 Cookies</h2>
+                    <p>To proceed, you need to agree to our
+                        <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
+                        and
+                        <a
+                            href="/privacy-policy.html"
+                            onclick="event.preventDefault();"
+                            style="color: var(--text-color);">Privacy Policy</a>
+                        <br>
+                        <div style="height: 15px;"></div>
+
+                        <strong>Purposes:</strong>
+                        <ul class="legal-purposes">
+                            <li>Functionality</li>
+                            <li>Analytics</li>
+                        </ul>
+                    </p>
+                    <div style="height: 15px;"></div>
+                </div>
+                <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+                <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
+
+            </div>
+
+        </div>
+
         <div id="mindmap-viewer"></div>
     </body>
 
@@ -788,12 +959,14 @@
             if (history.length === 0) {
                 list.innerHTML = `
                     <div class="no-mindmaps">
-                        <h2>No mindmaps yet</h2>
-                        <p>Create your first mindmap to see it here!</p>
+                        <h2>No mind maps yet</h2>
+                        <p>Create your first mind map to see it here!</p>
                     </div>
                 `;
                 const clearHistory = document.getElementById('clearHistory');
                 clearHistory.style.display = 'none';
+                const optionsToggle = document.getElementById('optionsToggle');
+                optionsToggle.style.display = 'none';
                 return;
             }
 
@@ -893,7 +1066,7 @@
         }
 
         function clearHistory() {
-            if (confirm('Are you sure you want to clear all mindmap history? This cannot be undone.')) {
+            if (confirm('Are you sure you want to clear all mind map history? This cannot be undone.')) {
                 localStorage.removeItem('mindmap-history');
                 loadMindmaps();
             }
@@ -1010,9 +1183,13 @@
             const optionsToggle = document.getElementById('optionsToggle');
             const mindmapList = document.getElementById('mindmap-list');
 
-            optionsToggle.addEventListener('click', function() {
-                const isShowingOptions = mindmapList.classList.toggle('show-all-actions');
-                optionsToggle.textContent = isShowingOptions ? 'Hide Options' : 'Options';
+            optionsToggle.addEventListener('click', function () {
+                const isShowingOptions = mindmapList
+                    .classList
+                    .toggle('show-all-actions');
+                optionsToggle.textContent = isShowingOptions
+                    ? 'Hide Options'
+                    : 'Options';
             });
 
             if (mindmapId) {
@@ -1091,14 +1268,24 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(
-                        {topic: currentMindmap.topic, markdown: currentMindmap.markdown, timestamp: currentMindmap.timestamp}
-                    )
+                    body: JSON.stringify({
+                        topic: currentMindmap.topic,
+                        markdown: currentMindmap.markdown,
+                        timestamp: currentMindmap.timestamp
+                    })
                 });
 
                 const data = await response.json();
 
                 if (data.id) {
+                    // Track successful share event
+                    if (window.dataLayer) {
+                        window.dataLayer.push({
+                            'event': 'mindmap_share_success',
+                            'action': 'Share Success'
+                        });
+                    }
+
                     const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
 
                     const overlay = document.createElement('div');
@@ -1117,23 +1304,35 @@
                         </div>
                     `;
 
-                    document
-                        .body
-                        .appendChild(overlay);
-                    document
-                        .body
-                        .appendChild(dialog);
+                    document.body.appendChild(overlay);
+                    document.body.appendChild(dialog);
                 }
             } catch (error) {
                 console.error('Error sharing mindmap:', error);
                 alert('Failed to share mindmap. Please try again.');
+
+                // Track share failure
+                if (window.dataLayer) {
+                    window.dataLayer.push({
+                        'event': 'mindmap_share_error',
+                        'action': 'Share Failed'
+                    });
+                }
             }
         }
 
         function copyShareLink() {
-            const input = document.querySelector('.share-link');
-            input.select();
+            const shareLink = document.querySelector('.share-link');
+            shareLink.select();
             document.execCommand('copy');
+
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    'event': 'mindmap_share_link_copy',
+                    'mindmap_category': 'User Interaction',
+                    'mindmap_action': 'Copy Share Link'
+                });
+            }
         }
 
         function closeShareDialog() {
@@ -1143,7 +1342,9 @@
                 dialog.remove();
             if (overlay) 
                 overlay.remove();
-            }
+            } 
+            
+
     </script>
 </body>
 </html>
