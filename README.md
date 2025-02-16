@@ -50,6 +50,8 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 ## Contact
 
 If you have any questions or feedback, please get in touch with us.
+<br>
+
 contact @ mindmapwizard.com
 
 <br>
