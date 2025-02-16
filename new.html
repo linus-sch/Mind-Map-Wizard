@@ -48,6 +48,24 @@
         <script>
             window.jsPDF = window.jspdf.jsPDF;
         </script>
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer'
+                        ? '&l=' + l
+                        : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f
+                    .parentNode
+                    .insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TF3MJBX9');
+        </script>
+        <!-- End Google Tag Manager -->
 
         <style>
             :root {
@@ -65,8 +83,18 @@
                 padding: 0;
             }
 
+            @font-face {
+                font-family: 'Open Sans';
+                src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
+                font-weight: 800;
+                font-style: normal;
+                font-display: swap;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
             .popup {
-                display: none;
+                display: flex;
                 position: fixed;
                 top: 0;
                 width: 100%;
@@ -363,12 +391,12 @@
                 transition: border-color 0.3s ease;
                 position: relative;
                 margin: 0 auto;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             }
 
             .input-wrapper:focus-within {
                 outline: none;
                 border-color: var(--primary-color);
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             }
 
             .input {
@@ -837,6 +865,14 @@
                 gap: 10px;
             }
 
+            @media (max-width: 800px) {
+                .button-container {
+                    top: 50px !important;
+                    right: 0 !important;
+                    border-radius: 0 0 0 12px;
+                }
+            }
+
             .download-mindmap-btn,
             .edit-mode-button,
             .regenerate-button,
@@ -1042,8 +1078,21 @@
                 border-radius: 10px;
                 padding: 5px 10px;
             }
+            .help-link {
+                padding: 5px;
+                border-radius: 10px;
+                background-color: #f0f0f0;
+                border: 1px solid #f0f0f0;
+                text-decoration: none;
+            }
+
+            .help-link:hover {
+                border: 1px solid #ddd;
+            }
         </style>
     </head>
+    <script async="async" src="/consent.js"></script>
+
     <!-- Google tag (gtag.js) -->
     <script
         async="async"
@@ -1057,7 +1106,17 @@
 
         gtag('config', 'G-4RTLM6HX39');
     </script>
+    <script async="async" src="/consent.js"></script>
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-TF3MJBX9"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <div class="popup" id="legalPopup">
             <div class="popup-content">
                 <div>
@@ -1282,15 +1341,16 @@
 <div class="markdown-editor" id="markdown-editor">
     <textarea id="markdown-textarea" spellcheck="false"></textarea>
     <div class="editor-buttons">
-        <small>Use markdown formatting.
-            <a href="/help/markdown-formatting.html" style="color: #1e293b;">Help</a>
-        </small>
+        <a href="/help/mind-map-editing.html" class="help-button" style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
 
         <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
-        <button class="editor-button save-button" id="save-edit">Save Changes</button>
+        <button class="editor-button save-button" id="save-edit">Save</button>
     </div>
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('prompt').focus();
+    });
     let currentMarkdown = '';
     let currentMindmap = {
         topic: '',
@@ -1335,7 +1395,7 @@
         try {
             updateCurrentMindmap();
             if (!currentMindmap.markdown) {
-                throw new Error('No mindmap content available to share');
+                throw new Error('No mind map content available to share');
             }
             const response = await fetch('https://api.mindmapwizard.com/share', {
                 method: 'POST',
@@ -1349,6 +1409,12 @@
 
             const data = await response.json();
 
+            if (window.dataLayer) {
+                window
+                    .dataLayer
+                    .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
+            }
+
             const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
 
             const overlay = document.createElement('div');
@@ -1358,14 +1424,14 @@
             const dialog = document.createElement('div');
             dialog.className = 'share-dialog';
             dialog.innerHTML = `
-                    <h3>Share Mindmap</h3>
-                    <p>Copy this link to share your mindmap:</p>
-                    <input type="text" class="share-link" value="${shareUrl}" readonly>
-                    <div class="dialog-buttons">
-                        <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
-                        <button class="dialog-button confirm" onclick="copyShareLink()">Copy Link</button>
-                    </div>
-                `;
+                <h3>Share Mindmap</h3>
+                <p>Copy this link to share your mindmap:</p>
+                <input type="text" class="share-link" value="${shareUrl}" readonly>
+                <div class="dialog-buttons">
+                    <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
+                    <button class="dialog-button confirm" onclick="copyShareLink()">Copy Link</button>
+                </div>
+            `;
 
             document
                 .body
@@ -1373,16 +1439,31 @@
             document
                 .body
                 .appendChild(dialog);
+
         } catch (error) {
             console.error('Error sharing mindmap:', error);
             alert('Failed to share mindmap. Please try again.');
+
+            if (window.dataLayer) {
+                window
+                    .dataLayer
+                    .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
+            }
         }
     }
 
     function copyShareLink() {
-        const input = document.querySelector('.share-link');
-        input.select();
+        const shareLink = document.querySelector('.share-link');
+        shareLink.select();
         document.execCommand('copy');
+
+        if (window.dataLayer) {
+            window
+                .dataLayer
+                .push(
+                    {'event': 'mindmap_share_link_copy', 'mindmap_category': 'User Interaction', 'mindmap_action': 'Copy Share Link'}
+                );
+        }
     }
 
     function formatMarkdown(text) {
@@ -1406,27 +1487,7 @@
         return {topic, markdown};
     }
 
-    function showPopup() {
-        if (!localStorage.getItem('disclaimerAccepted')) {
-            document
-                .getElementById('legalPopup')
-                .style
-                .display = 'flex';
-        }
-    }
 
-    function closePopup() {
-        document
-            .getElementById('legalPopup')
-            .style
-            .display = 'none';
-    }
-
-    function acceptDisclaimer() {
-        localStorage.setItem('disclaimerAccepted', 'true');
-        closePopup();
-        generateMindmap();
-    }
 
     function generateMindmap(mindmapTopic, isRegenerate = false) {
         if (!mindmapTopic) 
@@ -1492,7 +1553,7 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(
-                {input: `Please generate a Markdown text formatted in Markdown so that I can later generate a mindmap out of it using Markmap. You can also use Markdown formatting: - **strong** ~~del~~ *italic*  inline code or even links: - [Link text](URL) But use formatting only if really useful. The answer should be structured like this: topic="Here you formulate a title for the mind map.", markdown="(Here is the Markdown, and the title is repeated at the beginning)" The Mindmap should be about: ${mindmapTopic}`}
+                {input: `Please generate a Markdown text formatted in Markdown so that I can later generate a mind map out of it using Markmap. You can also use Markdown formatting: - **strong** ~~del~~ *italic*  inline code or even links: - [Link text](URL) But use formatting only if really useful. The answer should be structured like this: topic="Here you formulate a title for the mind map.", markdown="(Here is the Markdown, and the title is repeated at the beginning)" The mind map should be about: ${mindmapTopic}`}
             )
         })
             .then(response => response.json())
@@ -1508,6 +1569,17 @@
                     document
                         .getElementById("logo-text")
                         .textContent = topic || mindmapTopic;
+
+                    if (window.dataLayer) {
+                        window
+                            .dataLayer
+                            .push({
+                                'event': 'mindmap_generated',
+                                'mindmap_type': isRegenerate
+                                    ? 'regenerated'
+                                    : 'new'
+                            });
+                    }
                 }
                 document
                     .getElementById("loading-animation")
@@ -1580,7 +1652,7 @@
                 pan: true
             }, root);
 
-            mm.fit(); // Ensure the mindmap fits in the viewport
+            mm.fit();
 
         } catch (error) {
             console.error('Mindmap Error:', error);
@@ -1598,7 +1670,7 @@
             .textContent || 'mindmap';
 
         if (!svg || mindmapContainer.children.length === 0) {
-            alert("No mindmap available to download.");
+            alert("No mind map available to download.");
             return;
         }
 
@@ -1680,10 +1752,7 @@
             .removeChild(a);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        if (!localStorage.getItem('disclaimerAccepted')) {
-            showPopup();
-        }
+
         const downloadBtn = document.getElementById('download-mindmap-btn');
         const popup = document.getElementById('download-options-popup');
         const closeBtn = document.getElementById('close-download-options-popup');
@@ -1751,7 +1820,10 @@
         if (mindmapTopic) {
             generateMindmap(mindmapTopic);
         }
-    });
+        
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('prompt').focus();
+});
 
     document
         .getElementById('download-mindmap-btn')
@@ -1859,7 +1931,7 @@
         const svg = mindmapContainer.querySelector('svg');
 
         if (!svg) {
-            alert("No mindmap available to export.");
+            alert("No mind map available to export.");
             return;
         }
 
@@ -2070,3 +2142,4 @@
     };
 </script>
 </body>
+</html>
