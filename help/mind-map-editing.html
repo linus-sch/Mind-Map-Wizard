@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mind Map Wizard - Mind Map Editing</title>
+        <meta
+            name="description"
+            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta
+            name="keywords"
+            content="mind map, mind mapping, AI, text to mind map, free mind map generator, no sign up, no ads">
+
+        <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            property="og:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta property="og:image" content="/img/meta-img.jpg">
+
+        <meta property="og:type" content="website">
+
+        <meta name="twitter:card" content="/img/meta-img.jpg">
+        <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta
+            name="twitter:description"
+            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+        <meta name="twitter:image" content="/img/meta-img.jpg">
+
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="apple-touch-icon" href="/img/logo.png">
+        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
+
+        <meta name="theme-color" content="#C667FF">
+        <meta name="language" content="en">
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer'
+                        ? '&l=' + l
+                        : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f
+                    .parentNode
+                    .insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TF3MJBX9');
+        </script>
+        <!-- End Google Tag Manager -->
+    </script>
+    <style>
+        :root {
+            --primary-color: #C667FF;
+            --secondary-color: #9D34D4;
+            --background-color: #F5F5F7;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --card-background: #ffffff;
+            --error-color: #dc2626;
+        }
+
+        @font-face {
+            font-family: 'Open Sans';
+            src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            position: fixed;
+            top: 0;
+            height: 50px;
+            left: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            padding: 15px 3 10px 10px;
+            width: 100%;
+            left: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Open Sans', sans-serif;
+
+        }
+        @media (max-width: 500px) {
+            .logo-text {
+                display: none !important;
+            }
+        }
+
+        .navbutton {
+            background-color: var(--primary-color);
+            padding: 6px 14px;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 40px;
+            color: #fff !important;
+            transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .navbutton:hover {
+            background-color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+
+        }
+
+        .nav-links {
+            margin-left: auto;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links img {
+            position: relative;
+            top: 5px;
+        }
+
+        .nav-links a {
+            margin-left: 0;
+            margin-right: 10px;
+            text-decoration: none;
+            color: black;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            border-radius: 10px;
+            padding: 5px 10px 10px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(0, 0, 0, 0.032);
+            border-radius: 10px;
+            padding: 5px 10px 10px;
+        }
+
+        .logo {
+            position: relative;
+            top: 5px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--text-color);
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 800;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 550px;
+            margin: 150px auto;
+        }
+
+        h1 {
+            text-align: left;
+            font-size: 2.6rem;
+            margin-bottom: 10px;
+            margin-top: 0;
+            color: var(--text-color);
+        }
+
+        .mmw-title {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+
+        p {
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .back-link {
+            display: block;
+            margin-bottom: 20px;
+            text-align: left;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        a {
+            color: var(--text-color);
+        }
+
+        footer {
+            background-color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            margin-top: 40px;
+            position: relative;
+            color: #ffffff;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .separator {
+            color: #9b9999;
+            margin: 0 3px;
+            font-size: 1em;
+        }
+
+        .footer-link {
+            color: #ffffff;
+            transition: color 0.3s;
+            text-decoration: none;
+            font-size: 15px;
+
+        }
+
+        .footer-link:hover {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .copyright {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        @media (max-width: 720px) {
+            .footer-content {
+                flex-direction: column;
+                margin-bottom: 20px;
+            }
+
+            .footer-links {
+                margin-bottom: 10px;
+            }
+        }
+        .popup {
+            display: flex;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.32);
+            justify-content: center;
+            align-items: center;
+            z-index: 1100;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: left;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: space-between;
+        }
+
+        .accept-terms-button,
+        .decline-terms-button {
+            margin: 5px;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .accept-terms-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .decline-terms-button {
+            background-color: var(--border-color);
+            color: black;
+            border: none;
+        }
+
+        .accept-terms-button:hover {
+            background-color: #b73cfe;
+        }
+
+        .decline-terms-button:hover {
+            background-color: rgb(215, 215, 215);
+        }
+
+        .legal-purposes {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .popup-content a {
+            background-color: #f0f0f0;
+            padding: 3px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.1s ease;
+        }
+        .popup-content a:hover {
+            background-color: #e6e6e6;
+        }
+
+        .table-of-contents {
+            line-height: 1.5;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .table-of-contents li {
+            margin-left: 30px;
+        }
+
+        .table-of-contents a {
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .table-of-contents a:hover {
+            text-decoration: underline;
+        }
+
+        .whitespace {
+            height: 15px;
+        }
+        .back-arrow {
+            position: relative;
+            top: 2.5px;
+            margin-right: -8px;
+            height: 20px;
+            width: 20px;
+        }
+        .down-arrow {
+            position: relative;
+            top: 4px;
+
+        }
+
+        code {
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        pre {
+            background-color: #363a3f;
+            color: white;
+            padding: 8px;
+            border-radius: 10px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border: 1px solid #656565;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table,
+        td,
+        th {
+            border: 1px solid #ddd;
+        }
+        td,
+        th {
+            padding: 12px;
+            text-align: left;
+        }
+        /* From Uiverse.io by vinodjangid07 */
+        .button {
+            width: 135px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            background-color: var(--primary-color);
+            border-radius: 30px;
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            position: relative;
+            cursor: pointer;
+            transition-duration: 0.2s;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.116);
+            padding-left: 8px;
+            transition-duration: 0.5s;
+            text-decoration: none;
+        }
+
+        .svgIcon {
+            height: 28px;
+            transition-duration: 1.5s;
+            fill: rgb(255, 255, 255);
+
+        }
+
+        .bell path {
+            fill: rgb(255, 255, 255);
+        }
+
+        .button:hover {
+            background-color: var(--text-color);
+            transition-duration: 0.5s;
+        }
+
+        .button:active {
+            transform: scale(0.97);
+            transition-duration: 0.2s;
+        }
+
+        .button:hover .svgIcon {
+            transform: rotate(250deg);
+            transition-duration: 1.5s;
+        }
+
+        .inlinecode {
+            padding: 0 5px;
+            background-color: #efefef;
+            border-radius: 4px;
+        }
+
+        .screenshot {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<script async="async" src="/consent.js"></script>
+
+<!-- Google tag (gtag.js) -->
+<script
+    async="async"
+    src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-4RTLM6HX39');
+</script>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-TF3MJBX9"
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="popup" id="legalPopup">
+        <div class="popup-content">
+            <div>
+                <h2>🍪 Cookies</h2>
+                <p>To proceed, you need to agree to our
+                    <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
+                    and
+                    <a
+                        href="/privacy-policy.html"
+                        onclick="event.preventDefault();"
+                        style="color: var(--text-color);">Privacy Policy</a>
+                    <br>
+                    <div class="whitespace"></div>
+
+                    <strong>Purposes:</strong>
+                    <ul class="legal-purposes">
+                        <li>Functionality</li>
+                        <li>Analytics</li>
+                    </ul>
+                </p>
+                <div class="whitespace"></div>
+            </div>
+            <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+            <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <a href="/" style="text-decoration: none;">
+                <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
+                    <span class="logo-text">Mind Map Wizard</span></h1>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="/history.html"><img src="/img/icons/history-icon.svg" height="22" width="22">
+                History</a>
+        </div>
+
+        <a class="navbutton" href="/">New Mind Map</a>
+    </div>
+    <div class="container">
+        <p id="back-button" class="back-button" style="font-size: 20px;">
+            <button
+                onclick="goBack()"
+                style="background: none; border: none; text-decoration: none; color: #1e293b; cursor: pointer; font-size: 1.2rem;">
+                <img src="/img/icons/arrow-back-black.svg" alt="Back" class="back-arrow">
+                Back
+            </button>
+
+        </p>
+        <hr
+            style="border: 3px solid; border-color: var(--primary-color); border-radius: 5px;">
+        <h1>Mind Map Editing Guide</h1>
+        <br>
+        <h2>Table of Contents</h2>
+        <ol class="table-of-contents">
+            <li>
+                <a href="#basic-structure">Basic Structure</a>
+            </li>
+            <li>
+                <a href="#text-formatting">Text Formatting</a>
+            </li>
+            <li>
+                <a href="#ordered-lists">Ordered Lists</a>
+            </li>
+            <li>
+                <a href="#links">Links</a>
+            </li>
+            <li>
+                <a href="#inline-code">Inline Code</a>
+            </li>
+            <li>
+                <a href="#tables">Tables</a>
+            </li>
+            <li>
+                <a href="#images">Images</a>
+            </li>
+        </ol>
+        <div style="height: 40px;"></div>
+
+        <h2 id="introduction">Introduction</h2>
+        <p>This Markdown Formatting Guide is designed to help you create visually
+            organized mind maps. By using the provided syntax, you can easily format your
+            text to produce branches, blocks, lists, and other essential elements for your
+            mind map. Let's dive in!</p>
+        <br>
+        <h3 id="basic-structure">1. Basic structure</h3>
+        <p>Using lists, you can to create branches in your mind map. Each list item will
+            appear as a separate branch.</p>
+        <pre><code>
+    # my mind map
+        - branch 1
+         - branch 2
+            - text
+            - text
+            </code></pre>
+        <br>
+        <img
+            src="/img/screenshots/basic-mindmap-structure.webp"
+            alt="Basic mind map"
+            class="screenshot">
+
+        <div style="height: 40px;"></div>
+        <h3 id="text-formatting">2. Text Formatting</h3>
+
+        <p>You can also use special text formatting:</p>
+        <p>
+            <p>
+                <strong>Example Branch</strong>
+            </p>
+            <pre><code>
+    - **example branch**
+                            </code></pre>
+            <br>
+            <p>
+                <del>Example Branch</del>
+            </p>
+            <pre><code>
+    - ~~example branch~~
+                            </code></pre>
+            <br>
+            <p>
+                <em>Example Branch</em>
+            </p>
+            <pre><code>
+
+    - *example branch*
+                            </code></pre>
+            <br>
+            <p class="inlinecode">
+                <code>Example Branch</code>
+            </p>
+            <pre><code>
+
+    - `example branch`
+                            </code></pre>
+        </p>
+        <div style="height: 50px;"></div>
+        <h3 id="ordered-lists">3. Ordered Lists</h3>
+        <img
+            src="/img/screenshots/ordered-branches.webp"
+            alt="Mind Map with two ordered branches"
+            class="screenshot">
+        <p>To add this to your mind map, use the following text:</p>
+        <pre><code>
+    - ordered list
+    1. branch
+    2. branch              
+            </code></pre>
+        <p>Each list item will create a branch on your mind map.</p>
+        <div style="height: 40px;"></div>
+
+        <h3 id="links">4. Links</h3>
+        <p>To add a link to your mind map, simply use the markdown syntax for links:</p>
+        <pre><code>[my website](https://example.com)</code></pre>
+        <p>This will render a clickable link on your mind map.</p>
+
+        <div style="height: 40px;"></div>
+
+        <h3 id="inline-code">5. Inline Code</h3>
+        <p>To create a code block, simply wrap your code in triple backticks (```),
+            followed by the language (optional):</p>
+        <pre><code>
+    ### inline code
+    
+        ```js
+        console.log('hello, javascript')
+        ```
+    </code></pre>
+        <p>This will render a code block in your mind map:</p>
+        <img
+            src="/img/screenshots/inline-code.webp"
+            alt="Mind Map with inline code"
+            class="screenshot">
+
+        <div style="height: 40px;"></div>
+
+        <h3 id="tables">6. Tables</h3>
+        <p>To add tables, use the standard markdown table format. Here's an example:</p>
+        <pre><code>
+    ### tables
+
+        | products | price |
+        |-|-|
+        | apple | 4 |
+        | banana | 2 | 
+            </code></pre>
+        <p>This will render a table in your mind map with two columns and multiple rows:</p>
+        <img
+            src="/img/screenshots/table.webp"
+            alt="Mind Map with inline code"
+            class="screenshot">
+
+        <div style="height: 40px;"></div>
+
+        <h3 id="images">7. Images</h3>
+        <p>You can also add images to your mind map by using the following markdown syntax:</p>
+        <pre><code>![](https://mindmapwizard.com/img/p2-gen-mind-map.png)</code></pre>
+        <p>This will display the image directly in your mind map.</p>
+        <div style="height: 40px;"></div>
+        <p>Sounds complicated? Try it out!
+            <img
+                src="/img/icons/arrow-down.svg"
+                class="down-arrow"
+                alt=""
+                height="20"
+                width="20"></p>
+        <!-- From Uiverse.io by vinodjangid07 -->
+        <a href="/playground.html" class="button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="28px"
+                viewbox="0 -960 960 960"
+                width="28px"
+                fill="#ffffff"
+                class="svgIcon"><path
+                d="m620-284 56-56q6-6 6-14t-6-14L540-505q4-11 6-22t2-25q0-57-40.5-97.5T410-690q-11 0-21 1t-20 5q-9 4-11 14t5 17l74 74-56 56-74-74q-7-7-17-5t-14 11q-3 10-4.5 20t-1.5 21q0 57 40.5 97.5T408-412q13 0 24.5-2t22.5-6l137 136q6 6 14 6t14-6ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+            Playground
+        </a>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <p style="margin: 0;">
+                    <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
+                    <span class="separator">|</span>
+                    <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
+                    <span class="separator">|</span>
+                    <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
+                </p>
+            </div>
+            <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
+        </div>
+    </footer>
+
+    <script>
+        function goBack() {
+            window
+                .history
+                .back();
+        }
+    </script>
+</body>
+
+</html>
