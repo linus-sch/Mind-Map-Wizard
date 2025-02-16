@@ -47,6 +47,15 @@
                 --card-background: #ffffff;
                 --error-color: #dc2626;
             }
+            @font-face {
+                font-family: 'Open Sans';
+                src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
+                font-weight: 800;
+                font-style: normal;
+                font-display: swap;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
 
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -237,18 +246,117 @@
                     margin-bottom: 10px;
                 }
             }
+            .popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.32);
+                justify-content: center;
+                align-items: center;
+                z-index: 1100;
+            }
+
+            .popup-content {
+                background-color: white;
+                padding: 20px;
+                border-radius: 20px;
+                text-align: left;
+                max-width: 300px;
+                display: flex;
+                flex-direction: column;
+                align-items: space-between;
+            }
+
+            .accept-terms-button,
+            .decline-terms-button {
+                margin: 5px;
+                padding: 12px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+
+            .accept-terms-button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .decline-terms-button {
+                background-color: var(--border-color);
+                color: black;
+                border: none;
+            }
+
+            .accept-terms-button:hover {
+                background-color: #b73cfe;
+            }
+
+            .decline-terms-button:hover {
+                background-color: rgb(215, 215, 215);
+            }
+
+            .legal-purposes {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .popup-content a {
+                background-color: #f0f0f0;
+                padding: 3px;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.1s ease;
+            }
+            .popup-content a:hover {
+                background-color: #e6e6e6;
+            }
         </style>
     </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Google tag (gtag.js) -->
+    <script
+        async="async"
+        src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-  gtag('config', 'G-4RTLM6HX39');
-</script>
+        gtag('config', 'G-4RTLM6HX39');
+    </script>
     <body>
+        <div class="popup" id="legalPopup">
+            <div class="popup-content">
+                <div>
+                    <h2>🍪 Cookies</h2>
+                    <p>To proceed, you need to agree to our
+                        <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
+                        and
+                        <a
+                            href="/privacy-policy.html"
+                            onclick="event.preventDefault();"
+                            style="color: var(--text-color);">Privacy Policy</a>
+                        <br>
+                        <div class="whitespace"></div>
+
+                        <strong>Purposes:</strong>
+                        <ul class="legal-purposes">
+                            <li>Functionality</li>
+                            <li>Analytics</li>
+                        </ul>
+                    </p>
+                    <div class="whitespace"></div>
+                </div>
+                <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+                <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
+            </div>
+        </div>
+
         <div class="header">
             <div class="header-left">
                 <a href="/" style="text-decoration: none;">
@@ -257,7 +365,7 @@
                 </a>
             </div>
 
-            <a class="navbutton" href="/">New Mindmap</a>
+            <a class="navbutton" href="/">New Mind Map</a>
         </div>
         <div class="container">
             <h1>Terms of use</h1>
@@ -453,5 +561,40 @@
             <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
         </div>
     </footer>
+    <script>
+        function showPopup() {
+            if (!localStorage.getItem('disclaimerAccepted')) {
+                document
+                    .getElementById('legalPopup')
+                    .style
+                    .display = 'flex';
+            }
+        }
+
+        function closePopup() {
+            document
+                .getElementById('legalPopup')
+                .style
+                .display = 'none';
+        }
+
+        function acceptDisclaimer() {
+            localStorage.setItem('disclaimerAccepted', 'true');
+            dataLayer.push({
+                'event': 'cookie_consent_accepted',
+                'consent_type': 'functionality_and_analytics'
+            });
+            closePopup();
+        }
+
+        window.onload = function () {
+            if (localStorage.getItem('disclaimerAccepted') !== "true" && !localStorage.getItem('mindmap-history')) {
+                document
+                    .getElementById('legalPopup')
+                    .style
+                    .display = 'flex';
+            }
+        };
+    </script>
 </body>
 </html>
