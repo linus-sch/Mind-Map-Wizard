@@ -1040,7 +1040,14 @@
             const viewer = document.getElementById('mindmap-viewer');
             viewer.style.display = 'none';
             viewer.dataset.currentMindmap = '';
+
+            const url = new URL(window.location);
+
+            url.searchParams.delete('id');
+
+            window.history.replaceState({}, document.title, url.toString());
         }
+
 
         function downloadCurrentMindmap() {
             const viewer = document.getElementById('mindmap-viewer');
