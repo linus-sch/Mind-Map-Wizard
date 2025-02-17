@@ -33,7 +33,7 @@ function acceptDisclaimer() {
 }
 
 window.onload = function() {
-    if (localStorage.getItem('disclaimerAccepted') === "true" || localStorage.getItem('mindmap-history')) {
-        document.getElementById('legalPopup').style.display = 'none';
+    if (localStorage.getItem('disclaimerAccepted') !== "true" && !localStorage.getItem('mindmap-history')) {
+        document.getElementById('legalPopup').style.display = 'flex';
     }
 };
