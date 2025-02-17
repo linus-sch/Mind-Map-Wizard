@@ -1555,7 +1555,7 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(
-                {input: `Please generate a Markdown text formatted in Markdown so that I can later generate a mind map out of it using Markmap. You can also use Markdown formatting: - **strong** ~~del~~ *italic*  inline code or even links: - [Link text](URL) But use formatting only if really useful. The answer should be structured like this: topic="Here you formulate a title for the mind map.", markdown="(Here is the Markdown, and the title is repeated at the beginning)" The mind map should be about: ${mindmapTopic}`}
+                {input: `Please generate a Markdown text formatted in Markdown so that I can later generate a mind map out of it using Markmap. You can also use Markdown formatting: **strong**, *italic*  inline code or even links: - [Link text](URL) But use formatting only if really useful. The answer should be structured like this: topic="Here you formulate a title for the mind map.", markdown="(Here is the Markdown, and the title is repeated at the beginning)" The mind map should be about: ${mindmapTopic}`}
             )
         })
             .then(response => response.json())
@@ -1807,16 +1807,6 @@
             }
         });
 
-        prompt.addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
-                const mindmapTopic = prompt
-                    .value
-                    .trim();
-                if (mindmapTopic) {
-                    generateMindmap(mindmapTopic);
-                }
-            }
-        });
 
         const mindmapTopic = getQueryParameter('q');
         if (mindmapTopic) {
@@ -2145,3 +2135,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
