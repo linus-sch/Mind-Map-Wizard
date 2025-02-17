@@ -47,6 +47,9 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 5. **Render as SVG:**  
    Finally, the Markdown is transformed into an SVG (Scalable Vector Graphics) format using [markmap.js](https://github.com/markmap/markmap), giving you a visually appealing mind map.
 
+<br>
+<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/generation-process.jpg" alt="Mind Map Generation Process" style="width: 50%;">
+<br>
 
 ## Contact
 
@@ -55,5 +58,3 @@ If you have any questions or feedback, please get in touch with us.
 
 contact @ mindmapwizard.com
 
-<br>
-<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/generation-process.jpg" alt="Mind Map Generation Process" style="width: 50%;">
