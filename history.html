@@ -1196,7 +1196,13 @@
                 const id = parseInt(mindmapId);
                 if (!isNaN(id)) {
                     setTimeout(() => {
-                        showMindmap(id);
+                        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                        const mindmap = history.find(item => item.id === id);
+                        if (mindmap) {
+                            showMindmap(id);
+                        } else {
+                            window.location.href = `/view.html?id=${id}`;
+                        }
                     }, 100);
                 }
             }
