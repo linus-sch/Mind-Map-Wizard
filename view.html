@@ -109,18 +109,19 @@
 
             .action-buttons {
                 display: flex;
-                gap: 8px;
+                gap: 12px;
+                align-items: center;
             }
 
             @media (max-width: 650px) {
                 .action-buttons {
-                    gap: 4px;
+                    gap: 8px;
                     margin-left: auto;
                 }
 
                 .action-button,
                 .share-button {
-                    padding: 6px !important;
+                    padding: 8px !important;
                 }
 
                 .viewer-title {
@@ -129,7 +130,7 @@
                 }
 
                 .share-button {
-                    margin-left: 5px;
+                    margin-left: 0;
                 }
             }
 
@@ -137,42 +138,43 @@
                 background: var(--card-background);
                 border: none;
                 cursor: pointer;
-                padding: 8px 12px;
+                padding: 10px 16px;
                 display: flex;
                 align-items: center;
-                gap: 5px;
+                gap: 8px;
                 color: var(--text-color);
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 transition: all 0.2s;
                 border-radius: 12px;
+                height: 40px;
+                box-sizing: border-box;
             }
 
             .action-button:hover {
                 background: var(--background-color);
             }
 
-            .share-button {
-                background-color: #C667FF;
+            .create-button {
+                background-color: var(--primary-color);
                 border: none;
                 cursor: pointer;
-                padding: 15px 12px;
+                padding: 10px 16px;
                 display: flex;
-                margin-top: 5px;
-                height: 35px;
                 align-items: center;
-                gap: 5px;
-                font-size: 1.2rem;
+                gap: 8px;
+                font-size: 1.1rem;
                 transition: all 0.2s;
                 color: #ffffff;
                 border-radius: 20px;
+                height: 36px;
+                box-sizing: border-box;
             }
 
-            .share-button:hover {
+            .create-button:hover {
                 background-color: #b14ee6;
-                transform: translateY(-1px);
             }
 
-            .share-button img {
+            .create-button img {
                 width: 23px;
                 height: 23px;
             }
@@ -206,7 +208,7 @@
                 color: var(--error-color);
                 padding: 10px 20px;
                 background-color: #fee2e2;
-                border-radius: 8px;
+                border-radius: 15px;
                 display: none;
                 z-index: 1001;
             }
@@ -226,7 +228,7 @@
             .viewer-title {
                 font-size: 1.6rem;
                 font-weight: 700;
-                width: calc(100vw - 400px);
+                width: calc(100vw - 500px);
                 color: var(--text-color);
                 margin: 0;
                 padding: 0;
@@ -380,7 +382,7 @@
             }
 
             .popup {
-                display: flex;
+                display: none;
                 position: fixed;
                 top: 0;
                 width: 100%;
@@ -522,10 +524,27 @@
                     <img src="img/icons/edit-icon.svg" alt="Edit" height="23px" width="23px">
                     <span class="button-label">Edit</span>
                 </button>
-                <button class="share-button" id="share-btn">
-                    <img src="img/icons/share-icon.svg" alt="Share">
-                    Share
+                <button class="action-button" id="share-btn">
+                    <img src="img/icons/share-icon-black.svg" alt="Share">
+                    <span class="button-label">Share</span>
                 </button>
+                <a class="create-button" href="/new.html" style="text-decoration: none;">
+                    <svg
+                    height="18"
+                    width="18"
+                    viewbox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0h24v24H0z" fill="none"></path>
+                    <path
+                        d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ></path>
+                </svg>                    New
+                </a>
             </div>
         </div>
         <div class="editor-overlay" id="editor-overlay"></div>
