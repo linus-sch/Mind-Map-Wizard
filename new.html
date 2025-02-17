@@ -94,7 +94,7 @@
             }
 
             .popup {
-                display: flex;
+                display: none;
                 position: fixed;
                 top: 0;
                 width: 100%;
@@ -1032,7 +1032,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 12px 16px;
+                padding: 16px 16px;
                 background-color: #ffffff;
                 border-radius: 8px;
                 transition: all 0.2s ease;
@@ -1319,22 +1319,24 @@
     </div>
 </div>
 <div class="button-container" id="button-container">
-    <button class="regenerate-button" id="regenerate-button" title="Regenerate">
-        <img src="/img/icons/retry-icon.svg" alt="Regenerate" width="25" height="25">
-    </button>
-    <button class="download-mindmap-btn" id="download-mindmap-btn" title="Download">
-        <img src="/img/icons/download-icon.png" alt="Download" width="28" height="28">
+    <button
+    class="share-button"
+    id="share-btn"
+    onclick="shareMindmap()"
+    title="Share">
+    <img src="/img/icons/share-icon-black.svg" alt="Share" width="25" height="25">
     </button>
     <button class="edit-mode-button" id="edit-mode-button" title="Edit">
         <img src="/img/icons/edit-icon.svg" alt="Edit" width="25" height="25">
     </button>
-    <button
-        class="share-button"
-        id="share-btn"
-        onclick="shareMindmap()"
-        title="Share">
-        <img src="/img/icons/share-icon-black.svg" alt="Share" width="25" height="25">
+    <button class="download-mindmap-btn" id="download-mindmap-btn" title="Download">
+        <img src="/img/icons/download-icon.png" alt="Download" width="28" height="28">
     </button>
+    <button class="regenerate-button" id="regenerate-button" title="Regenerate">
+        <img src="/img/icons/retry-icon.svg" alt="Regenerate" width="25" height="25">
+    </button>
+
+
 </div>
 
 <div class="editor-overlay" id="editor-overlay"></div>
@@ -1820,7 +1822,7 @@
         if (mindmapTopic) {
             generateMindmap(mindmapTopic);
         }
-        
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('prompt').focus();
 });
