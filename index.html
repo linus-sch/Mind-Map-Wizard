@@ -495,8 +495,164 @@
                     background-color: #e6e6e6;
                 }
 
+                .email-updates-container {
+                    background-color: white;
+                    padding: 30px;
+                    border-radius: 20px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    max-width: 500px;
+                    margin: 40px auto;
+                }
+
+                .email-header {
+                    text-align: left;
+                    margin-bottom: 20px;
+                }
+
+                .email-header h2 {
+                    font-size: 1.8rem;
+                    margin: 0 0 5px 0;
+                    color: var(--text-color);
+                }
+
+                .email-header p {
+                    margin: 0;
+                    color: var(--text-color);
+                    opacity: 0.8;
+                }
+
+                .email-input-wrapper {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 15px;
+                }
+
+                .email-input {
+                    flex: 1;
+                    padding: 12px 15px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 10px;
+                    font-size: 1rem;
+                    transition: border-color 0.3s ease;
+                }
+
+                .email-input:focus {
+                    outline: none;
+                    border-color: var(--primary-color);
+                }
+
+                .subscribe-button {
+                    background-color: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 12px 25px;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+
+                .subscribe-button:hover {
+                    background-color: var(--secondary-color);
+                }
+
+                .additional-text {
+                    margin: 0;
+                    font-size: 0.9rem;
+                    color: var(--text-color);
+                    opacity: 0.7;
+                }
+
+                @media (max-width: 600px) {
+                    .email-updates-container {
+                        padding: 20px;
+                        margin: 20px;
+                    }
+
+                    .email-input-wrapper {
+                        flex-direction: column;
+                    }
+
+                    .subscribe-button {
+                        width: 100%;
+                    }
+                }
+
                 .whitespace {
                     height: 40px;
+                }
+
+                .email-updates-container {
+                    width: 100%;
+                    max-width: 500px;
+                    margin: 30px auto;
+                    padding: 20px;
+                    background-color: #ffffff;
+                    border-radius: 20px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                    text-align: center;
+                }
+
+                .email-updates-container h3 {
+                    color: var(--text-color);
+                    font-size: 1.4rem;
+                    margin-bottom: 15px;
+                }
+
+                .email-updates-container p {
+                    color: var(--text-color);
+                    font-size: 1rem;
+                    margin-bottom: 20px;
+                }
+
+                .email-input-wrapper {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 10px;
+                }
+
+                .email-input {
+                    flex: 1;
+                    padding: 10px 20px;
+                    border: 2px solid var(--border-color);
+                    border-radius: 25px;
+                    font-size: 1rem;
+                    transition: border-color 0.3s ease;
+                }
+
+                .email-input:focus {
+                    outline: none;
+                    border-color: var(--primary-color);
+                }
+
+                .subscribe-button {
+                    background-color: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: 25px;
+                    padding: 10px 25px;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+
+                .subscribe-button:hover {
+                    background-color: var(--secondary-color);
+                }
+
+                @media (max-width: 600px) {
+                    .email-updates-container {
+                        margin: 20px 15px;
+                        padding: 15px;
+                    }
+
+                    .email-input-wrapper {
+                        flex-direction: column;
+                    }
+
+                    .subscribe-button {
+                        width: 100%;
+                    }
                 }
 
                 /* From Uiverse.io by vinodjangid07 */
@@ -1739,16 +1895,27 @@
     </p>
 </ul>
 <div class="whitespace"></div>
+<div class="email-updates-container">
+    <form>
+        <div class="email-header">
+            <h2>Updates</h2>
+            <p>Stay up to date. Sign up with your email to receive the latest news and features from us.
+            </p>
+        </div>
+        <div class="email-input-wrapper">
+            <input type="email" name="email" class="email-input" placeholder="Enter your email" required>
+            <button type="submit" class="subscribe-button" id="submit">Subscribe</button>
+        </div>
+        <input type="hidden" name="source" value="MMW Updates Email Notification">
+    </form></div>
 </div>
-<a
-href="https://www.producthunt.com/posts/mind-map-wizard-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-mind&#0045;map&#0045;wizard&#0045;2"
-target="_blank"><img
-src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=867367&theme=light&t=1739633742200"
-alt="Mind&#0032;Map&#0032;Wizard - Create&#0032;infinite&#0032;Mind&#0032;Maps&#0032;using&#0032;AI&#0046;&#0032;Totally&#0032;free&#0033; | Product Hunt"
-style="width: 250px; height: 54px; margin: 20px;"
-width="250"
-height="54"/></a>
+
+
+
+
+
 <footer>
+    
 <div class="footer-content">
 <div class="footer-links">
     <p style="margin: 0;">
@@ -1925,6 +2092,37 @@ document
 .appendChild(style);
 
 animatePlaceholder();
+
+
+</script>
+<script>
+const form = document.forms[0];
+const submitButton = document.getElementById('submit');
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    submitButton.textContent = 'Sending...';
+    submitButton.disabled = true;
+    
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzL8UZSKef1HztYFa6HeNz7bgVQfX2U-_wR6d3mTiklA1noVVmeb0BuEdbw7blZ0r8S/exec";
+    const formData = new FormData(form);
+    
+    fetch(scriptURL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        form.reset();
+        submitButton.textContent = 'Subscribe';
+        submitButton.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert("An error occurred. Please try again.");
+        submitButton.textContent = 'Subscribe';
+        submitButton.disabled = false;
+    });
+});
 </script>
 </body>
 </html>
