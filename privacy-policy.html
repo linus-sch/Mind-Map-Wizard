@@ -308,19 +308,6 @@
         }
     </style>
 </head>
-<!-- Google tag (gtag.js) -->
-<script
-    async="async"
-    src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'G-4RTLM6HX39');
-</script>
 <body>
     <div class="popup" id="legalPopup">
         <div class="popup-content">
@@ -570,47 +557,13 @@
                 <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
                 <span class="separator">|</span>
                 <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
+                <span class="separator">|</span>
+                <a href="/feedback.html" class="footer-link">Feedback</a>
             </p>
         </div>
         <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
     </div>
 </footer>
-
-<script>
-    function showPopup() {
-        if (!localStorage.getItem('disclaimerAccepted')) {
-            document
-                .getElementById('legalPopup')
-                .style
-                .display = 'flex';
-        }
-    }
-
-    function closePopup() {
-        document
-            .getElementById('legalPopup')
-            .style
-            .display = 'none';
-    }
-
-    function acceptDisclaimer() {
-            localStorage.setItem('disclaimerAccepted', 'true');
-            dataLayer.push({
-                'event': 'cookie_consent_accepted',
-                'consent_type': 'functionality_and_analytics'
-            });
-            closePopup();
-        }
-
-    window.onload = function () {
-        if (localStorage.getItem('disclaimerAccepted') !== "true" && !localStorage.getItem('mindmap-history')) {
-            document
-                .getElementById('legalPopup')
-                .style
-                .display = 'flex';
-        }
-    };
-</script>
 </body>
 
 </html>
