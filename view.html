@@ -369,17 +369,7 @@
                     display: none;
                 }
             }
-            .help-link {
-                padding: 5px;
-                border-radius: 10px;
-                background-color: #f0f0f0;
-                border: 1px solid #f0f0f0;
-                text-decoration: none;
-            }
 
-            .help-link:hover {
-                border: 1px solid #ddd;
-            }
 
             .popup {
                 display: none;
@@ -450,6 +440,18 @@
             }
             .popup-content a:hover {
                 background-color: #e6e6e6;
+            }
+            
+            .help-link {
+                padding: 5px;
+                border-radius: 10px;
+                background-color: #f0f0f0;
+                border: 1px solid #f0f0f0;
+                text-decoration: none;
+            }
+
+            .help-link:hover {
+                border: 1px solid #ddd;
             }
 
         </style>
@@ -552,24 +554,8 @@
             <textarea id="markdown-textarea" spellcheck="false"></textarea>
 
             <div class="editor-buttons">
-                <small
-                    class="markdown-disclaimer"
-                    style="display: inline-block; vertical-align: middle;">Use markdown formatting.
-                    <a href="/help/mind-map-editing.html" style="color: #1e293b;" class="help-link">
-                        Help
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="help-link-svg"
-                            height="16px"
-                            viewbox="0 -960 960 960"
-                            width="16px"
-                            fill="#1e293b"
-                            style="vertical-align: middle; margin-top: -3px;">
-                            <path
-                                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm560-584L416-360q-11 11-28 11t-28-11q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104Z"/>
-                        </svg>
-                    </a>
-                </small>
+                <a href="/help/mind-map-editing.html" class="help-button" style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
+
 
                 <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
                 <button class="editor-button save-button" id="save-edit">Save</button>
