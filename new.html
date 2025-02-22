@@ -45,28 +45,6 @@
         <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script>
-            window.jsPDF = window.jspdf.jsPDF;
-        </script>
-        <!-- Google Tag Manager -->
-        <script>
-            (function (w, d, s, l, i) {
-                w[l] = w[l] || [];
-                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
-                var f = d.getElementsByTagName(s)[0],
-                    j = d.createElement(s),
-                    dl = l != 'dataLayer'
-                        ? '&l=' + l
-                        : '';
-                j.async = true;
-                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-                f
-                    .parentNode
-                    .insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', 'GTM-TF3MJBX9');
-        </script>
-        <!-- End Google Tag Manager -->
-
         <style>
             :root {
                 --primary-color: #C667FF;
@@ -189,8 +167,6 @@
                 width: 100%;
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.2);
-                backdrop-filter: blur(5px);
-                -webkit-backdrop-filter: blur(5px);
                 justify-content: center;
                 align-items: center;
                 z-index: 1100;
@@ -449,7 +425,7 @@
                 text-align: center;
                 margin-bottom: 30px;
                 z-index: 100;
-                padding: 20px;
+                padding: 0;
                 border-radius: 8px;
                 backdrop-filter: blur(5px);
             }
@@ -461,9 +437,12 @@
                 line-height: 1.2;
             }
 
-            @media (max-width: 370px) {
+            @media (max-width: 750px) {
                 .header h1 {
-                    font-size: 2rem;
+                    font-size: 2rem !important;
+                    line-height: 1.3;
+                    padding: 0 10px;
+                    color: var(--text-color);
                 }
             }
 
@@ -839,65 +818,151 @@
 
             .download-options-popup {
                 display: none;
-                position: fixed;
-                left: 0;
-                top: 0;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(0, 0, 0, 0.2);
-                backdrop-filter: blur(5px);
-                -webkit-backdrop-filter: blur(5px);
-                z-index: 1500;
+                background-color: rgba(0, 0, 0, 0.32);
+                z-index: 1200;
+                justify-content: center;
+                align-items: center;
             }
 
             .download-options-popup-content {
-                background-color: var(--background-color);
-                border-radius: 12px;
-                padding: 24px;
-                width: 90%;
-                max-width: 400px;
-                position: absolute;
-                top: 50%;
-                left: 50%;
+                background-color: white;
+                position: fixed;
+                top: 50% !important;
+                left: 50% !important;
                 transform: translate(-50%, -50%);
-                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+                border-radius: 28px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+                width: 100%;
+                max-width: 400px;
+                padding: 24px;
+            }
+
+            .popup-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .popup-header h2 {
+                color: var(--text-color);
+                font-size: 1.375rem;
+                font-weight: 600;
+                margin: 0;
             }
 
             .close-button {
-                position: absolute;
-                display: none;
-                right: 16px;
-                top: 16px;
-                background: none;
+                background: transparent;
                 border: none;
-                font-size: 24px;
+                padding: 8px;
                 cursor: pointer;
-                color: var(--text-color);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s;
+            }
+
+            .close-button:hover {
+                background-color: rgba(0, 0, 0, 0.04);
+            }
+
+            .close-button svg {
+                fill: var(--text-color);
             }
 
             .download-options {
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
-                margin-top: 24px;
+                gap: 20px;
+            }
+
+            .format-selector {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .format-selector label {
+                color: var(--text-color);
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+
+            .material-dropdown {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                background-color: white;
+                color: var(--text-color);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: border-color 0.2s, box-shadow 0.2s;
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+            }
+
+            .material-dropdown:hover {
+                border-color: var(--text-color);
+            }
+
+            .material-dropdown:focus {
+                outline: none;
             }
 
             .download-button {
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                padding: 12px 16px;
+                justify-content: center;
+                gap: 8px;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 24px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s, box-shadow 0.2s;
+            }
+
+            .download-button {
                 background-color: var(--primary-color);
                 color: white;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 16px;
-                transition: background-color 0.2s;
+                font-size: 1rem;
             }
 
             .download-button:hover {
-                background-color: var(--background-color);
+                background-color: var(--secondary-color);
+                box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            }
+
+            .download-button svg,
+            .share-button svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .download-button svg {
+                fill: white;
+            }
+
+            .divider {
+                height: 1px;
+                background-color: var(--border-color);
+                margin: 8px 0;
+            }
+
+            @media (max-width: 480px) {
+                .download-options-popup-content {
+                    margin: 16px;
+                    padding: 16px;
+                }
             }
 
             h2 {
@@ -937,8 +1002,12 @@
             }
 
             @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
             }
 
             .share-dialog p {
@@ -1063,17 +1132,17 @@
                 transform: translateX(-50%);
                 width: 90%;
                 max-width: 800px;
-                height: calc(100vh - 140px);
+                height: calc(100vh - 160px);
                 z-index: 1201;
                 background: white;
-                border-radius: 12px;
+                border-radius: 16px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 padding: 20px;
             }
 
             .markdown-editor textarea {
                 width: 100%;
-                height: calc(100% - 60px);
+                height: calc(100% - 80px);
                 border: 1px solid #c9c9c9;
                 border-radius: 10px;
                 padding: 10px;
@@ -1148,7 +1217,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 16px 16px;
+                padding: 16px;
                 background-color: #ffffff;
                 border-radius: 8px;
                 transition: all 0.2s ease;
@@ -1208,31 +1277,8 @@
         </style>
     </head>
     <script async="async" src="/consent.js"></script>
-
-    <!-- Google tag (gtag.js) -->
-    <script
-        async="async"
-        src="https://www.googletagmanager.com/gtag/js?id=G-4RTLM6HX39"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'G-4RTLM6HX39');
-    </script>
-    <script async="async" src="/consent.js"></script>
     <body>
-        <!-- Google Tag Manager (noscript) -->
-        <noscript>
-            <iframe
-                src="https://www.googletagmanager.com/ns.html?id=GTM-TF3MJBX9"
-                height="0"
-                width="0"
-                style="display:none;visibility:hidden"></iframe>
-        </noscript>
-        <!-- End Google Tag Manager (noscript) -->
+
         <div class="popup" id="legalPopup">
             <div class="popup-content">
                 <div>
@@ -1346,7 +1392,7 @@
     <div class="centered-div">
 
         <div class="header" id="header">
-            <div class="whitespace" style="height: 80px;"></div>
+            <div class="whitespace" style="height: 100px;"></div>
 
             <h1>Generate a Mind Map with AI</h1>
             <div class="input-wrapper">
@@ -1413,34 +1459,37 @@
 
 <div id="download-options-popup" class="download-options-popup">
     <div class="download-options-popup-content">
-        <h2>Download Mind Map</h2>
-        <button class="close-button" id="close-download-options-popup">×</button>
+        <div class="popup-header">
+            <h2>Download Mind Map</h2>
+            <button class="close-button" id="close-download-options-popup">
+                <svg width="24" height="24" viewbox="0 0 24 24"><path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
         <div class="download-options">
-            <button class="download-button" onclick="downloadMindmap('svg')">
-                <img src="/img/icons/img-icon.svg" alt="SVG" width="24" height="24">
-                Download as SVG
-            </button>
-            <button class="download-button" onclick="downloadMindmap('pdf')">
-                <img src="/img/icons/doc-icon.svg" alt="PDF" width="24" height="24">
-                Download as PDF
-            </button>
-            <button
-                class="download-button secondary"
-                onclick="downloadMindmap('markdown')"
-                style="opacity: 0.7; font-size: 0.95em;">
-                <img src="/img/icons/doc-icon.svg" alt="Markdown" width="22" height="22">
-                Download as Markdown
+            <div class="format-selector">
+                <label for="download-format">File format</label>
+                <select id="download-format" class="material-dropdown">
+                    <option value="jpg">JPG - Image</option>
+                    <option value="svg">SVG - Vector Graphics</option>
+                    <option value="pdf">PDF - Document</option>
+                    <option value="markdown">Markdown - Text</option>
+                </select>
+            </div>
+            <button class="download-button primary" id="download-btn">
+                Download
             </button>
         </div>
     </div>
 </div>
+
 <div class="button-container" id="button-container">
     <button
-    class="share-button"
-    id="share-btn"
-    onclick="shareMindmap()"
-    title="Share">
-    <img src="/img/icons/share-icon-black.svg" alt="Share" width="25" height="25">
+        class="share-button"
+        id="share-btn"
+        onclick="shareMindmap()"
+        title="Share">
+        <img src="/img/icons/share-icon-black.svg" alt="Share" width="25" height="25">
     </button>
     <button class="edit-mode-button" id="edit-mode-button" title="Edit">
         <img src="/img/icons/edit-icon.svg" alt="Edit" width="25" height="25">
@@ -1452,14 +1501,16 @@
         <img src="/img/icons/retry-icon.svg" alt="Regenerate" width="25" height="25">
     </button>
 
-
 </div>
 
 <div class="editor-overlay" id="editor-overlay"></div>
 <div class="markdown-editor" id="markdown-editor">
     <textarea id="markdown-textarea" spellcheck="false"></textarea>
     <div class="editor-buttons">
-        <a href="/help/mind-map-editing.html" class="help-button" style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
+        <a
+            href="/help/mind-map-editing.html"
+            class="help-button"
+            style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
 
         <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
         <button class="editor-button save-button" id="save-edit">Save</button>
@@ -1721,7 +1772,6 @@
             .then(data => {
                 const {topic, markdown} = formatMarkdown(data.response);
                 if (markdown) {
-                    // Track successful generation event
                     let xhr = new XMLHttpRequest();
                     xhr.open("GET", "https://abacus.jasoncameron.dev/hit/mindmapwizard.com/mind-map-generated");
                     xhr.send();
@@ -1827,98 +1877,213 @@
             mindmapContainer.appendChild(errorMessage);
         }
     }
-    function downloadMindmap(format) {
-        const mindmapContainer = document.getElementById('mindmap');
-        const svg = mindmapContainer.querySelector('svg');
-        const topic = document
-            .getElementById('logo-text')
-            .textContent || 'mindmap';
+    const DownloadHandler = {
+        getMindmapElements() {
+            const container = document.getElementById('mindmap');
+            const svg = container?.querySelector('svg');
+            const topic = document.getElementById('logo-text')?.textContent || 'mindmap';
 
-        if (!svg || mindmapContainer.children.length === 0) {
-            alert("No mind map available to download.");
-            return;
-        }
+            if (!svg || container.children.length === 0) {
+                throw new Error("No mind map available to download.");
+            }
 
-        if (format === 'markdown') {
-            const blob = new Blob([currentMarkdown], {type: 'text/markdown'});
-            const element = document.createElement('a');
-            element.href = URL.createObjectURL(blob);
-            element.download = `${topic}.md`;
-            document
-                .body
-                .appendChild(element);
-            element.click();
-            document
-                .body
-                .removeChild(element);
-            return;
-        }
+            return { svg, topic };
+        },
 
-        const serializer = new XMLSerializer();
-        const svgContent = serializer.serializeToString(svg);
+        getSVGData(svg, padding = 30) {
+            const bbox = svg.getBBox();
+            const width = bbox.width + (padding * 2);
+            const height = bbox.height + (padding * 2);
+            
+            const svgCopy = svg.cloneNode(true);
+            svgCopy.setAttribute('width', width);
+            svgCopy.setAttribute('height', height);
+            svgCopy.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
+            
+            const svgContent = new XMLSerializer().serializeToString(svgCopy);
 
-        if (format === 'svg') {
-            const blob = new Blob([svgContent], {type: "image/svg+xml;charset=utf-8"});
+            return { svgContent, width, height };
+        },
+
+        triggerDownload(blob, filename) {
             const url = URL.createObjectURL(blob);
-            downloadFile(url, 'mindmap.svg');
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
             URL.revokeObjectURL(url);
-        } else if (format === 'pdf') {
+        },
+
+        downloadMarkdown(topic) {
+            const blob = new Blob([currentMarkdown], { type: 'text/markdown' });
+            this.triggerDownload(blob, `${topic}.md`);
+        },
+
+        downloadSVG(svgContent, topic) {
+            const blob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
+            this.triggerDownload(blob, `${topic}.svg`);
+        },
+
+        downloadPDF(svgContent, width, height, topic) {
+            const tempSvg = document.createElement('div');
+            tempSvg.innerHTML = svgContent;
+            const svgElement = tempSvg.firstElementChild;
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+
+            const scale = 1.8;
             const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            const ctx = canvas.getContext('2d');
+
             const img = new Image();
-            img.crossOrigin = 'anonymous';
-            const svgBlob = new Blob([svgContent], {type: 'image/svg+xml;charset=utf-8'});
-            const svgUrl = URL.createObjectURL(svgBlob);
+            img.crossOrigin = 'Anonymous';
 
-            img.onload = function () {
-                const scale = 2; 
-                canvas.width = img.width * scale;
-                canvas.height = img.height * scale;
-                context.fillStyle = '#ffffff';
-                context.fillRect(0, 0, canvas.width, canvas.height);
-                context.scale(scale, scale);
-                context.drawImage(img, 0, 0);
+            img.onload = () => {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.scale(scale, scale);
+                ctx.drawImage(img, 0, 0);
 
-                try {
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({
-                        orientation: img.width > img.height
-                            ? 'landscape'
-                            : 'portrait',
-                        unit: 'px',
-                        format: [canvas.width, canvas.height]
-                    });
+                const pdf = new jsPDF({
+                    orientation: width > height ? 'landscape' : 'portrait',
+                    unit: 'pt',
+                    format: 'letter'
+                });
 
-                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-                    pdf.save(`${topic}.pdf`);
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                    alert('Unable to generate PDF. Please try downloading as SVG instead.');
-                } finally {
-                    URL.revokeObjectURL(svgUrl);
-                    canvas.remove();
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                const pdfAspectRatio = pdfWidth / pdfHeight;
+                const imageAspectRatio = width / height;
+                let finalWidth = pdfWidth;
+                let finalHeight = pdfHeight;
+
+                if (imageAspectRatio > pdfAspectRatio) {
+                    finalHeight = pdfWidth / imageAspectRatio;
+                } else {
+                    finalWidth = pdfHeight * imageAspectRatio;
                 }
+
+                const xOffset = (pdfWidth - finalWidth) / 2;
+                const yOffset = (pdfHeight - finalHeight) / 2;
+
+                pdf.addImage(
+                    canvas.toDataURL('image/jpeg', 1.0),
+                    'JPEG',
+                    xOffset,
+                    yOffset,
+                    finalWidth,
+                    finalHeight
+                );
+
+                pdf.save(`${topic}.pdf`);
+                canvas.remove();
             };
 
-            img.src = svgUrl;
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        },
+
+        downloadJPG(svg, topic) {
+            const { svgContent, width, height } = this.getSVGData(svg);
+            const tempSvg = document.createElement('div');
+            tempSvg.innerHTML = svgContent;
+            const svgElement = tempSvg.firstElementChild;
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+
+            const scale = 2.0;
+            const canvas = document.createElement('canvas');
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+
+            img.onload = () => {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.scale(scale, scale);
+                ctx.drawImage(img, 0, 0);
+                this.triggerDownload(
+                    this.dataURLToBlob(canvas.toDataURL('image/jpeg', 1.0)),
+                    `${topic}.jpg`
+                );
+                canvas.remove();
+            };
+
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        },
+
+        dataURLToBlob(dataURL) {
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
+    };
+
+    window.jsPDF = window.jspdf.jsPDF;
+
+    function downloadMindmap(format) {
+        try {
+            const { svg, topic } = DownloadHandler.getMindmapElements();
+
+            if (format === 'markdown') {
+                DownloadHandler.downloadMarkdown(topic);
+                return;
+            }
+
+            const { svgContent, width, height } = DownloadHandler.getSVGData(svg);
+
+            switch (format) {
+                case 'svg':
+                    DownloadHandler.downloadSVG(svgContent, topic);
+                    break;
+                case 'pdf':
+                    DownloadHandler.downloadPDF(svgContent, width, height, topic);
+                    break;
+                case 'jpg':
+                    DownloadHandler.downloadJPG(svg, topic);
+                    break;
+                default:
+                    throw new Error(`Unsupported format: ${format}`);
+            }
+
+            document.getElementById('download-options-popup').style.display = 'none';
+        } catch (error) {
+            console.error('Download error:', error);
+            alert(error.message);
         }
     }
 
-    function downloadFile(url, filename) {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document
-            .body
-            .appendChild(a);
-        a.click();
-        document
-            .body
-            .removeChild(a);
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const downloadBtn = document.getElementById('download-btn');
+        const formatSelect = document.getElementById('download-format');
 
+        downloadBtn.addEventListener('click', function() {
+            const format = formatSelect.value;
+            downloadMindmap(format);
+        });
+    });
 
-        const downloadBtn = document.getElementById('download-mindmap-btn');
+    function downloadAsImage() {
+        try {
+            const { svg, topic } = DownloadHandler.getMindmapElements();
+            DownloadHandler.downloadJPG(svg, topic);
+        } catch (error) {
+            console.error('Download error:', error);
+            alert(error.message);
+        }
+    }        const downloadBtn = document.getElementById('download-mindmap-btn');
         const popup = document.getElementById('download-options-popup');
         const closeBtn = document.getElementById('close-download-options-popup');
         const prompt = document.getElementById('prompt');
@@ -1991,11 +2156,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document
         .getElementById('download-options-popup')
-        .onclick = function () {
-            document
-                .getElementById('download-options-popup')
-                .style
-                .display = 'none';
+        .onclick = function (event) {
+            if (event.target === this) {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'none';
+            }
         }
 
     document
@@ -2058,11 +2225,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     document
         .getElementById('download-options-popup')
-        .onclick = function () {
-            document
-                .getElementById('download-options-popup')
-                .style
-                .display = 'none';
+        .onclick = function (event) {
+            if (event.target === this) {
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'none';
+            }
         }
 
     document
@@ -2093,35 +2262,43 @@ document.addEventListener('DOMContentLoaded', function() {
         const svgCopy = svg.cloneNode(true);
 
         const bbox = svg.getBBox();
-        svgCopy.setAttribute('width', bbox.width + 100);
-        svgCopy.setAttribute('height', bbox.height + 100);
+        const padding = 20; 
+
+        const width = bbox.width + (padding * 2);
+        const height = bbox.height + (padding * 2);
+
+        svgCopy.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
+        svgCopy.setAttribute('width', width);
+        svgCopy.setAttribute('height', height);
 
         const serializer = new XMLSerializer();
         const svgStr = serializer.serializeToString(svgCopy);
-        const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
+        const svgBase64 = btoa(unescape(encodeURIComponent(svgStr)));
+        const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
 
         const img = new Image();
+        img.crossOrigin = 'Anonymous';
         img.onload = function () {
+            const scale = 1.8;
             const canvas = document.createElement('canvas');
-            canvas.width = this.width;
-            canvas.height = this.height;
+            canvas.width = this.width * scale;
+            canvas.height = this.height * scale;
 
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(this, 0, 0);
+            
+            ctx.scale(scale, scale);
+            ctx.drawImage(img, 0, 0);
 
-            canvas.toBlob(function (blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'mindmap.png';
-                a.click();
-                URL.revokeObjectURL(url);
-            }, 'image/png');
+            const url = canvas.toDataURL('image/png', 1.0);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mindmap.png';
+            a.click();
         };
 
-        img.src = URL.createObjectURL(svgBlob);
+        img.src = dataUrl;
         document
             .getElementById('download-options-popup')
             .style
@@ -2336,14 +2513,6 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.remove();
         }
     
-    window.onload = function () {
-        if (localStorage.getItem('disclaimerAccepted') !== "true" && !localStorage.getItem('mindmap-history')) {
-            document
-                .getElementById('legalPopup')
-                .style
-                .display = 'flex';
-        }
-    };
 
     document.querySelector('.info-button').addEventListener('click', function(e) {
             e.preventDefault();
@@ -2352,5 +2521,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
 
