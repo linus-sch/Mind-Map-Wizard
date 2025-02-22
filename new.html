@@ -160,82 +160,6 @@
                 -moz-osx-font-smoothing: grayscale;
             }
 
-            .popup {
-                display: none;
-                position: fixed;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.2);
-                justify-content: center;
-                align-items: center;
-                z-index: 1100;
-            }
-
-            .popup-content {
-                background-color: rgba(255, 255, 255, 0.8);
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-                padding: 20px;
-                border-radius: 20px;
-                text-align: left;
-                max-width: 350px;
-                display: flex;
-                line-height: 1.5;
-                flex-direction: column;
-                align-items: space-between;
-            }
-
-            .accept-terms-button,
-            .decline-terms-button {
-                margin: 5px;
-                padding: 12px 20px;
-                border-radius: 20px;
-                cursor: pointer;
-                font-size: 0.9rem;
-            }
-
-            .accept-terms-button {
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                transition: all 0.3s ease;
-            }
-
-            .decline-terms-button {
-                background-color: var(--border-color);
-                color: black;
-                border: none;
-            }
-
-            .accept-terms-button:hover {
-                background-color: #b73cfe;
-            }
-
-            .decline-terms-button:hover {
-                background-color: rgb(215, 215, 215);
-            }
-
-            .legal-purposes {
-                margin: 0;
-                padding-left: 20px;
-            }
-
-            .popup-content a {
-                background-color: #f0f0f0;
-                padding: 3px;
-                border-radius: 6px;
-                text-decoration: none;
-                transition: all 0.1s ease;
-            }
-            .popup-content a:hover {
-                background-color: #e6e6e6;
-            }
-
-            .whitespace {
-                height: 40px;
-            }
-
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
                 margin: 0;
@@ -1276,7 +1200,6 @@
             }
         </style>
     </head>
-    <script async="async" src="/consent.js"></script>
     <body>
 
         <div class="popup" id="legalPopup">
@@ -1455,7 +1378,7 @@
 </div>
 
 <div id="mindmap"></div>
-<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information. / Pro AI</small>
+<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information - Pro AI</small>
 
 <div id="download-options-popup" class="download-options-popup">
     <div class="download-options-popup-content">
@@ -1526,8 +1449,10 @@
     <a href="/terms-of-use.html">Terms of Use</a>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('prompt').focus();
+    document.addEventListener('DOMContentLoaded', function () {
+        document
+            .getElementById('prompt')
+            .focus();
     });
     let currentMarkdown = '';
     let currentMindmap = {
@@ -1588,8 +1513,12 @@
             <div class="loading-spinner"></div>
         `;
 
-        document.body.appendChild(overlay);
-        document.body.appendChild(dialog);
+        document
+            .body
+            .appendChild(overlay);
+        document
+            .body
+            .appendChild(dialog);
 
         try {
             updateCurrentMindmap();
@@ -1650,10 +1579,9 @@
             `;
 
             if (window.dataLayer) {
-                window.dataLayer.push({
-                    'event': 'mindmap_share_error',
-                    'action': 'Share Failed'
-                });
+                window
+                    .dataLayer
+                    .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
             }
         } finally {
             if (shareButton) {
@@ -1661,8 +1589,7 @@
                 shareButton.style.opacity = '1';
             }
         }
-        }
-    
+    }
 
     function copyShareLink() {
         const shareLink = document.querySelector('.share-link');
@@ -1699,16 +1626,9 @@
         return {topic, markdown};
     }
 
-
-
     function generateMindmap(mindmapTopic, isRegenerate = false) {
         if (!mindmapTopic) 
             return;
-        
-        if (!localStorage.getItem('disclaimerAccepted') && !isRegenerate) {
-            showPopup();
-            return;
-        }
 
         if (!isRegenerate) {
             document
@@ -1728,10 +1648,6 @@
                 .getElementById("ai-content-disclaimer")
                 .style
                 .display = "block";
-            document
-                .getElementById("legals-disclaimer")
-                .style
-                .display = "none";
             document
                 .getElementById("mindmap")
                 .style
@@ -1759,13 +1675,13 @@
             .style
             .display = "block";
 
-        fetch("https://pro-ai.glitch.me/api-chat", {
-            method: "POST",
+        fetch('https://generate.mindmapwizard.com', {
+            method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(
-                {input: `Please generate a Markdown text formatted in Markdown so that I can later generate a mind map out of it using Markmap. You can also use Markdown formatting: **strong**, *italic*  inline code or even links: - [Link text](URL) But use formatting only if really useful. The answer should be structured like this: topic="Here you formulate a title for the mind map.", markdown="(Here is the Markdown, and the title is repeated at the beginning)" The mind map should be about: ${mindmapTopic}`}
+                {input: mindmapTopic}
             )
         })
             .then(response => response.json())
@@ -1773,7 +1689,10 @@
                 const {topic, markdown} = formatMarkdown(data.response);
                 if (markdown) {
                     let xhr = new XMLHttpRequest();
-                    xhr.open("GET", "https://abacus.jasoncameron.dev/hit/mindmapwizard.com/mind-map-generated");
+                    xhr.open(
+                        "GET",
+                        "https://abacus.jasoncameron.dev/hit/mindmapwizard.com/mind-map-generated"
+                    );
                     xhr.send();
                     renderMindmap(markdown);
                     if (!isRegenerate) {
@@ -1880,29 +1799,34 @@
     const DownloadHandler = {
         getMindmapElements() {
             const container = document.getElementById('mindmap');
-            const svg = container?.querySelector('svg');
-            const topic = document.getElementById('logo-text')?.textContent || 'mindmap';
+            const svg = container
+                ?.querySelector('svg');
+            const topic = document.getElementById('logo-text')
+                ?.textContent || 'mindmap';
 
             if (!svg || container.children.length === 0) {
                 throw new Error("No mind map available to download.");
             }
 
-            return { svg, topic };
+            return {svg, topic};
         },
 
         getSVGData(svg, padding = 30) {
             const bbox = svg.getBBox();
             const width = bbox.width + (padding * 2);
             const height = bbox.height + (padding * 2);
-            
+
             const svgCopy = svg.cloneNode(true);
             svgCopy.setAttribute('width', width);
             svgCopy.setAttribute('height', height);
-            svgCopy.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
-            
+            svgCopy.setAttribute(
+                'viewBox',
+                `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`
+            );
+
             const svgContent = new XMLSerializer().serializeToString(svgCopy);
 
-            return { svgContent, width, height };
+            return {svgContent, width, height};
         },
 
         triggerDownload(blob, filename) {
@@ -1910,19 +1834,23 @@
             const link = document.createElement('a');
             link.href = url;
             link.download = filename;
-            document.body.appendChild(link);
+            document
+                .body
+                .appendChild(link);
             link.click();
-            document.body.removeChild(link);
+            document
+                .body
+                .removeChild(link);
             URL.revokeObjectURL(url);
         },
 
         downloadMarkdown(topic) {
-            const blob = new Blob([currentMarkdown], { type: 'text/markdown' });
+            const blob = new Blob([currentMarkdown], {type: 'text/markdown'});
             this.triggerDownload(blob, `${topic}.md`);
         },
 
         downloadSVG(svgContent, topic) {
-            const blob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
+            const blob = new Blob([svgContent], {type: "image/svg+xml;charset=utf-8"});
             this.triggerDownload(blob, `${topic}.svg`);
         },
 
@@ -1944,18 +1872,26 @@
             img.onload = () => {
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
+
                 ctx.scale(scale, scale);
                 ctx.drawImage(img, 0, 0);
 
                 const pdf = new jsPDF({
-                    orientation: width > height ? 'landscape' : 'portrait',
+                    orientation: width > height
+                        ? 'landscape'
+                        : 'portrait',
                     unit: 'pt',
                     format: 'letter'
                 });
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const pdfWidth = pdf
+                    .internal
+                    .pageSize
+                    .getWidth();
+                const pdfHeight = pdf
+                    .internal
+                    .pageSize
+                    .getHeight();
 
                 const pdfAspectRatio = pdfWidth / pdfHeight;
                 const imageAspectRatio = width / height;
@@ -1984,11 +1920,13 @@
                 canvas.remove();
             };
 
-            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            img.src = 'data:image/svg+xml;base64,' + btoa(
+                unescape(encodeURIComponent(svgData))
+            );
         },
 
         downloadJPG(svg, topic) {
-            const { svgContent, width, height } = this.getSVGData(svg);
+            const {svgContent, width, height} = this.getSVGData(svg);
             const tempSvg = document.createElement('div');
             tempSvg.innerHTML = svgContent;
             const svgElement = tempSvg.firstElementChild;
@@ -2015,7 +1953,9 @@
                 canvas.remove();
             };
 
-            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            img.src = 'data:image/svg+xml;base64,' + btoa(
+                unescape(encodeURIComponent(svgData))
+            );
         },
 
         dataURLToBlob(dataURL) {
@@ -2027,7 +1967,7 @@
             while (n--) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
-            return new Blob([u8arr], { type: mime });
+            return new Blob([u8arr], {type: mime});
         }
     };
 
@@ -2035,14 +1975,14 @@
 
     function downloadMindmap(format) {
         try {
-            const { svg, topic } = DownloadHandler.getMindmapElements();
+            const {svg, topic} = DownloadHandler.getMindmapElements();
 
             if (format === 'markdown') {
                 DownloadHandler.downloadMarkdown(topic);
                 return;
             }
 
-            const { svgContent, width, height } = DownloadHandler.getSVGData(svg);
+            const {svgContent, width, height} = DownloadHandler.getSVGData(svg);
 
             switch (format) {
                 case 'svg':
@@ -2058,18 +1998,21 @@
                     throw new Error(`Unsupported format: ${format}`);
             }
 
-            document.getElementById('download-options-popup').style.display = 'none';
+            document
+                .getElementById('download-options-popup')
+                .style
+                .display = 'none';
         } catch (error) {
             console.error('Download error:', error);
             alert(error.message);
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const downloadBtn = document.getElementById('download-btn');
         const formatSelect = document.getElementById('download-format');
 
-        downloadBtn.addEventListener('click', function() {
+        downloadBtn.addEventListener('click', function () {
             const format = formatSelect.value;
             downloadMindmap(format);
         });
@@ -2077,73 +2020,75 @@
 
     function downloadAsImage() {
         try {
-            const { svg, topic } = DownloadHandler.getMindmapElements();
+            const {svg, topic} = DownloadHandler.getMindmapElements();
             DownloadHandler.downloadJPG(svg, topic);
         } catch (error) {
             console.error('Download error:', error);
             alert(error.message);
         }
-    }        const downloadBtn = document.getElementById('download-mindmap-btn');
-        const popup = document.getElementById('download-options-popup');
-        const closeBtn = document.getElementById('close-download-options-popup');
-        const prompt = document.getElementById('prompt');
-        const regenerateBtn = document.getElementById('regenerate-button');
-        const generateBtn = document.getElementById('generate-mindmap-btn');
-        const editModeButton = document.getElementById('edit-mode-button');
-        const cancelEditButton = document.getElementById('cancel-edit');
-        const saveEditButton = document.getElementById('save-edit');
-        loadRecentMindmaps();
+    }
+    const downloadBtn = document.getElementById('download-mindmap-btn');
+    const popup = document.getElementById('download-options-popup');
+    const closeBtn = document.getElementById('close-download-options-popup');
+    const prompt = document.getElementById('prompt');
+    const regenerateBtn = document.getElementById('regenerate-button');
+    const generateBtn = document.getElementById('generate-mindmap-btn');
+    const editModeButton = document.getElementById('edit-mode-button');
+    const cancelEditButton = document.getElementById('cancel-edit');
+    const saveEditButton = document.getElementById('save-edit');
+    loadRecentMindmaps();
 
-        editModeButton.addEventListener('click', () => toggleEditMode(true));
-        cancelEditButton.addEventListener('click', () => toggleEditMode(false));
-        saveEditButton.addEventListener('click', updateMindmapFromEdit);
+    editModeButton.addEventListener('click', () => toggleEditMode(true));
+    cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+    saveEditButton.addEventListener('click', updateMindmapFromEdit);
 
-        generateBtn.addEventListener('click', function () {
-            const mindmapTopic = prompt
-                .value
-                .trim();
-            if (mindmapTopic) {
-                generateMindmap(mindmapTopic);
-            }
-        });
-
-        regenerateBtn.addEventListener('click', function () {
-            console.log('Regenerate-Button clicked!');
-
-            const currentTopic = document
-                .getElementById("logo-text")
-                .textContent;
-            if (!currentTopic) {
-                console.error("No topic available to regenerate the mindmap.");
-                return;
-            }
-
-            generateMindmap(currentTopic, true);
-        });
-
-        downloadBtn.addEventListener('click', function () {
-            popup.style.display = 'block';
-        });
-
-        closeBtn.addEventListener('click', function () {
-            popup.style.display = 'none';
-        });
-
-        popup.addEventListener('click', function (event) {
-            if (event.target === popup) {
-                popup.style.display = 'none';
-            }
-        });
-
-
-        const mindmapTopic = getQueryParameter('q');
+    generateBtn.addEventListener('click', function () {
+        const mindmapTopic = prompt
+            .value
+            .trim();
         if (mindmapTopic) {
             generateMindmap(mindmapTopic);
         }
+    });
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('prompt').focus();
-});
+    regenerateBtn.addEventListener('click', function () {
+        console.log('Regenerate-Button clicked!');
+
+        const currentTopic = document
+            .getElementById("logo-text")
+            .textContent;
+        if (!currentTopic) {
+            console.error("No topic available to regenerate the mindmap.");
+            return;
+        }
+
+        generateMindmap(currentTopic, true);
+    });
+
+    downloadBtn.addEventListener('click', function () {
+        popup.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', function () {
+        popup.style.display = 'none';
+    });
+
+    popup.addEventListener('click', function (event) {
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
+
+    const mindmapTopic = getQueryParameter('q');
+    if (mindmapTopic) {
+        generateMindmap(mindmapTopic);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document
+            .getElementById('prompt')
+            .focus();
+    });
 
     document
         .getElementById('download-mindmap-btn')
@@ -2262,12 +2207,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const svgCopy = svg.cloneNode(true);
 
         const bbox = svg.getBBox();
-        const padding = 20; 
+        const padding = 20;
 
         const width = bbox.width + (padding * 2);
         const height = bbox.height + (padding * 2);
 
-        svgCopy.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
+        svgCopy.setAttribute(
+            'viewBox',
+            `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`
+        );
         svgCopy.setAttribute('width', width);
         svgCopy.setAttribute('height', height);
 
@@ -2287,7 +2235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
+
             ctx.scale(scale, scale);
             ctx.drawImage(img, 0, 0);
 
@@ -2405,51 +2353,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function shareMindmap() {
-    const shareButton = document.querySelector('.share-button');
-    if (shareButton) {
-        shareButton.disabled = true;
-        shareButton.style.opacity = '0.5';
-    }
-
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    overlay.style.display = 'block';
-
-    const dialog = document.createElement('div');
-    dialog.className = 'share-dialog';
-    dialog.innerHTML = `
-        <h3>Share Mindmap</h3>
-        <p>Generating share link...</p>
-        <div class="loading-spinner"></div>
-    `;
-
-    document.body.appendChild(overlay);
-    document.body.appendChild(dialog);
-
-    try {
-        updateCurrentMindmap();
-        if (!currentMindmap.markdown) {
-            throw new Error('No mind map content available to share');
+        const shareButton = document.querySelector('.share-button');
+        if (shareButton) {
+            shareButton.disabled = true;
+            shareButton.style.opacity = '0.5';
         }
-        const response = await fetch('https://api.mindmapwizard.com/share', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(
-                {topic: currentMindmap.topic, markdown: currentMindmap.markdown, timestamp: new Date().toISOString()}
-            )
-        });
-
-        const data = await response.json();
-
-        if (window.dataLayer) {
-            window
-                .dataLayer
-                .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
-        }
-
-        const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
 
         const overlay = document.createElement('div');
         overlay.className = 'overlay';
@@ -2458,6 +2366,50 @@ document.addEventListener('DOMContentLoaded', function() {
         const dialog = document.createElement('div');
         dialog.className = 'share-dialog';
         dialog.innerHTML = `
+        <h3>Share Mindmap</h3>
+        <p>Generating share link...</p>
+        <div class="loading-spinner"></div>
+    `;
+
+        document
+            .body
+            .appendChild(overlay);
+        document
+            .body
+            .appendChild(dialog);
+
+        try {
+            updateCurrentMindmap();
+            if (!currentMindmap.markdown) {
+                throw new Error('No mind map content available to share');
+            }
+            const response = await fetch('https://api.mindmapwizard.com/share', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {topic: currentMindmap.topic, markdown: currentMindmap.markdown, timestamp: new Date().toISOString()}
+                )
+            });
+
+            const data = await response.json();
+
+            if (window.dataLayer) {
+                window
+                    .dataLayer
+                    .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
+            }
+
+            const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            overlay.style.display = 'block';
+
+            const dialog = document.createElement('div');
+            dialog.className = 'share-dialog';
+            dialog.innerHTML = `
             <h3>Share Mindmap</h3>
             <p>Copy this link to share your mindmap:</p>
             <input type="text" class="share-link" value="${shareUrl}" readonly>
@@ -2467,16 +2419,16 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        document
-            .body
-            .appendChild(overlay);
-        document
-            .body
-            .appendChild(dialog);
+            document
+                .body
+                .appendChild(overlay);
+            document
+                .body
+                .appendChild(dialog);
 
-    } catch (error) {
-        console.error('Error sharing mindmap:', error);
-        dialog.innerHTML = `
+        } catch (error) {
+            console.error('Error sharing mindmap:', error);
+            dialog.innerHTML = `
             <h3>Share Mindmap</h3>
             <p style="color: red;">Failed to share mindmap. Please try again.</p>
             <div class="dialog-buttons">
@@ -2484,19 +2436,18 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        if (window.dataLayer) {
-            window.dataLayer.push({
-                'event': 'mindmap_share_error',
-                'action': 'Share Failed'
-            });
-        }
-    } finally {
-        if (shareButton) {
-            shareButton.disabled = false;
-            shareButton.style.opacity = '1';
+            if (window.dataLayer) {
+                window
+                    .dataLayer
+                    .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
+            }
+        } finally {
+            if (shareButton) {
+                shareButton.disabled = false;
+                shareButton.style.opacity = '1';
+            }
         }
     }
-}
 
     function copyShareLink() {
         const input = document.querySelector('.share-link');
@@ -2513,10 +2464,14 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.remove();
         }
     
-
-    document.querySelector('.info-button').addEventListener('click', function(e) {
+    document
+        .querySelector('.info-button')
+        .addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector('.info-menu').classList.toggle('show');
+            document
+                .querySelector('.info-menu')
+                .classList
+                .toggle('show');
         });
 </script>
 </body>
