@@ -1688,12 +1688,6 @@
             .then(data => {
                 const {topic, markdown} = formatMarkdown(data.response);
                 if (markdown) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open(
-                        "GET",
-                        "https://abacus.jasoncameron.dev/hit/mindmapwizard.com/mind-map-generated"
-                    );
-                    xhr.send();
                     renderMindmap(markdown);
                     if (!isRegenerate) {
                         saveMindmapToHistory(topic || mindmapTopic, markdown);
@@ -2476,6 +2470,4 @@
 </script>
 </body>
 </html>
-
-
 
