@@ -1198,6 +1198,60 @@
             .help-link:hover {
                 border: 1px solid #ddd;
             }
+
+        #ratingPopup {
+            display: none;
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            max-width: 300px;
+            background-color: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1900;
+            padding: 12px 24px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 30px;
+            text-align: center;
+            opacity: 0;
+        }
+
+        #ratingPopup.show {
+            display: block;
+            bottom: 20px;
+            opacity: 1;
+        }
+
+        .rating {
+            display: inline-block;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            float: right;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+
+        .rating label:before {
+            content: '\2605';
+            font-size: 24px;
+            padding: 0 2px;
+        }
+
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+
         </style>
     </head>
     <body>
@@ -1448,6 +1502,28 @@
     <a href="/privacy-policy.html">Privacy Policy</a>
     <a href="/terms-of-use.html">Terms of Use</a>
 </div>
+
+
+<div id="ratingPopup">
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 500;">Rate us!</h3>
+    <form id="ratingForm">
+        <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5">
+            <label for="star5"></label>
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4"></label>
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3"></label>
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2"></label>
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1"></label>
+        </div>
+        <input type="hidden" name="source" value="Mind Map Wizard - Rate us!">
+    </form>
+</div>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document
@@ -2466,6 +2542,49 @@
                 .querySelector('.info-menu')
                 .classList
                 .toggle('show');
+        });
+
+
+        if (localStorage.getItem('hasRated')) {
+            console.log('User has already rated');
+        } else {
+            setTimeout(() => {
+                document.getElementById('ratingPopup').classList.add('show');
+            }, 25000);
+        }
+
+        function closeRatingPopup() {
+            const popup = document.getElementById('ratingPopup');
+            popup.style.opacity = '0';
+            popup.style.transform = 'translateX(-50%) translateY(20px)';
+            setTimeout(() => {
+                popup.classList.remove('show');
+                popup.style.opacity = '';
+                popup.style.transform = '';
+            }, 500);
+        }
+
+        document.querySelectorAll('.rating input').forEach(input => {
+            input.addEventListener('change', function() {
+                const rating = this.value;
+                const scriptURL = "https://post.mindmapwizard.com";
+                const formData = new FormData();
+                formData.set('rating', `${rating}/5`);
+                formData.set('source', 'Mind Map Wizard - Rate us');
+
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    localStorage.setItem('hasRated', 'true');
+                    closeRatingPopup();
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    alert('Sorry, there was an error submitting your rating.');
+                });
+            });
         });
 </script>
 </body>
