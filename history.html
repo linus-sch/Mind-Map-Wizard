@@ -185,7 +185,7 @@
                 left: 50%;
                 transform: translateX(-50%);
                 border: none;
-                background-color: transparent;
+                background-color: rgba(254, 226, 226, 0.55);
                 padding: 0.5rem 1rem;
                 border-radius: 0.575rem;
                 cursor: pointer;
@@ -194,7 +194,7 @@
             }
 
             .clear-history:hover {
-                background-color: rgba(254, 226, 226, 0.55);
+                background-color: rgba(255, 190, 190, 0.55);
                 border-radius: 10px;
                 padding: 0.5rem 1rem;
             }
@@ -401,6 +401,8 @@
                 border-radius: 0.5rem;
                 cursor: pointer;
                 transition: all 0.2s ease;
+                background-color: var(--card-background);
+                z-index: 1000;
             }
 
             .action-button:hover {
@@ -420,10 +422,10 @@
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                background: white;
-                padding: 1.5rem;
-                border-radius: 0.5rem;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                background: var(--card-background);
+                padding: 24px;
+                border-radius: 20px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
                 width: 90%;
                 max-width: 400px;
                 z-index: 1100;
@@ -432,38 +434,58 @@
             .rename-dialog input {
                 width: 96%;
                 padding: 0.5rem;
-                border: 1px solid #e2e8f0;
+                border: 1px solid var(--border-color);
                 border-radius: 0.52rem;
                 font-size: 1rem;
             }
 
             .rename-dialog h3 {
+                margin: 0 0 16px;
                 font-size: 1.5rem;
+                color: var(--text-color);
             }
 
             .dialog-buttons {
                 display: flex;
                 justify-content: flex-end;
-                gap: 0.75rem;
-                margin-top: 1rem;
+                gap: 10px;
+                margin-top: 20px;
             }
 
             .dialog-button {
-                padding: 0.5rem 1rem;
-                border-radius: 0.52rem;
+                padding: 8px 16px;
+                border-radius: 20px;
                 border: none;
                 cursor: pointer;
-                font-size: 0.875rem;
-                transition: background-color 0.2s ease;
+                font-size: 0.9rem;
+                transition: background-color 0.2s;
+            }
+
+            .delete-button {
+                padding: 8px 16px;
+                border-radius: 20px;
+                border: none;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background-color 0.2s;
             }
 
             .dialog-button.cancel {
-                background-color: #f1f5f9;
-                color: #64748b;
+                background-color: var(--border-color);
+                color: var(--text-color);
             }
 
             .dialog-button.cancel:hover {
                 background-color: #e2e8f0;
+            }
+
+            .delete-button.confirm {
+                background-color: #ef4444;
+                color: white;
+            }
+
+            .delete-button.confirm:hover {
+                background-color: #dc2626;
             }
 
             .dialog-button.confirm {
@@ -475,28 +497,76 @@
                 background-color: var(--secondary-color);
             }
 
-            .download-options-popup {
+            .delete-popup {
                 position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 bottom: 0;
                 background: rgba(0, 0, 0, 0.32);
-                display: none;
+                display: flex;
                 align-items: center;
                 justify-content: center;
-                z-index: 1000;
+                z-index: 1100;
             }
 
-            .download-options-popup-content {
+            .delete-popup-content {
                 background: var(--card-background);
-                border-radius: 28px;
+                border-radius: 20px;
                 box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
                 width: 100%;
                 max-width: 400px;
                 padding: 24px;
             }
 
+            .delete-popup-content h3 {
+                margin: 0 0 16px;
+                font-size: 1.5rem;
+                color: var(--text-color);
+            }
+
+            .delete-popup-content p {
+                margin: 0 0 24px;
+                color: #64748b;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .download-options-popup {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.32);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 1100;
+            }
+
+            .download-options-popup-content {
+                background: var(--card-background);
+                border-radius: 20px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+                width: 100%;
+                max-width: 400px;
+                padding: 24px;
+            }
+
+            .download-options-popup-content h3 {
+                margin: 0 0 16px;
+                font-size: 1.5rem;
+                color: var(--text-color);
+            }
+
+            .download-options-popup-content p {
+                margin: 0 0 24px;
+                color: #64748b;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
             .download-options-popup {
                 position: fixed;
                 top: 0;
@@ -512,7 +582,7 @@
 
             .download-options-popup-content {
                 background: var(--card-background);
-                border-radius: 28px;
+                border-radius: 20px;
                 box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
                 width: 100%;
                 max-width: 400px;
@@ -660,7 +730,7 @@
                 text-decoration: none;
                 color: var(--text-color);
                 transition: all 0.3s ease;
-                z-index: 1000;
+                z-index: 900;
                 cursor: pointer;
             }
 
@@ -779,12 +849,12 @@
                 transform: translateX(-50%);
                 width: 90%;
                 max-width: 800px;
-                height: calc(100vh - 140px);
+                height: calc(100vh - 160px);
                 z-index: 1201;
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                padding: 20px;
+                background: var(--card-background);
+                border-radius: 20px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+                padding: 24px;
             }
 
             .markdown-editor textarea {
@@ -812,7 +882,7 @@
             .editor-button {
                 padding: 8px 16px;
                 border: none;
-                border-radius: 8px;
+                border-radius: 20px;
                 cursor: pointer;
                 font-size: 14px;
                 transition: background-color 0.2s;
@@ -857,7 +927,7 @@
                 transform: translate(-50%, -50%);
                 background: white;
                 padding: 1.5rem;
-                border-radius: 0.5rem;
+                border-radius: 20px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 width: 90%;
                 max-width: 400px;
@@ -996,224 +1066,286 @@
             }
         </style>
     </head>
-    <script async="async" src="/consent.js"></script>
 
-        <div id="history-view">
-            <div class="header">
-                <div class="header-left">
-                    <a href="/" style="text-decoration: none;">
-                        <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
-                            <span class="logo-text">Mind Map History</span></h1>
-                    </a>
+    <div id="history-view">
+        <div class="header">
+            <div class="header-left">
+                <a href="/" style="text-decoration: none;">
+                    <h1><img src="/img/favicon96.png" height="40" width="40" class="logo">
+                        <span class="logo-text">Mind Map History</span></h1>
+                </a>
+            </div>
+
+            <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
+                New Mind Map
+                <div class="icon">
+                    <svg
+                        height="24"
+                        width="24"
+                        viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path
+                            d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
                 </div>
+            </button>
+        </div>
+        <div class="options">
+            <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
+                Back</a>
+        </div>
 
-                <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
-                    New Mind Map
-                    <div class="icon">
-                        <svg
-                            height="24"
-                            width="24"
-                            viewbox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 0h24v24H0z" fill="none"></path>
-                            <path
-                                d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
-                                fill="currentColor"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"></path>
-                        </svg>
-                    </div>
+        <div class="container">
+            <button class="options-toggle" id="optionsToggle">Options</button>
+
+            <div class="mindmap-list" id="mindmap-list"></div>
+            <button class="clear-history" onclick="clearHistory()" id="clearHistory">Clear History</button>
+        </div>
+    </div>
+
+    <div id="mindmap-viewer" class="mindmap-viewer">
+        <div class="editor-overlay" id="editor-overlay"></div>
+        <div class="markdown-editor" id="markdown-editor">
+            <textarea id="markdown-textarea" spellcheck="false"></textarea>
+
+            <div class="editor-buttons">
+                <a
+                    href="/help/mind-map-editing.html"
+                    class="help-button"
+                    style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
+
+                <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
+                <button class="editor-button save-button" id="save-edit">Save</button>
+            </div>
+        </div>
+        <div class="viewer-header">
+            <button class="viewer-back-button" onclick="closeViewer()"><img
+                src="/img/icons/arrow-back-primary.svg"
+                height="22px"
+                width="22px"
+                class="viewer-back-button-icon">
+                Back</button>
+            <h2 class="viewer-title" id="viewer-title"></h2>
+            <div class="viewer-controls">
+                <button class="edit-mode-button" id="edit-mode-button">
+                    <img src="/img/icons/edit-icon.svg" height="22px" width="25px" alt="Edit">
+                </button>
+                <button
+                    onclick="document.getElementById('download-options-popup').style.display = 'flex'"
+                    style="background: none; border: none;">
+                    <img
+                        src="/img/icons/download-icon.png"
+                        height="28px"
+                        width="28px"
+                        alt="Download"
+                        class="download-icon">
+                </button>
+                <button onclick="shareMindmap()" class="share-button">
+                    <img
+                        src="/img/icons/share-icon.svg"
+                        stroke="#ffffff"
+                        height="25px"
+                        width="25px"
+                        alt="Share">Share
                 </button>
             </div>
-            <div class="options">
-                <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
-                    Back</a>
-            </div>
 
-            <div class="container">
-                <button class="options-toggle" id="optionsToggle">Options</button>
-
-                <div class="mindmap-list" id="mindmap-list"></div>
-                <button class="clear-history" onclick="clearHistory()" id="clearHistory">Clear History</button>
-            </div>
         </div>
 
-        <div id="mindmap-viewer" class="mindmap-viewer">
-            <div class="editor-overlay" id="editor-overlay"></div>
-            <div class="markdown-editor" id="markdown-editor">
-                <textarea id="markdown-textarea" spellcheck="false"></textarea>
+        <div class="viewer-content" id="viewer-content"></div>
+    </div>
 
-                <div class="editor-buttons">
+    <div id="download-options-popup" class="download-options-popup">
+        <div class="download-options-popup-content">
+            <div class="popup-header">
+                <h2>Download Mind Map</h2>
+                <button class="close-button" id="close-download-options-popup">
+                    <svg width="24" height="24" viewbox="0 0 24 24"><path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
+            </div>
+            <div class="download-options">
+                <div class="format-selector">
+                    <label for="download-format">File format</label>
+                    <select id="download-format" class="material-dropdown">
+                        <option value="jpg">JPG - Image</option>
+                        <option value="svg">SVG - Vector Graphics</option>
+                        <option value="pdf">PDF - Document</option>
+                        <option value="markdown">Markdown - Text</option>
+                    </select>
+                </div>
+                <button class="download-button primary" id="download-btn">
+                    Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup" id="legalPopup">
+        <div class="popup-content">
+            <div>
+                <h2>🍪 Cookies</h2>
+                <p>To proceed, you need to agree to our
+                    <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
+                    and
                     <a
-                        href="/help/mind-map-editing.html"
-                        class="help-button"
-                        style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
-
-                    <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
-                    <button class="editor-button save-button" id="save-edit">Save</button>
-                </div>
-            </div>
-            <div class="viewer-header">
-                <button class="viewer-back-button" onclick="closeViewer()"><img
-                    src="/img/icons/arrow-back-primary.svg"
-                    height="22px"
-                    width="22px"
-                    class="viewer-back-button-icon">
-                    Back</button>
-                <h2 class="viewer-title" id="viewer-title"></h2>
-                <div class="viewer-controls">
-                    <button class="edit-mode-button" id="edit-mode-button">
-                        <img src="/img/icons/edit-icon.svg" height="22px" width="25px" alt="Edit">
-                    </button>
-                    <button
-                        onclick="document.getElementById('download-options-popup').style.display = 'flex'"
-                        style="background: none; border: none;">
-                        <img
-                            src="/img/icons/download-icon.png"
-                            height="28px"
-                            width="28px"
-                            alt="Download"
-                            class="download-icon">
-                    </button>
-                    <button onclick="shareMindmap()" class="share-button">
-                        <img
-                            src="/img/icons/share-icon.svg"
-                            stroke="#ffffff"
-                            height="25px"
-                            width="25px"
-                            alt="Share">Share
-                    </button>
-                </div>
-
-            </div>
-
-            <div class="viewer-content" id="viewer-content"></div>
-        </div>
-
-        <div id="download-options-popup" class="download-options-popup">
-            <div class="download-options-popup-content">
-                <div class="popup-header">
-                    <h2>Download Mind Map</h2>
-                    <button class="close-button" id="close-download-options-popup">
-                        <svg width="24" height="24" viewbox="0 0 24 24"><path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                    </button>
-                </div>
-                <div class="download-options">
-                    <div class="format-selector">
-                        <label for="download-format">File format</label>
-                        <select id="download-format" class="material-dropdown">
-                            <option value="jpg">JPG - Image</option>
-                            <option value="svg">SVG - Vector Graphics</option>
-                            <option value="pdf">PDF - Document</option>
-                            <option value="markdown">Markdown - Text</option>
-                        </select>
-                    </div>
-                    <button class="download-button primary" id="download-btn">
-                        Download
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="popup" id="legalPopup">
-            <div class="popup-content">
-                <div>
-                    <h2>🍪 Cookies</h2>
-                    <p>To proceed, you need to agree to our
-                        <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
-                        and
-                        <a
-                            href="/privacy-policy.html"
-                            onclick="event.preventDefault();"
-                            style="color: var(--text-color);">Privacy Policy</a>
-                        <br>
-                        <div style="height: 15px;"></div>
-
-                        <strong>Purposes:</strong>
-                        <ul class="legal-purposes">
-                            <li>Functionality</li>
-                            <li>Analytics</li>
-                        </ul>
-                    </p>
+                        href="/privacy-policy.html"
+                        onclick="event.preventDefault();"
+                        style="color: var(--text-color);">Privacy Policy</a>
+                    <br>
                     <div style="height: 15px;"></div>
-                </div>
-                <button onclick="closePopup()" class="decline-terms-button">Decline</button>
-                <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
 
+                    <strong>Purposes:</strong>
+                    <ul class="legal-purposes">
+                        <li>Functionality</li>
+                        <li>Analytics</li>
+                    </ul>
+                </p>
+                <div style="height: 15px;"></div>
             </div>
+            <button onclick="closePopup()" class="decline-terms-button">Decline</button>
+            <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
 
         </div>
 
-        <div id="mindmap-viewer"></div>
+    </div>
 
-        <div class="info-button" onclick="toggleInfoMenu()">
-            <img src="/img/icons/info-icon.svg" alt="Info" width="22" height="22">
-        </div>
+    <div id="mindmap-viewer"></div>
 
-        <div class="info-menu" id="infoMenu">
-            <a href="/feedback.html">Feedback</a>
-            <a href="/privacy-policy.html">Privacy Policy</a>
-            <a href="/terms-of-use.html">Terms of Use</a>
-        </div>
+    <div class="info-button" onclick="toggleInfoMenu()">
+        <img src="/img/icons/info-icon.svg" alt="Info" width="22" height="22">
+    </div>
 
-        <script>
-            function toggleInfoMenu() {
-                const menu = document.getElementById('infoMenu');
-                menu
-                    .classList
-                    .toggle('show');
-            }
-
-            document.addEventListener('click', function (event) {
-                const menu = document.getElementById('infoMenu');
-                const button = document.querySelector('.info-button');
-                if (!menu.contains(event.target) && !button.contains(event.target)) {
-                    menu
-                        .classList
-                        .remove('show');
-                }
-            });
-        </script>
-    </body>
+    <div class="info-menu" id="infoMenu">
+        <a href="/feedback.html">Feedback</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms-of-use.html">Terms of Use</a>
+    </div>
 
     <script>
-        function downloadMindmap(format) {
-            try {
-                const mindmapContainer = document.getElementById('viewer-content');
-                const svg = mindmapContainer.querySelector('svg');
+        function toggleInfoMenu() {
+            const menu = document.getElementById('infoMenu');
+            menu
+                .classList
+                .toggle('show');
+        }
 
-                if (!svg) {
-                    alert("No mind map available to export.");
-                    return;
-                }
+        document.addEventListener('click', function (event) {
+            const menu = document.getElementById('infoMenu');
+            const button = document.querySelector('.info-button');
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu
+                    .classList
+                    .remove('show');
+            }
+        });
+    </script>
+</body>
 
-                const svgCopy = svg.cloneNode(true);
-                const bbox = svg.getBBox();
-                const padding = 20;
+<script>
+    function downloadMindmap(format) {
+        try {
+            const mindmapContainer = document.getElementById('viewer-content');
+            const svg = mindmapContainer.querySelector('svg');
 
-                const width = bbox.width + (padding * 2);
-                const height = bbox.height + (padding * 2);
+            if (!svg) {
+                alert("No mind map available to export.");
+                return;
+            }
 
-                svgCopy.setAttribute(
-                    'viewBox',
-                    `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`
-                );
-                svgCopy.setAttribute('width', width);
-                svgCopy.setAttribute('height', height);
+            const svgCopy = svg.cloneNode(true);
+            const bbox = svg.getBBox();
+            const padding = 20;
 
-                const serializer = new XMLSerializer();
-                const svgStr = serializer.serializeToString(svgCopy);
-                const svgBase64 = btoa(unescape(encodeURIComponent(svgStr)));
+            const width = bbox.width + (padding * 2);
+            const height = bbox.height + (padding * 2);
 
-                if (format === 'svg') {
-                    const blob = new Blob([svgStr], {type: 'image/svg+xml'});
+            svgCopy.setAttribute(
+                'viewBox',
+                `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`
+            );
+            svgCopy.setAttribute('width', width);
+            svgCopy.setAttribute('height', height);
+
+            const serializer = new XMLSerializer();
+            const svgStr = serializer.serializeToString(svgCopy);
+            const svgBase64 = btoa(unescape(encodeURIComponent(svgStr)));
+
+            if (format === 'svg') {
+                const blob = new Blob([svgStr], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mindmap.svg';
+                document
+                    .body
+                    .appendChild(a);
+                a.click();
+                document
+                    .body
+                    .removeChild(a);
+                URL.revokeObjectURL(url);
+            } else if (format === 'jpg') {
+                const img = new Image();
+                img.onload = function () {
+                    const scale = 1.8;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = this.width * scale;
+                    canvas.height = this.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+                    const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
+                    const a = document.createElement('a');
+                    a.href = jpgUrl;
+                    a.download = 'mindmap.jpg';
+                    document
+                        .body
+                        .appendChild(a);
+                    a.click();
+                    document
+                        .body
+                        .removeChild(a);
+                };
+                img.src = 'data:image/svg+xml;base64,' + svgBase64;
+            } else if (format === 'pdf') {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = this.width;
+                    canvas.height = this.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(this, 0, 0);
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    const pdf = new jspdf.jsPDF({
+                        orientation: canvas.width > canvas.height
+                            ? 'l'
+                            : 'p',
+                        unit: 'pt',
+                        format: [canvas.width, canvas.height]
+                    });
+                    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                    pdf.save('mindmap.pdf');
+                };
+                img.src = 'data:image/svg+xml;base64,' + svgBase64;
+            } else if (format === 'markdown') {
+                const viewer = document.getElementById('mindmap-viewer');
+                const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+                if (currentMindmap.markdown) {
+                    const blob = new Blob([currentMindmap.markdown], {type: 'text/markdown'});
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'mindmap.svg';
+                    a.download = 'mindmap.md';
                     document
                         .body
                         .appendChild(a);
@@ -1222,132 +1354,69 @@
                         .body
                         .removeChild(a);
                     URL.revokeObjectURL(url);
-                } else if (format === 'jpg') {
-                    const img = new Image();
-                    img.onload = function () {
-                        const scale = 1.8;
-                        const canvas = document.createElement('canvas');
-                        canvas.width = this.width * scale;
-                        canvas.height = this.height * scale;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
-                        const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
-                        const a = document.createElement('a');
-                        a.href = jpgUrl;
-                        a.download = 'mindmap.jpg';
-                        document
-                            .body
-                            .appendChild(a);
-                        a.click();
-                        document
-                            .body
-                            .removeChild(a);
-                    };
-                    img.src = 'data:image/svg+xml;base64,' + svgBase64;
-                } else if (format === 'pdf') {
-                    const img = new Image();
-                    img.onload = function () {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = this.width;
-                        canvas.height = this.height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(this, 0, 0);
-                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                        const pdf = new jspdf.jsPDF({
-                            orientation: canvas.width > canvas.height
-                                ? 'l'
-                                : 'p',
-                            unit: 'pt',
-                            format: [canvas.width, canvas.height]
-                        });
-                        pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-                        pdf.save('mindmap.pdf');
-                    };
-                    img.src = 'data:image/svg+xml;base64,' + svgBase64;
-                } else if (format === 'markdown') {
-                    const viewer = document.getElementById('mindmap-viewer');
-                    const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
-                    if (currentMindmap.markdown) {
-                        const blob = new Blob([currentMindmap.markdown], {type: 'text/markdown'});
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'mindmap.md';
-                        document
-                            .body
-                            .appendChild(a);
-                        a.click();
-                        document
-                            .body
-                            .removeChild(a);
-                        URL.revokeObjectURL(url);
-                    } else {
-                        alert('Markdown content not available.');
-                    }
+                } else {
+                    alert('Markdown content not available.');
                 }
-
-                document
-                    .getElementById('download-options-popup')
-                    .style
-                    .display = 'none';
-            } catch (error) {
-                console.error('Download error:', error);
-                alert(error.message);
             }
+
+            document
+                .getElementById('download-options-popup')
+                .style
+                .display = 'none';
+        } catch (error) {
+            console.error('Download error:', error);
+            alert(error.message);
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const downloadBtn = document.getElementById('download-btn');
-            const formatSelect = document.getElementById('download-format');
-            const closeBtn = document.getElementById('close-download-options-popup');
-            const popup = document.getElementById('download-options-popup');
+    document.addEventListener('DOMContentLoaded', function () {
+        const downloadBtn = document.getElementById('download-btn');
+        const formatSelect = document.getElementById('download-format');
+        const closeBtn = document.getElementById('close-download-options-popup');
+        const popup = document.getElementById('download-options-popup');
 
-            downloadBtn.addEventListener('click', function () {
-                const format = formatSelect.value;
-                downloadMindmap(format);
-            });
-
-            closeBtn.addEventListener('click', function () {
-                popup.style.display = 'none';
-            });
-
-            popup.addEventListener('click', function (event) {
-                if (event.target === popup) {
-                    popup.style.display = 'none';
-                }
-            });
+        downloadBtn.addEventListener('click', function () {
+            const format = formatSelect.value;
+            downloadMindmap(format);
         });
 
-        let currentMarkdown = '';
-        const {Transformer} = window.markmap;
-        const transformer = new Transformer();
+        closeBtn.addEventListener('click', function () {
+            popup.style.display = 'none';
+        });
 
-        function loadMindmaps() {
-            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-            const list = document.getElementById('mindmap-list');
+        popup.addEventListener('click', function (event) {
+            if (event.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+    });
 
-            if (history.length === 0) {
-                list.innerHTML = `
+    let currentMarkdown = '';
+    const {Transformer} = window.markmap;
+    const transformer = new Transformer();
+
+    function loadMindmaps() {
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        const list = document.getElementById('mindmap-list');
+
+        if (history.length === 0) {
+            list.innerHTML = `
                     <div class="no-mindmaps">
                         <h2>No mind maps yet</h2>
                         <p>Create your first mind map to see it here!</p>
                     </div>
                 `;
-                const clearHistory = document.getElementById('clearHistory');
-                clearHistory.style.display = 'none';
-                const optionsToggle = document.getElementById('optionsToggle');
-                optionsToggle.style.display = 'none';
-                return;
-            }
+            const clearHistory = document.getElementById('clearHistory');
+            clearHistory.style.display = 'none';
+            const optionsToggle = document.getElementById('optionsToggle');
+            optionsToggle.style.display = 'none';
+            return;
+        }
 
-            list.innerHTML = history
-                .reverse()
-                .map(
-                    item => `
+        list.innerHTML = history
+            .reverse()
+            .map(
+                item => `
                 <div class="mindmap-item" onclick="handleMindmapClick(event, ${item.id})">
                     <div class="mindmap-info">
                         <div class="mindmap-title">${escapeHtml(item.topic)}</div>
@@ -1360,353 +1429,402 @@
                     </div>
                 </div>
             `
-                )
-                .join('');
+            )
+            .join('');
+    }
+
+    function handleMindmapClick(event, id) {
+
+        if (event.target.closest('.mindmap-actions')) {
+            return;
         }
+        showMindmap(id);
+    }
+    function showMindmap(id) {
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        const item = history.find(item => item.id === id);
 
-        function handleMindmapClick(event, id) {
-
-            if (event.target.closest('.mindmap-actions')) {
-                return;
-            }
-            showMindmap(id);
-        }
-        function showMindmap(id) {
-            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-            const item = history.find(item => item.id === id);
-
-            if (item) {
-                const viewer = document.getElementById('mindmap-viewer');
-                const content = document.getElementById('viewer-content');
-                const title = document.getElementById('viewer-title');
-                document
-                    .getElementById('edit-mode-button')
-                    .style
-                    .display = 'flex';
-
-                viewer.dataset.currentMindmap = JSON.stringify(item);
-                title.textContent = item.topic;
-                viewer.style.display = 'block';
-
-                content.style.position = 'absolute';
-                content.style.top = '50px';
-                content.style.left = '0';
-                content.style.right = '0';
-                content.style.bottom = '0';
-                content.style.overflow = 'hidden';
-                content.style.display = 'block';
-
-                content.innerHTML = '';
-                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute('width', '100%');
-                svg.setAttribute('height', '100%');
-                content.appendChild(svg);
-
-                const {root} = transformer.transform(item.markdown);
-                const {Markmap} = window.markmap;
-                Markmap.create(svg, {
-                    autoFit: true,
-                    zoom: true
-                }, root);
-            }
-        }
-        function closeViewer() {
+        if (item) {
             const viewer = document.getElementById('mindmap-viewer');
-            viewer.style.display = 'none';
-            viewer.dataset.currentMindmap = '';
+            const content = document.getElementById('viewer-content');
+            const title = document.getElementById('viewer-title');
+            document
+                .getElementById('edit-mode-button')
+                .style
+                .display = 'flex';
 
-            const url = new URL(window.location);
+            viewer.dataset.currentMindmap = JSON.stringify(item);
+            title.textContent = item.topic;
+            viewer.style.display = 'block';
 
-            url
-                .searchParams
-                .delete('id');
+            content.style.position = 'absolute';
+            content.style.top = '50px';
+            content.style.left = '0';
+            content.style.right = '0';
+            content.style.bottom = '0';
+            content.style.overflow = 'hidden';
+            content.style.display = 'block';
 
-            window
-                .history
-                .replaceState({}, document.title, url.toString());
+            content.innerHTML = '';
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            content.appendChild(svg);
+
+            const {root} = transformer.transform(item.markdown);
+            const {Markmap} = window.markmap;
+            Markmap.create(svg, {
+                autoFit: true,
+                zoom: true
+            }, root);
         }
+    }
+    function closeViewer() {
+        const viewer = document.getElementById('mindmap-viewer');
+        viewer.style.display = 'none';
+        viewer.dataset.currentMindmap = '';
 
-        function downloadCurrentMindmap() {
-            const viewer = document.getElementById('mindmap-viewer');
-            const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+        const url = new URL(window.location);
 
-            if (currentMindmap.topic) {
-                const svg = document.querySelector('#viewer-content svg');
-                const serializer = new XMLSerializer();
-                const svgContent = serializer.serializeToString(svg);
-                const blob = new Blob([svgContent], {type: 'image/svg+xml'});
-                const url = URL.createObjectURL(blob);
+        url
+            .searchParams
+            .delete('id');
 
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${currentMindmap
-                    .topic
-                    .replace(/[^a-z0-9]/gi, '_')
-                    .toLowerCase()}-mindmap.svg`;
-                a.click();
+        window
+            .history
+            .replaceState({}, document.title, url.toString());
+    }
 
-                URL.revokeObjectURL(url);
-            }
+    function downloadCurrentMindmap() {
+        const viewer = document.getElementById('mindmap-viewer');
+        const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+
+        if (currentMindmap.topic) {
+            const svg = document.querySelector('#viewer-content svg');
+            const serializer = new XMLSerializer();
+            const svgContent = serializer.serializeToString(svg);
+            const blob = new Blob([svgContent], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentMindmap
+                .topic
+                .replace(/[^a-z0-9]/gi, '_')
+                .toLowerCase()}-mindmap.svg`;
+            a.click();
+
+            URL.revokeObjectURL(url);
         }
+    }
 
-        function clearHistory() {
-            if (confirm('Are you sure you want to clear all mind map history? This cannot be undone.')) {
-                localStorage.removeItem('mindmap-history');
-                loadMindmaps();
-            }
+    function clearHistory() {
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        if (history.length === 0) return;
+
+        const clearPopup = document.createElement('div');
+        clearPopup.className = 'delete-popup';
+        clearPopup.innerHTML = `
+            <div class="delete-popup-content">
+                <h3>Clear Mind Map History</h3>
+                <p>Are you sure you want to clear all mind maps from history? This action cannot be undone.</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-button cancel" onclick="closeClearPopup()">Cancel</button>
+                    <button class="delete-button confirm delete" onclick="confirmClear()">Clear All</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(clearPopup);
+    }
+
+    function closeClearPopup() {
+        const popup = document.querySelector('.delete-popup');
+        if (popup) {
+            popup.remove();
         }
+    }
 
-        function formatDate(timestamp) {
-            return new Date(timestamp).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
+    function confirmClear() {
+        localStorage.removeItem('mindmap-history');
+        loadMindmaps();
+        closeClearPopup();
+    }
 
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                closeViewer();
-                closeRenameDialog();
-            }
+    function formatDate(timestamp) {
+        return new Date(timestamp).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
+    }
 
-        function renameMindmap(event, id) {
-            event.stopPropagation();
-            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-            const mindmap = history.find(item => item.id === id);
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
-            if (!mindmap) 
-                return;
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'overlay';
-            overlay.style.display = 'block';
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeViewer();
+            closeRenameDialog();
+        }
+    });
 
-            const dialog = document.createElement('div');
-            dialog.className = 'rename-dialog';
-            dialog.innerHTML = `
+    function renameMindmap(event, id) {
+        event.stopPropagation();
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        const mindmap = history.find(item => item.id === id);
+
+        if (!mindmap) 
+            return;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.style.display = 'block';
+
+        const dialog = document.createElement('div');
+        dialog.className = 'rename-dialog';
+        dialog.innerHTML = `
                 <h3>Rename Mindmap</h3>
                 <input type="text" value="${escapeHtml(
-                mindmap.topic
-            )}" id="rename-input">
+            mindmap.topic
+        )}" id="rename-input">
                 <div class="dialog-buttons">
                     <button class="dialog-button cancel" onclick="closeRenameDialog()">Cancel</button>
                     <button class="dialog-button confirm" onclick="confirmRename(${id})">Rename</button>
                 </div>
             `;
 
-            document
-                .body
-                .appendChild(overlay);
-            document
-                .body
-                .appendChild(dialog);
+        document
+            .body
+            .appendChild(overlay);
+        document
+            .body
+            .appendChild(dialog);
 
-            const input = dialog.querySelector('input');
-            input.select();
+        const input = dialog.querySelector('input');
+        input.select();
+    }
+
+    function closeRenameDialog() {
+        const dialog = document.querySelector('.rename-dialog');
+        const overlay = document.querySelector('.overlay');
+        if (dialog) 
+            dialog.remove();
+        if (overlay) 
+            overlay.remove();
         }
+    
+    function confirmRename(id) {
+        const input = document.querySelector('#rename-input');
+        const newName = input
+            .value
+            .trim();
 
-        function closeRenameDialog() {
-            const dialog = document.querySelector('.rename-dialog');
-            const overlay = document.querySelector('.overlay');
-            if (dialog) 
-                dialog.remove();
-            if (overlay) 
-                overlay.remove();
-            }
+        if (!newName) 
+            return;
         
-        function confirmRename(id) {
-            const input = document.querySelector('#rename-input');
-            const newName = input
-                .value
-                .trim();
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        const mindmapIndex = history.findIndex(item => item.id === id);
 
-            if (!newName) 
-                return;
-            
-            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-            const mindmapIndex = history.findIndex(item => item.id === id);
-
-            if (mindmapIndex !== -1) {
-                history[mindmapIndex].topic = newName;
-                localStorage.setItem('mindmap-history', JSON.stringify(history));
-                loadMindmaps();
-            }
-
-            closeRenameDialog();
-        }
-
-        function deleteMindmap(event, id) {
-            event.stopPropagation();
-
-            if (confirm('Are you sure you want to delete this mindmap?')) {
-                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                const updatedHistory = history.filter(item => item.id !== id);
-                localStorage.setItem('mindmap-history', JSON.stringify(updatedHistory));
-                loadMindmaps();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
+        if (mindmapIndex !== -1) {
+            history[mindmapIndex].topic = newName;
+            localStorage.setItem('mindmap-history', JSON.stringify(history));
             loadMindmaps();
+        }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const mindmapId = urlParams.get('id');
-            const optionsToggle = document.getElementById('optionsToggle');
-            const mindmapList = document.getElementById('mindmap-list');
+        closeRenameDialog();
+    }
 
-            optionsToggle.addEventListener('click', function () {
-                const isShowingOptions = mindmapList
-                    .classList
-                    .toggle('show-all-actions');
-                optionsToggle.textContent = isShowingOptions
-                    ? 'Hide Options'
-                    : 'Options';
-            });
+    function deleteMindmap(event, id) {
+        event.stopPropagation();
+        const deletePopup = document.createElement('div');
+        deletePopup.className = 'delete-popup';
+        deletePopup.innerHTML = `
+            <div class="delete-popup-content">
+                <h3>Delete Mind Map</h3>
+                <p>Are you sure you want to delete this mind map? This action cannot be undone.</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-button cancel" onclick="closeDeletePopup()">Cancel</button>
+                    <button class="delete-button confirm delete" onclick="confirmDelete('${id}')">Delete</button>
+                </div>
+            </div>
+        `;
+        document
+            .body
+            .appendChild(deletePopup);
+    }
 
-            if (mindmapId) {
-                const id = parseInt(mindmapId);
-                if (!isNaN(id)) {
-                    setTimeout(() => {
-                        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                        const mindmap = history.find(item => item.id === id);
-                        if (mindmap) {
-                            showMindmap(id);
-                        } else {
-                            window.location.href = `/view.html?id=${id}`;
-                        }
-                    }, 100);
-                }
-            }
+    function closeDeletePopup() {
+        const popup = document.querySelector('.delete-popup');
+        if (popup) {
+            popup.remove();
+        }
+    }
 
-            const editModeButton = document.getElementById('edit-mode-button');
-            const cancelEditButton = document.getElementById('cancel-edit');
-            const saveEditButton = document.getElementById('save-edit');
+    function confirmDelete(id) {
+        const numericId = parseInt(id);
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        const updatedHistory = history.filter(item => item.id !== numericId);
+        localStorage.setItem('mindmap-history', JSON.stringify(updatedHistory));
+        loadMindmaps();
+        closeDeletePopup();
+    }
 
-            editModeButton.addEventListener('click', () => toggleEditMode(true));
-            cancelEditButton.addEventListener('click', () => toggleEditMode(false));
-            saveEditButton.addEventListener('click', updateMindmapFromEdit);
+    document.addEventListener('DOMContentLoaded', function () {
+        loadMindmaps();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const mindmapId = urlParams.get('id');
+        const optionsToggle = document.getElementById('optionsToggle');
+        const mindmapList = document.getElementById('mindmap-list');
+
+        optionsToggle.addEventListener('click', function () {
+            const isShowingOptions = mindmapList
+                .classList
+                .toggle('show-all-actions');
+            optionsToggle.textContent = isShowingOptions
+                ? 'Hide Options'
+                : 'Options';
         });
 
-        function toggleEditMode(show) {
-            const viewer = document.getElementById('mindmap-viewer');
-            const viewerContent = document.getElementById('viewer-content');
-            const editorElement = document.getElementById('markdown-editor');
-            const textarea = document.getElementById('markdown-textarea');
-            const editorOverlay = document.getElementById('editor-overlay');
-
-            if (show) {
-                viewerContent.style.display = 'none';
-                editorElement.style.display = 'block';
-                editorOverlay.style.display = 'block';
-                const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
-                currentMarkdown = currentMindmap.markdown || '';
-                textarea.value = currentMarkdown;
-                textarea.focus();
-            } else {
-                viewerContent.style.display = 'block';
-                editorElement.style.display = 'none';
-                editorOverlay.style.display = 'none';
+        if (mindmapId) {
+            const id = parseInt(mindmapId);
+            if (!isNaN(id)) {
+                setTimeout(() => {
+                    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                    const mindmap = history.find(item => item.id === id);
+                    if (mindmap) {
+                        showMindmap(id);
+                    } else {
+                        window.location.href = `/view.html?id=${id}`;
+                    }
+                }, 100);
             }
         }
 
-        function updateMindmapFromEdit() {
-            const textarea = document.getElementById('markdown-textarea');
-            const newMarkdown = textarea.value;
-            const viewer = document.getElementById('mindmap-viewer');
+        const editModeButton = document.getElementById('edit-mode-button');
+        const cancelEditButton = document.getElementById('cancel-edit');
+        const saveEditButton = document.getElementById('save-edit');
+
+        editModeButton.addEventListener('click', () => toggleEditMode(true));
+        cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+        saveEditButton.addEventListener('click', updateMindmapFromEdit);
+    });
+
+    function toggleEditMode(show) {
+        const viewer = document.getElementById('mindmap-viewer');
+        const viewerContent = document.getElementById('viewer-content');
+        const editorElement = document.getElementById('markdown-editor');
+        const textarea = document.getElementById('markdown-textarea');
+        const editorOverlay = document.getElementById('editor-overlay');
+
+        if (show) {
+            viewerContent.style.display = 'none';
+            editorElement.style.display = 'block';
+            editorOverlay.style.display = 'block';
             const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+            currentMarkdown = currentMindmap.markdown || '';
+            textarea.value = currentMarkdown;
+            textarea.focus();
+        } else {
+            viewerContent.style.display = 'block';
+            editorElement.style.display = 'none';
+            editorOverlay.style.display = 'none';
+        }
+    }
 
-            if (newMarkdown !== currentMarkdown) {
-                currentMarkdown = newMarkdown;
+    function updateMindmapFromEdit() {
+        const textarea = document.getElementById('markdown-textarea');
+        const newMarkdown = textarea.value;
+        const viewer = document.getElementById('mindmap-viewer');
+        const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
 
-                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                const mindmapIndex = history.findIndex(item => item.id === currentMindmap.id);
+        if (newMarkdown !== currentMarkdown) {
+            currentMarkdown = newMarkdown;
 
-                if (mindmapIndex !== -1) {
-                    history[mindmapIndex].markdown = newMarkdown;
-                    localStorage.setItem('mindmap-history', JSON.stringify(history));
-                    showMindmap(currentMindmap.id);
-                    loadMindmaps();
-                }
+            const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+            const mindmapIndex = history.findIndex(item => item.id === currentMindmap.id);
+
+            if (mindmapIndex !== -1) {
+                history[mindmapIndex].markdown = newMarkdown;
+                localStorage.setItem('mindmap-history', JSON.stringify(history));
+                showMindmap(currentMindmap.id);
+                loadMindmaps();
             }
-
-            toggleEditMode(false);
         }
 
-        async function shareMindmap() {
-            const viewer = document.getElementById('mindmap-viewer');
-            const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+        toggleEditMode(false);
+    }
 
-            if (!currentMindmap.topic) 
-                return;
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'overlay';
-            overlay.style.display = 'block';
+    async function shareMindmap() {
+        const viewer = document.getElementById('mindmap-viewer');
+        const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
 
-            const dialog = document.createElement('div');
-            dialog.className = 'share-dialog';
-            dialog.innerHTML = `
+        if (!currentMindmap.topic) 
+            return;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.style.display = 'block';
+
+        const dialog = document.createElement('div');
+        dialog.className = 'share-dialog';
+        dialog.innerHTML = `
                 <h3>Share Mindmap</h3>
                 <p>Generating share link...</p>
                 <div class="loading-spinner"></div>
             `;
 
-            document
-                .body
-                .appendChild(overlay);
-            document
-                .body
-                .appendChild(dialog);
+        document
+            .body
+            .appendChild(overlay);
+        document
+            .body
+            .appendChild(dialog);
 
-            try {
-                const response = await fetch('https://api.mindmapwizard.com/share', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(
-                        {topic: currentMindmap.topic, markdown: currentMindmap.markdown, timestamp: currentMindmap.timestamp}
-                    )
-                });
+        try {
+            const response = await fetch('https://share.mindmapwizard.com/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {topic: currentMindmap.topic, markdown: currentMindmap.markdown, timestamp: currentMindmap.timestamp}
+                )
+            });
 
-                const data = await response.json();
+            const data = await response.json();
 
-                if (data.id) {
-                    if (window.dataLayer) {
-                        window
-                            .dataLayer
-                            .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
-                    }
+            if (data.id) {
+                if (window.dataLayer) {
+                    window
+                        .dataLayer
+                        .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
+                }
 
-                    const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
+                const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
 
-                    document
-                        .querySelector('.share-dialog')
-                        .remove();
-                    document
-                        .querySelector('.overlay')
-                        .remove();
+                document
+                    .querySelector('.share-dialog')
+                    .remove();
+                document
+                    .querySelector('.overlay')
+                    .remove();
 
-                    const overlay = document.createElement('div');
-                    overlay.className = 'overlay';
-                    overlay.style.display = 'block';
+                const overlay = document.createElement('div');
+                overlay.className = 'overlay';
+                overlay.style.display = 'block';
 
-                    const dialog = document.createElement('div');
-                    dialog.className = 'share-dialog';
-                    dialog.innerHTML = `
+                const dialog = document.createElement('div');
+                dialog.className = 'share-dialog';
+                dialog.innerHTML = `
                         <h3>Share Mindmap</h3>
                         <p>Copy this link to share your mindmap:</p>
                         <input type="text" class="share-link" value="${shareUrl}" readonly>
@@ -1716,47 +1834,47 @@
                         </div>
                     `;
 
-                    document
-                        .body
-                        .appendChild(overlay);
-                    document
-                        .body
-                        .appendChild(dialog);
-                }
-            } catch (error) {
-                console.error('Error sharing mindmap:', error);
-                alert('Failed to share mindmap. Please try again.');
-
-                if (window.dataLayer) {
-                    window
-                        .dataLayer
-                        .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
-                }
+                document
+                    .body
+                    .appendChild(overlay);
+                document
+                    .body
+                    .appendChild(dialog);
             }
-        }
-
-        function copyShareLink() {
-            const shareLink = document.querySelector('.share-link');
-            shareLink.select();
-            document.execCommand('copy');
+        } catch (error) {
+            console.error('Error sharing mindmap:', error);
+            alert('Failed to share mindmap. Please try again.');
 
             if (window.dataLayer) {
                 window
                     .dataLayer
-                    .push(
-                        {'event': 'mindmap_share_link_copy', 'mindmap_category': 'User Interaction', 'mindmap_action': 'Copy Share Link'}
-                    );
+                    .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
             }
         }
+    }
 
-        function closeShareDialog() {
-            const dialog = document.querySelector('.share-dialog');
-            const overlay = document.querySelector('.overlay');
-            if (dialog) 
-                dialog.remove();
-            if (overlay) 
-                overlay.remove();
-            }
-    </script>
+    function copyShareLink() {
+        const shareLink = document.querySelector('.share-link');
+        shareLink.select();
+        document.execCommand('copy');
+
+        if (window.dataLayer) {
+            window
+                .dataLayer
+                .push(
+                    {'event': 'mindmap_share_link_copy', 'mindmap_category': 'User Interaction', 'mindmap_action': 'Copy Share Link'}
+                );
+        }
+    }
+
+    function closeShareDialog() {
+        const dialog = document.querySelector('.share-dialog');
+        const overlay = document.querySelector('.overlay');
+        if (dialog) 
+            dialog.remove();
+        if (overlay) 
+            overlay.remove();
+        }
+</script>
 </body>
 </html>
