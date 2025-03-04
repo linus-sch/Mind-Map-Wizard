@@ -306,6 +306,29 @@
         .whitespace {
             height: 15px;
         }
+
+        .clear-history {
+                color: #ef4444;
+                position: relative;
+                margin-bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                border: none;
+                background-color: rgba(254, 226, 226, 0.55);
+                padding: 0.5rem 1rem;
+                border-radius: 0.575rem;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background-color 0.2s;
+            }
+
+            .clear-history:hover {
+                background-color: rgba(255, 190, 190, 0.55);
+                border-radius: 10px;
+                padding: 0.5rem 1rem;
+            }
+
+
     </style>
 </head>
 <body>
@@ -382,17 +405,34 @@
                 usage of Mind Map Wizard and to provide a more personalized experience.
             </li>
         </ul>
-        <h3>2.2.1. Data Anonymization Practices</h3>
-        <p>We are committed to protecting your privacy and implement the following data anonymization measures before processing any analytics data:</p>
+        <h3>2.2.1. Local Data Storage and Retention</h3>
+        <p>Your mind maps and interaction data are primarily stored locally in your browser. Please note:</p>
+        <ul>
+            <li>You can delete all recent mind maps at once using the clear history button on Mind Map Wizard or by clearing your browser data.</li>
+            <li>Recent mind maps are automatically deleted after reaching 100 mind maps.</li>
+            <li>Different browsers handle data retention differently - some may automatically delete your data if you haven't accessed Mind Map Wizard for an extended period, while others may retain it indefinitely unless manually cleared.</li>
+        </ul>
+        <button class="clear-history" onclick="clearHistory()" id="clearHistory">Clear Mind Map History</button>
+
+        <h3>2.2.2. Data Anonymization Practices</h3>
+        <p>We are committed to protecting your privacy and implement the following data
+            anonymization measures before processing any analytics data:</p>
         <ul>
             <li>
-                <strong>URL Query Parameter Removal</strong>: We automatically remove all query parameters from URLs (e.g., converting https://example.com/?q=mind-map-topic to https://example.com/) to prevent collection of potentially sensitive search or form data.
+                <strong>URL Query Parameter Removal</strong>: We automatically remove all query
+                parameters from URLs (e.g., converting https://example.com/?q=mind-map-topic to
+                https://example.com/) to prevent collection of potentially sensitive search or
+                form data.
             </li>
             <li>
-                <strong>IP Address Trimming</strong>: We trim IP addresses before passing them to server-side loaded tools, reducing the precision of location data while maintaining basic analytics functionality.
+                <strong>IP Address Trimming</strong>: We trim IP addresses before passing them
+                to server-side loaded tools, reducing the precision of location data while
+                maintaining basic analytics functionality.
             </li>
             <li>
-                <strong>User Agent String Cleaning</strong>: We clean sensitive information from User Agent strings by removing versions, extensions, and additional information that could be used for device fingerprinting.
+                <strong>User Agent String Cleaning</strong>: We clean sensitive information from
+                User Agent strings by removing versions, extensions, and additional information
+                that could be used for device fingerprinting.
             </li>
         </ul>
         <h3>2.3. Information from Third Parties</h3>
@@ -466,6 +506,14 @@
                     financing, or sale of assets involving our Service, your personal information
                     may be transferred or disclosed as part of the transaction, subject to
                     reasonable confidentiality arrangements.
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>Content Moderation</strong>: For shared mind maps, we may review, scan, or
+                    analyze your content for violations of our Terms of Service, security risks, or other
+                    inappropriate content. We reserve the right to remove any shared mind maps that
+                    violate our policies without prior notice.
                 </p>
             </li>
             <li>
@@ -578,5 +626,110 @@
     </div>
 </footer>
 </body>
+<script>
 
+function clearHistory() {
+        const deletePopup = document.createElement('div');
+        deletePopup.className = 'delete-popup';
+        deletePopup.innerHTML = `
+            <div class="delete-popup-content">
+                <h3>Clear Mind Map History</h3>
+                <p>Are you sure you want to clear all mind map history? This action cannot be undone.</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-button cancel" onclick="closeDeletePopup()">Cancel</button>
+                    <button class="dialog-button confirm delete" onclick="confirmClearHistory()">Clear All</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(deletePopup);
+    }
+
+    function closeDeletePopup() {
+        const popup = document.querySelector('.delete-popup');
+        if (popup) {
+            popup.remove();
+        }
+    }
+
+    function confirmClearHistory() {
+        localStorage.removeItem('mindmap-history');
+        closeDeletePopup();
+    }
+</script>
+
+<style>
+    .delete-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.32);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+    }
+
+    .delete-popup-content {
+        background: var(--card-background);
+        border-radius: 20px;
+        box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+        padding: 24px;
+    }
+
+    .delete-popup-content h3 {
+        margin: 0 0 16px;
+        font-size: 1.5rem;
+        color: var(--text-color);
+    }
+
+    .delete-popup-content p {
+        margin: 0 0 24px;
+        color: #64748b;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    .dialog-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .dialog-button {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .dialog-button.cancel {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+
+    .dialog-button.confirm {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .dialog-button.confirm:hover {
+        background-color: var(--secondary-color);
+    }
+
+    .dialog-button.delete {
+        background-color: var(--error-color);
+    }
+
+    .dialog-button.delete:hover {
+        background-color: #b91c1c;
+    }
+    </style>
+</script>
 </html>
