@@ -129,7 +129,7 @@
                 }
 
                 @media (max-width: 400px) {
-                    .nav-links img {
+                    .nav-links svg {
                         display: none;
                     }
                 }
@@ -185,14 +185,15 @@
                     display: none;
                 }
 
-                .nav-links img {
+                .nav-links svg {
                     position: relative;
-                    top: 5px;
+                    top: 4.4px;
                 }
 
                 .nav-links a {
                     margin-left: 0;
                     margin-right: 10px;
+                    font-size: 1.1rem;
                     text-decoration: none;
                     color: black;
                     font-weight: 500;
@@ -325,6 +326,8 @@
                     width: 1.1em;
                     transition: transform 0.3s;
                     color: var(--secondary-color);
+                    position: relative;
+                    margin-bottom: 7px;
                 }
 
                 .cssbuttons-io-button:hover .icon {
@@ -343,7 +346,7 @@
                 }
 
                 form {
-                    border: 1px solid #ddd;
+                    border: none;
                     display: flex;
                     font-size: 1em;
                     max-width: 500px;
@@ -355,6 +358,7 @@
                     font-family: system-ui, Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
                     font-weight: 300;
                     background-color: #fff;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
                 }
 
                 form h4 {
@@ -561,7 +565,18 @@
                 </div>
 
                 <div class="nav-links">
-                    <a href="/history.html"><img src="/img/icons/history-icon.svg" height="22" width="22">
+                    <a href="/history.html">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewbox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
                         History</a>
 
                     <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
@@ -621,6 +636,8 @@
                 <input type="hidden" name="source" value="Mind Map Wizard - Feedback">
                 <input type="submit" value="Send" id="submit">
             </form>
+            <div id="error-message" style="color: red; display: none; margin-top: 10px;"></div>
+
         </div>
         <div class="footer-positioning"></div>
 
@@ -646,8 +663,11 @@
         <script>
             const form = document.forms[0];
             const submitButton = document.getElementById('submit');
+            const errorMessage = document.getElementById('error-message');
+
             form.addEventListener('submit', e => {
                 e.preventDefault();
+                errorMessage.style.display = 'none';
                 submitButton.value = 'Sending...';
                 submitButton.disabled = true;
                 const scriptURL = "https://post.mindmapwizard.com";
@@ -662,13 +682,20 @@
                     method: 'POST',
                     body: formData
                 })
-                    .then(response => {
-                        form.reset();
-                        submitButton.value = 'Send';
-                        submitButton.disabled = false;
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            form.reset();
+                            submitButton.value = 'Send';
+                            submitButton.disabled = false;
+                        } else {
+                            throw new Error(data.message || 'An error occurred');
+                        }
                     })
                     .catch(error => {
                         console.error('Error!', error.message);
+                        errorMessage.textContent = error.message;
+                        errorMessage.style.display = 'block';
                         submitButton.value = 'Send';
                         submitButton.disabled = false;
                     });
