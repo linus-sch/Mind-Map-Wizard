@@ -457,11 +457,54 @@
             border-radius: 10px;
             border: 1px solid #ddd;
         }
+        .pink-section {
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, #ba71e3, #b75de4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .pink-section h2 {
+            color: #ffffff;
+            font-size: 2rem;
+        }
+
+        .white-p {
+            color: #ffffff;
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            margin-top: -20px;
+        }
+
+        .get-started-button {
+            width: 220px;
+            height: 30px;
+            border-radius: 45px;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: var(--text-color);
+            font-size: 1.2em;
+            font-weight: 550;
+            color: #ffffff;
+            border: 1px solid #79797995;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .get-started-button:hover {
+            background: var(--secondary-color);
+            border: 1px solid #70348f95;
+            color: white;
+        }
     </style>
 </head>
-<script async="async" src="/consent.js"></script>
-
-
 <body>
     <div class="popup" id="legalPopup">
         <div class="popup-content">
@@ -553,13 +596,18 @@
         <h3 id="basic-structure">1. Basic structure</h3>
         <p>Using lists, you can to create branches in your mind map. Each list item will
             appear as a separate branch.</p>
-        <pre><code>
+        <pre style="position: relative;"> 
+                <code>   
+                    <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
+                        style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                        <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                    </svg>                
     # my mind map
         - branch 1
          - branch 2
             - text
             - text
-            </code></pre>
+                    </code></pre>
         <br>
         <img
             src="/img/screenshots/basic-mindmap-structure.webp"
@@ -574,21 +622,36 @@
             <p>
                 <strong>Example Branch</strong>
             </p>
-            <pre><code>
+            <pre style="position: relative;"> 
+                <code>   
+                    <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
+                        style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                        <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                    </svg>  
     - **example branch**
                             </code></pre>
             <br>
             <p>
                 <del>Example Branch</del>
             </p>
-            <pre><code>
+            <pre style="position: relative;"> 
+                <code>   
+                    <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
+                        style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                        <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                    </svg>  
     - ~~example branch~~
                             </code></pre>
             <br>
             <p>
                 <em>Example Branch</em>
             </p>
-            <pre><code>
+            <pre style="position: relative;"> 
+                <code>   
+                    <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
+                        style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                        <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                    </svg>  
 
     - *example branch*
                             </code></pre>
@@ -596,7 +659,12 @@
             <p class="inlinecode">
                 <code>Example Branch</code>
             </p>
-            <pre><code>
+            <pre style="position: relative;"> 
+                <code>   
+                    <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
+                        style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                        <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                    </svg>  
 
     - `example branch`
                             </code></pre>
@@ -608,7 +676,12 @@
             alt="Mind Map with two ordered branches"
             class="screenshot">
         <p>To add this to your mind map, use the following text:</p>
-        <pre><code>
+        <pre style="position: relative;"> 
+            <code>   
+                <svg fill="none" height="23" viewbox="0 0 208 128" width="23" xmlns="http://www.w3.org/2000/svg" 
+                    style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                    <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                </svg>  
     - ordered list
     1. branch
     2. branch              
@@ -618,7 +691,14 @@
 
         <h3 id="links">4. Links</h3>
         <p>To add a link to your mind map, simply use the markdown syntax for links:</p>
-        <pre><code>[my website](https://example.com)</code></pre>
+        <pre style="position: relative;"> 
+            <code>   
+                <svg fill="none" height="23" viewbox="0 0 208 128" width="23" xmlns="http://www.w3.org/2000/svg" 
+                    style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                    <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                </svg>
+  [my website](https://example.com)
+            </code></pre>
         <p>This will render a clickable link on your mind map.</p>
 
         <div style="height: 40px;"></div>
@@ -626,7 +706,12 @@
         <h3 id="inline-code">5. Inline Code</h3>
         <p>To create a code block, simply wrap your code in triple backticks (```),
             followed by the language (optional):</p>
-        <pre><code>
+        <pre style="position: relative;"> 
+                <code>   
+                    <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
+                        style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                        <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                    </svg>  
     ### inline code
     
         ```js
@@ -643,7 +728,12 @@
 
         <h3 id="tables">6. Tables</h3>
         <p>To add tables, use the standard markdown table format. Here's an example:</p>
-        <pre><code>
+        <pre style="position: relative;"> 
+            <code>   
+                <svg fill="none" height="23" viewbox="0 0 208 128" width="23" xmlns="http://www.w3.org/2000/svg" 
+                    style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                    <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                </svg>  
     ### tables
 
         | products | price |
@@ -661,7 +751,14 @@
 
         <h3 id="images">7. Images</h3>
         <p>You can also add images to your mind map by using the following markdown syntax:</p>
-        <pre><code>![](https://mindmapwizard.com/img/p2-gen-mind-map.webp)</code></pre>
+        <pre style="position: relative;"> 
+            <code>   
+                <svg fill="none" height="23" viewbox="0 0 208 128" width="23" xmlns="http://www.w3.org/2000/svg" 
+                    style="position: absolute; top: 5px; right: 10px; width: 30px; height: 30px; display: flex; opacity: 0.6;">
+                    <g fill="#ffffff"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                </svg>  
+![](https://mindmapwizard.com/img/p2-gen-mind-map.webp)
+</code></pre>
         <p>This will display the image directly in your mind map.</p>
         <div style="height: 40px;"></div>
         <p>Sounds complicated? Try it out!
@@ -683,6 +780,15 @@
                 d="m620-284 56-56q6-6 6-14t-6-14L540-505q4-11 6-22t2-25q0-57-40.5-97.5T410-690q-11 0-21 1t-20 5q-9 4-11 14t5 17l74 74-56 56-74-74q-7-7-17-5t-14 11q-3 10-4.5 20t-1.5 21q0 57 40.5 97.5T408-412q13 0 24.5-2t22.5-6l137 136q6 6 14 6t14-6ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
             Playground
         </a>
+    </div>
+
+    <div class="whitespace" style="height: 10px;"></div>
+
+    <div class="pink-section">
+        <h2 class="section-title">Try it out!</h2>
+        <p class="white-p">Now you know everything about our service. Give it a try!</p>
+        <!-- From Uiverse.io by SteveBloX -->
+        <a href="/new.html" class="get-started-button">Create Mind Map</a>
     </div>
 
     <footer>
@@ -707,9 +813,6 @@
                 .back();
         }
     </script>
-</body>
-
-</html>
 </body>
 
 </html>
