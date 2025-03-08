@@ -104,7 +104,7 @@
             .header-left h1 {
                 font-family: 'Open Sans', sans-serif;
                 font-size: 1.8rem;
-                font-weight: 800;
+                font-weight: 700;
                 color: var(--text-color);
                 margin-bottom: 10px !important;
                 margin-left: 0;
@@ -170,6 +170,8 @@
                 align-items: center;
                 padding: 0.5rem 1rem;
                 border-radius: 10px;
+                position: relative;
+                margin-right: -8px;
             }
 
             .back-link:hover {
@@ -185,7 +187,7 @@
                 left: 50%;
                 transform: translateX(-50%);
                 border: none;
-                background-color: rgba(254, 226, 226, 0.55);
+                background-color: var(--background-color);
                 padding: 0.5rem 1rem;
                 border-radius: 0.575rem;
                 cursor: pointer;
@@ -194,14 +196,14 @@
             }
 
             .clear-history:hover {
-                background-color: rgba(255, 190, 190, 0.55);
+                background-color: rgba(255, 190, 190, 0.35);
                 border-radius: 10px;
                 padding: 0.5rem 1rem;
             }
 
             .container {
                 max-width: 800px;
-                padding: 0 1rem;
+                padding: 0 2rem;
                 margin-top: 50px;
                 margin-left: auto;
                 margin-right: auto;
@@ -284,7 +286,8 @@
 
             @media (max-width: 580px) {
                 .viewer-title {
-                    color: transparent;
+                    color: transparent !important;
+                    width: 1% !important;
                 }
             }
 
@@ -298,7 +301,7 @@
             .viewer-controls button {
                 width: auto;
                 min-width: 45px;
-                height: 45px;
+                height: 40px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -309,10 +312,17 @@
                 cursor: pointer;
                 gap: 6px;
                 color: var(--text-color);
+
             }
 
             .viewer-controls button:hover {
                 background-color: rgba(0, 0, 0, 0.035);
+            }
+
+            .viewer-controls-download-button {
+                background-color: transparent;
+                color: var(--text-color);
+                margin-right: 10px;
             }
 
             .viewer-controls img {
@@ -323,25 +333,26 @@
                 background-color: transparent;
                 color: var(--primary-color);
                 border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 0.375rem;
+                padding: 0.4rem 1rem 0.4rem 0.5rem;
                 cursor: pointer;
+                border-radius: 8px;
                 font-size: 1.2rem;
                 transition: color 0.2s;
                 white-space: nowrap;
-
+                margin-left: 10px;
             }
 
             .viewer-back-button:hover {
                 background-color: rgba(0, 0, 0, 0.035);
-                border-radius: 10px;
-                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                padding: 0.4rem 1rem 0.4rem 0.5rem;
+                margin-left: 10px;
             }
 
             .viewer-back-button-icon {
                 position: relative;
                 top: 4.5px;
-                right: -5px;
+                right: -8px;
             }
             .viewer-content {
                 position: absolute;
@@ -361,7 +372,7 @@
             .download-icon {
                 padding: 0.5rem;
                 border-radius: 8px;
-                margin: 0;
+                margin-right: 10px;
                 cursor: pointer;
             }
 
@@ -403,6 +414,16 @@
                 transition: all 0.2s ease;
                 background-color: var(--card-background);
                 z-index: 1000;
+            }
+
+            @media (max-width: 680px) {
+                .action-button {
+                    padding: 1rem 0.4rem;
+                }
+
+                .mindmap-actions {
+                    gap: 0;
+                }
             }
 
             .action-button:hover {
@@ -682,10 +703,10 @@
                 box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
             }
 
-            .download-button svg,
             .share-button svg {
-                width: 20px;
+                margin-right: 3px;
                 height: 20px;
+                width: 20px;
             }
 
             .download-button svg {
@@ -822,7 +843,6 @@
                 display: none;
                 align-items: center;
                 justify-content: center;
-                height: 45px;
                 border-radius: 8px;
                 margin: 0;
             }
@@ -1118,7 +1138,21 @@
                 <a
                     href="/help/mind-map-editing.html"
                     class="help-button"
-                    style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
+                    style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; color: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold;">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                </a>
+                <svg fill="none" height="30" viewBox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" style="position: fixed; bottom: 10px; left: 50px; width: 30px; height: 30px; color: #1e293b; display: flex; opacity: 0.6;"><g fill="#1e293b"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g></svg>
+
 
                 <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
                 <button class="editor-button save-button" id="save-edit">Save</button>
@@ -1134,25 +1168,46 @@
             <h2 class="viewer-title" id="viewer-title"></h2>
             <div class="viewer-controls">
                 <button class="edit-mode-button" id="edit-mode-button">
-                    <img src="/img/icons/edit-icon.svg" height="22px" width="25px" alt="Edit">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-pencil-line"><path d="M12 20h9"/><path
+                        d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/><path d="m15 5 3 3"/></svg>
                 </button>
                 <button
                     onclick="document.getElementById('download-options-popup').style.display = 'flex'"
-                    style="background: none; border: none;">
-                    <img
-                        src="/img/icons/download-icon.png"
-                        height="28px"
-                        width="28px"
-                        alt="Download"
-                        class="download-icon">
+                    class="viewer-controls-download-button">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        class="lucide lucide-download"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 </button>
                 <button onclick="shareMindmap()" class="share-button">
-                    <img
-                        src="/img/icons/share-icon.svg"
-                        stroke="#ffffff"
-                        height="25px"
-                        width="25px"
-                        alt="Share">Share
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>Share
                 </button>
             </div>
 
@@ -1402,8 +1457,9 @@
         if (history.length === 0) {
             list.innerHTML = `
                     <div class="no-mindmaps">
-                        <h2>No mind maps yet</h2>
-                        <p>Create your first mind map to see it here!</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-closed"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="M2 10h20"/></svg>
+                        <h2>No mind maps yet!</h2>
+                        <p>Generate your first mind map to see it here!</p>
                     </div>
                 `;
             const clearHistory = document.getElementById('clearHistory');
@@ -1520,8 +1576,9 @@
 
     function clearHistory() {
         const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-        if (history.length === 0) return;
-
+        if (history.length === 0) 
+            return;
+        
         const clearPopup = document.createElement('div');
         clearPopup.className = 'delete-popup';
         clearPopup.innerHTML = `
@@ -1534,7 +1591,9 @@
                 </div>
             </div>
         `;
-        document.body.appendChild(clearPopup);
+        document
+            .body
+            .appendChild(clearPopup);
     }
 
     function closeClearPopup() {
@@ -1859,8 +1918,7 @@
         document.execCommand('copy');
 
         if (window.dataLayer) {
-            window
-                .dataLayer
+            window         .dataLayer
                 .push(
                     {'event': 'mindmap_share_link_copy', 'mindmap_category': 'User Interaction', 'mindmap_action': 'Copy Share Link'}
                 );
