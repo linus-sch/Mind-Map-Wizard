@@ -7,15 +7,15 @@ Mind Map Wizard is a free and open-source AI-powered mind mapping tool that allo
 
 ## Features
 
-- 100% Free: No hidden costs or premium features. Everything is completely free.
-- No Sign Up: Begin creating mind maps right away. No account needed.
-- No Ads: Enjoy a clean, distraction-free interface without any advertisements.
-- Export Options: Easily export your mind maps in various formats and share them on other platforms.
+- **100% Free:** No hidden costs or premium features. Everything is completely free.
+- **No Sign Up:** Begin creating mind maps right away. No account needed.
+- **No Ads:** Enjoy a clean, distraction-free interface without any advertisements.
+- **Export Options:** Easily export your mind maps in various formats and share them on other platforms.
 
 ## How It Works
-1. Enter Your Topic: Just type any topic you'd like to explore in the input field.
-2. AI Processing: Our AI will examine your topic and create a comprehensive mind map.
-3. Share Your Mind Map: Quickly view, edit, and share your beautifully crafted mind map in just seconds.
+1. **Enter Your Topic:** Just type any topic you'd like to explore in the input field.
+2. **AI Processing:** Our AI will examine your topic and create a comprehensive mind map.
+3. **Share Your Mind Map:** Quickly view, edit, and share your beautifully crafted mind map in just seconds.
 
 ## Roadmap
 
