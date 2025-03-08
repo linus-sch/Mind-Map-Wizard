@@ -42,6 +42,8 @@
         <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
         <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.16.0"></script>
         <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
+        <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <style>
             :root {
                 --primary-color: #C667FF;
@@ -243,10 +245,10 @@
                 max-width: 800px;
                 height: calc(100vh - 140px);
                 z-index: 1201;
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                padding: 20px;
+                background: var(--card-background);
+                border-radius: 20px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+                padding: 24px;
             }
 
             .markdown-editor textarea {
@@ -274,7 +276,7 @@
             .editor-button {
                 padding: 8px 16px;
                 border: none;
-                border-radius: 8px;
+                border-radius: 20px;
                 cursor: pointer;
                 font-size: 14px;
                 transition: background-color 0.2s;
@@ -352,7 +354,6 @@
                 }
             }
 
-
             .popup {
                 display: none;
                 position: fixed;
@@ -423,7 +424,7 @@
             .popup-content a:hover {
                 background-color: #e6e6e6;
             }
-            
+
             .help-link {
                 padding: 5px;
                 border-radius: 10px;
@@ -436,11 +437,112 @@
                 border: 1px solid #ddd;
             }
 
+            .download-options-popup {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.32);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            }
+
+            .download-options-popup-content {
+                background: var(--card-background);
+                border-radius: 28px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+                width: 100%;
+                max-width: 400px;
+                padding: 24px;
+            }
+
+            .popup-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .popup-header h2 {
+                color: var(--text-color);
+                font-size: 1.375rem;
+                font-weight: 600;
+                margin: 0;
+            }
+
+            .close-button {
+                background: transparent;
+                border: none;
+                padding: 8px;
+                cursor: pointer;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s;
+            }
+
+            .close-button:hover {
+                background-color: rgba(0, 0, 0, 0.04);
+            }
+
+            .close-button svg {
+                fill: var(--text-color);
+            }
+
+            .download-options {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .format-selector {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .material-dropdown {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                background-color: white;
+                color: var(--text-color);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: border-color 0.2s, box-shadow 0.2s;
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+            }
+
+            .download-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 24px;
+                font-weight: 500;
+                cursor: pointer;
+                background-color: var(--primary-color);
+                color: white;
+                font-size: 1rem;
+                transition: background-color 0.2s, box-shadow 0.2s;
+            }
+
+            .download-button:hover {
+                background-color: var(--secondary-color);
+                box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            }
         </style>
     </head>
-    <script async="async" src="/consent.js"></script>
-
- 
 
     <body>
         <div class="popup" id="legalPopup">
@@ -475,38 +577,34 @@
             </a>
             <h1 class="viewer-title" id="topic-title">Loading...</h1>
             <div class="action-buttons">
-                <button class="action-button" id="download-btn">
-                    <img
-                        src="img/icons/download-icon.png"
-                        alt="Download"
-                        height="25px"
-                        width="25px">
+                <button 
+                onclick="document.getElementById('download-options-popup').style.display = 'flex'"
+                class="action-button" id="download-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="download-icon" ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                     <span class="button-label">Download</span>
                 </button>
                 <button class="action-button" id="edit-btn">
-                    <img src="img/icons/edit-icon.svg" alt="Edit" height="23px" width="23px">
-                    <span class="button-label">Edit</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-line"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>                    <span class="button-label">Edit</span>
                 </button>
                 <button class="action-button" id="share-btn">
-                    <img src="img/icons/share-icon-black.svg" alt="Share">
-                    <span class="button-label">Share</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>                    <span class="button-label">Share</span>
                 </button>
                 <a class="create-button" href="/new.html" style="text-decoration: none;">
                     <svg
-                    height="18"
-                    width="18"
-                    viewbox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path
-                        d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
-                        fill="currentColor"
-                        stroke="currentColor"
-                        stroke-width="1"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        ></path>
-                </svg>                    New
+                        height="18"
+                        width="18"
+                        viewbox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path
+                            d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="1"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                    New
                 </a>
             </div>
         </div>
@@ -515,9 +613,13 @@
             <textarea id="markdown-textarea" spellcheck="false"></textarea>
 
             <div class="editor-buttons">
-                <a href="/help/mind-map-editing.html" class="help-button" style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; background: #C667FF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">?</a>
-
-
+                <a
+                    href="/help/mind-map-editing.html"
+                    class="help-button"
+                    style="position: fixed; bottom: 10px; left: 10px; width: 30px; height: 30px; color: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                </a>
+                <svg fill="none" height="30" viewBox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" style="position: fixed; bottom: 10px; left: 50px; width: 30px; height: 30px; color: #1e293b; display: flex; opacity: 0.6;"><g fill="#1e293b"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g></svg>
                 <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
                 <button class="editor-button save-button" id="save-edit">Save</button>
             </div>
@@ -528,12 +630,187 @@
             <svg id="mindmap"></svg>
         </div>
 
+        <div id="download-options-popup" class="download-options-popup">
+            <div class="download-options-popup-content">
+                <div class="popup-header">
+                    <h2>Download Mind Map</h2>
+                    <button class="close-button" id="close-download-options-popup">
+                        <svg width="24" height="24" viewbox="0 0 24 24"><path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                </div>
+                <div class="download-options">
+                    <div class="format-selector">
+                        <label for="download-format">File format</label>
+                        <select id="download-format" class="material-dropdown">
+                            <option value="jpg">JPG - Image</option>
+                            <option value="svg">SVG - Vector Graphics</option>
+                            <option value="pdf">PDF - Document</option>
+                        </select>
+                    </div>
+                    <button class="download-button primary" id="download-btn">
+                        Download
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <small class="legals-disclaimer" id="legals-disclaimer">
             <a href="/terms-of-use.html" style="color: var(--text-color)">Terms of use</a>
             <span style="color: #aaaaaa;">|</span>
             <a href="/privacy-policy.html" style="color: var(--text-color)">Privacy Policy</a>
         </small>
         <script>
+                function downloadMindmap(format) {
+                    try {
+                        const svg = document.getElementById('mindmap');
+
+                        const svgCopy = svg.cloneNode(true);
+                        const bbox = svg.getBBox();
+                        const padding = 20;
+
+                        const width = bbox.width + (padding * 2);
+                        const height = bbox.height + (padding * 2);
+
+                        svgCopy.setAttribute(
+                            'viewBox',
+                            `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`
+                        );
+                        svgCopy.setAttribute('width', width);
+                        svgCopy.setAttribute('height', height);
+
+                        const serializer = new XMLSerializer();
+                        const svgStr = serializer.serializeToString(svgCopy);
+                        const svgBase64 = btoa(unescape(encodeURIComponent(svgStr)));
+
+                        if (format === 'svg') {
+                            const blob = new Blob([svgStr], {type: 'image/svg+xml'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'mindmap.svg';
+                            document
+                                .body
+                                .appendChild(a);
+                            a.click();
+                            document
+                                .body
+                                .removeChild(a);
+                            URL.revokeObjectURL(url);
+                        } else if (format === 'jpg') {
+                            const img = new Image();
+                            img.onload = function () {
+                                const scale = 1.8;
+                                const canvas = document.createElement('canvas');
+                                canvas.width = this.width * scale;
+                                canvas.height = this.height * scale;
+                                const ctx = canvas.getContext('2d');
+                                ctx.fillStyle = '#ffffff';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+                                const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
+                                const a = document.createElement('a');
+                                a.href = jpgUrl;
+                                a.download = 'mindmap.jpg';
+                                document
+                                    .body
+                                    .appendChild(a);
+                                a.click();
+                                document
+                                    .body
+                                    .removeChild(a);
+                            };
+                            img.src = 'data:image/svg+xml;base64,' + svgBase64;
+                        } else if (format === 'pdf') {
+                            const img = new Image();
+                            img.onload = function () {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = this.width;
+                                canvas.height = this.height;
+                                const ctx = canvas.getContext('2d');
+                                ctx.fillStyle = '#ffffff';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(this, 0, 0);
+                                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                                const pdf = new jspdf.jsPDF({
+                                    orientation: canvas.width > canvas.height
+                                        ? 'l'
+                                        : 'p',
+                                    unit: 'pt',
+                                    format: [canvas.width, canvas.height]
+                                });
+                                pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                                pdf.save('mindmap.pdf');
+                            };
+                            img.src = 'data:image/svg+xml;base64,' + svgBase64;
+                        } else if (format === 'markdown') {
+                            const viewer = document.getElementById('mindmap-viewer');
+                            const currentMindmap = JSON.parse(viewer.dataset.currentMindmap || '{}');
+                            if (currentMindmap.markdown) {
+                                const blob = new Blob([currentMindmap.markdown], {type: 'text/markdown'});
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = 'mindmap.md';
+                                document
+                                    .body
+                                    .appendChild(a);
+                                a.click();
+                                document
+                                    .body
+                                    .removeChild(a);
+                                URL.revokeObjectURL(url);
+                            } else {
+                                alert('Markdown content not available.');
+                            }
+                        }
+
+                        document
+                            .getElementById('download-options-popup')
+                            .style
+                            .display = 'none';
+                    } catch (error) {
+                        console.error('Download error:', error);
+                        alert(error.message);
+                    }
+                }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const downloadBtn = document.getElementById('download-btn');
+                const formatSelect = document.getElementById('download-format');
+                const closeBtn = document.getElementById('close-download-options-popup');
+                const popup = document.getElementById('download-options-popup');
+                const downloadMindmapBtn = document.getElementById('download-mindmap-btn');
+
+                if (downloadMindmapBtn) {
+                    downloadMindmapBtn.addEventListener('click', function() {
+                        popup.style.display = 'flex';
+                    });
+                }
+
+                if (downloadBtn && formatSelect) {
+                    downloadBtn.addEventListener('click', function() {
+                        popup.style.display = 'flex';
+                    });
+
+                    document.querySelector('.download-button').addEventListener('click', function() {
+                        const format = formatSelect.value;
+                        downloadMindmap(format);
+                    });
+                }
+
+                closeBtn.addEventListener('click', function () {
+                    popup.style.display = 'none';
+                });
+
+                popup.addEventListener('click', function (event) {
+                    if (event.target === popup) {
+                        popup.style.display = 'none';
+                    }
+                });
+            });
+
+
             let currentMarkdown = '';
 
             async function loadMindMap() {
@@ -554,7 +831,7 @@
                         return;
                     }
 
-                    const response = await fetch(`https://api.mindmapwizard.com/share/${id}`);
+                    const response = await fetch(`https://share.mindmapwizard.com/${id}`);
                     if (!response.ok) {
                         throw new Error('Mind map not found');
                     }
@@ -607,13 +884,17 @@
                 viewerContent.style.bottom = '0';
                 viewerContent.style.overflow = 'hidden';
 
+                if (!markdown.startsWith('---\nmarkmap:')) {
+                    markdown = '---\nmarkmap:\n  maxWidth: 500\n---\n\n' + markdown;
+                }
+
                 const {root} = await transformer.transform(markdown);
                 const mm = Markmap.create(svg, {
                     autoFit: true,
                     duration: 400,
                     zoom: true,
                     pan: true,
-                    maxWidth: 300,
+                    maxWidth: 550,
                     initialExpandLevel: 999
                 });
                 mm.setData(root);
@@ -634,22 +915,7 @@
                 document
                     .getElementById('download-btn')
                     .addEventListener('click', () => {
-                        const svgElement = document.getElementById('mindmap');
-                        const svgContent = new XMLSerializer().serializeToString(svgElement);
-                        const blob = new Blob([svgContent], {type: 'image/svg+xml'});
-                        const element = document.createElement('a');
-                        element.href = URL.createObjectURL(blob);
-                        element.download = `${topic
-                            .replace(/[^a-z0-9]/gi, '_')
-                            .toLowerCase()}.svg`;
-                        document
-                            .body
-                            .appendChild(element);
-                        element.click();
-                        document
-                            .body
-                            .removeChild(element);
-                        URL.revokeObjectURL(element.href);
+                        document.getElementById('download-options-popup').style.display = 'flex';
                     });
 
                 document
@@ -764,5 +1030,4 @@
                 toggleEditMode(false);
             }
         </script>
-
     </html>
