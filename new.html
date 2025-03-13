@@ -130,7 +130,7 @@
                 padding: 10px;
                 display: none;
                 flex-direction: column;
-                z-index: 1000;
+                z-index: 1800;
             }
 
             .info-menu.show {
@@ -743,6 +743,143 @@
                 transform: scale(0.90);
             }
 
+            .youtube-button-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 15px;
+            }
+            
+            .youtube-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #ffffff;
+                color: #1e293b;
+                border: 2px solid var(--border-color);
+                border-radius: 40px;
+                padding: 8px 16px;
+                font-size: 1rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+            
+            .youtube-btn:hover {
+                background-color: #f8f8f8;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            
+            .youtube-icon {
+                margin-right: 10px;
+                color: #FF0000;
+            }
+
+            .title-youtube-icon {
+                color: #FF0000;
+            }
+            
+             /* YouTube popup styles */
+             .youtube-popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.32);
+                z-index: 1300;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .youtube-popup-content {
+                background-color: white;
+                border-radius: 28px;
+                box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+                width: 100%;
+                max-width: 500px;
+                padding: 24px;
+                position: relative;
+            }
+            
+            .youtube-description {
+                margin: 15px 0;
+                color: var(--text-color);
+                font-size: 1rem;
+            }
+            
+            /* New YouTube input wrapper style */
+            .youtube-input-wrapper {
+                width: 100%;
+                height: 55px;
+                border-radius: 40px;
+                padding: 0;
+                border: 2px solid var(--border-color);
+                font-size: 1.1rem;
+                box-sizing: content-box;
+                display: flex;
+                align-items: center;
+                background-color: #ffffff;
+                transition: border-color 0.3s ease;
+                position: relative;
+                margin: 30px auto 0;
+            }
+            
+            .youtube-input-wrapper:focus-within {
+                outline: none;
+                border-color: #FF0000;
+            }
+            
+            .youtube-input {
+                flex-grow: 1;
+                height: 94%;
+                border: none;
+                outline: none;
+                padding-left: 15px;
+                background-color: #ffffff;
+                color: black;
+                font-size: 1.2rem;
+                border-radius: 40px;
+                width: calc(100% - 60px);
+            }
+            
+            .youtube-send-btn {
+                height: 47px;
+                width: 47px;
+                background-color: #FF0000;
+                border: none;
+                border-radius: 40px;
+                color: white;
+                cursor: pointer;
+                font-weight: 500;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 4.5px;
+                right: 5px;
+                transition: all 0.3s;
+            }
+            
+            .youtube-send-btn:hover {
+                background-color: #c50000;
+            }
+            
+            .youtube-send-btn:active {
+                transform: scale(0.9);
+            }
+            
+            .youtube-send-btn .send-icon {
+                margin: 0;
+                width: 24px;
+                height: 24px;
+                color: white;
+
+            }
+
+
             .download-options-popup {
                 display: none;
                 position: fixed !important;
@@ -832,8 +969,7 @@
                 cursor: pointer;
                 transition: border-color 0.2s, box-shadow 0.2s;
                 appearance: none;
-                background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
-                background-repeat: no-repeat;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E");                background-repeat: no-repeat;
                 background-position: right 12px center;
             }
 
@@ -1288,8 +1424,8 @@
                             <path d="M0 0h24v24H0z" fill="none"></path>
                             <path
                                 d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
-                                fill="#C667FF"
-                                stroke="#C667FF"
+                                fill="var(--secondary-color)"
+                                stroke="var(--secondary-color)"
                                 stroke-width="2"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"></path>
@@ -1366,6 +1502,16 @@
                         class="send-icon">
                 </button>
             </div>
+            
+            <!-- YouTube button -->
+            <div class="youtube-button-container">
+                <button id="youtube-btn" class="youtube-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 48 48" class="youtube-icon">
+                        <path fill="#FF3D00" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path><path fill="#FFF" d="M20 31L20 17 32 24z"></path>                    </svg>
+                        Use YouTube Video
+                        <span style="background-color: #1e293b; padding: 3px 8px; border-radius: 30px; color: #ffffff; margin-left: 8px; margin-right: -5px;">New</span>
+                    </button>
+            </div>
         </div>
 
         <small class="legals-disclaimer" id="legals-disclaimer">By sending a topic on Mind Map Wizard, you agree to our
@@ -1373,8 +1519,40 @@
             and have read our
             <a href="/privacy-policy.html" style="color: var(--text-color)">Privacy Policy</a>
         </small>
-
+        
+        <!-- YouTube popup -->
+            <!-- YouTube popup -->
+            <div id="youtube-popup" class="youtube-popup">
+                <div class="youtube-popup-content">
+                    <div class="popup-header">
+                        <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="34" height="34" viewBox="0 0 48 48" class="title-youtube-icon" style="vertical-align: middle; margin-bottom: 5px;  margin-right: 6px;">
+                                <path fill="#FF3D00" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
+                                <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
+                            </svg>
+                            YouTube Video URL
+                        </h2>
+                        <button class="close-button" id="close-youtube-popup">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </button>
+                    </div>
+                    <p class="youtube-description">Enter a YouTube video URL to generate a mind map from its content.</p>
+                    <div class="youtube-input-wrapper">
+                        <input type="text" id="youtube-url" placeholder="https://www.youtube.com/watch..." class="youtube-input">
+                        <button id="youtube-generate-btn" class="youtube-send-btn">
+                            <img
+                            src="/img/icons/send-icon.png"
+                            alt="Generate"
+                            height="26px"
+                            width="26px"
+                            class="send-icon">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        
         <div id="recent-mindmaps-container">
+            <!-- ... existing code ... -->
             <div class="recent-mindmaps" id="recent-mindmaps">
                 <h2>
                     <svg
@@ -1425,8 +1603,7 @@
         <div class="popup-header">
             <h2>Download Mind Map</h2>
             <button class="close-button" id="close-download-options-popup">
-                <svg width="24" height="24" viewbox="0 0 24 24"><path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
         </div>
         <div class="download-options">
@@ -1562,17 +1739,112 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+   document.addEventListener('DOMContentLoaded', function () {
         document
             .getElementById('prompt')
             .focus();
+            
+        const youtubeBtn = document.getElementById('youtube-btn');
+        const youtubePopup = document.getElementById('youtube-popup');
+        const closeYoutubePopup = document.getElementById('close-youtube-popup');
+        const youtubeGenerateBtn = document.getElementById('youtube-generate-btn');
+        const youtubeUrlInput = document.getElementById('youtube-url');
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const ytLink = urlParams.get('yt-link');
+        
+        if (ytLink) {
+            generateMindmapFromYoutube(ytLink);
+        }
+        
+        youtubeBtn.addEventListener('click', function() {
+            youtubePopup.style.display = 'flex';
+        });
+        
+        
+        closeYoutubePopup.addEventListener('click', function() {
+            youtubePopup.style.display = 'none';
+        });
+        
+        youtubePopup.addEventListener('click', function(event) {
+            if (event.target === youtubePopup) {
+                youtubePopup.style.display = 'none';
+            }
+        });
+        
+        youtubeGenerateBtn.addEventListener('click', function() {
+            const youtubeUrl = youtubeUrlInput.value.trim();
+            if (youtubeUrl) {
+                generateMindmapFromYoutube(youtubeUrl);
+                youtubePopup.style.display = 'none';
+            } else {
+                alert('Please enter a valid YouTube URL');
+            }
+        });
+        
+        youtubeUrlInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                youtubeGenerateBtn.click();
+            }
+        });
     });
+    
+    function generateMindmapFromYoutube(youtubeUrl) {
+        document.getElementById("header").style.display = "none";
+        document.getElementById("recent-mindmaps").style.display = "none";
+        document.getElementById("back-button").style.display = "block";
+        document.getElementById("ai-content-disclaimer").style.display = "block";
+        document.getElementById("mindmap").style.display = "none";
+        document.getElementById("loading-animation").style.display = "flex";
+        
+        const videoId = extractYoutubeVideoId(youtubeUrl);
+        document.getElementById("logo-text").textContent = "YouTube Mind Map";
+        
+        fetch('https://generate.mindmapwizard.com', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ youtubeVideoUrl: youtubeUrl })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const {topic, markdown} = formatMarkdown(data.response);
+            if (markdown) {
+                renderMindmap(markdown);
+                saveMindmapToHistory(topic || "YouTube: " + youtubeUrl, markdown);
+                document.getElementById("logo-text").textContent = topic || "YouTube Mind Map";
+                
+                if (window.dataLayer) {
+                    window.dataLayer.push({
+                        'event': 'youtube_mindmap_generated',
+                        'mindmap_type': 'youtube'
+                    });
+                }
+            }
+            document.getElementById("loading-animation").style.display = "none";
+            document.getElementById("button-container").style.display = "flex";
+        })
+        .catch(error => {
+            console.error("Error generating the mindmap from YouTube:", error);
+            document.getElementById("loading-animation").style.display = "none";
+            alert("Error generating mindmap from YouTube. Please try again.");
+        });
+    }
+    
+    function extractYoutubeVideoId(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+    
     let currentMarkdown = '';
     let currentMindmap = {
         topic: '',
         markdown: '',
         timestamp: null
     };
+    
 
     function updateCurrentMindmap() {
         const topic = document
