@@ -29,7 +29,9 @@ Mind Map Wizard is a free and open-source AI-powered mind mapping tool that allo
 - [ ] Upload files for reference or summarize Videos
 
 ## Mind Map Generation Process
-
+<br>
+<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/generation-process.webp" alt="Mind Map Generation Process" style="width: 80%;">
+<br>
 Creating a mind map involves a few simple steps. Here’s how it works:
 
 1. **User Submits Topic:**  
@@ -47,9 +49,7 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 5. **Render as SVG:**  
    Finally, the Markdown is transformed into an SVG (Scalable Vector Graphics) format using [markmap.js](https://github.com/markmap/markmap), giving you a visually appealing mind map.
 
-<br>
-<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/generation-process.webp" alt="Mind Map Generation Process" style="width: 80%;">
-<br>
+
 
 ## Contact
 
