@@ -373,7 +373,7 @@
         <h1>Privacy Policy</h1>
         <h3 class="mmw-title">Mind Map Wizard</h3>
         <br>
-        <p>Last Updated: 2025-01-12</p>
+        <p>Last Updated: 2025-02-26</p>
         <h2>1. Introduction</h2>
         <p>This Privacy Policy outlines how we collect, use, disclose, and protect your
             personal information when you access or use our service. By accessing or using
@@ -663,6 +663,7 @@ function clearHistory() {
 
     function confirmClearHistory() {
         localStorage.removeItem('mindmap-history');
+        localStorage.removeItem('mindmap-playground');
         closeDeletePopup();
     }
 </script>
