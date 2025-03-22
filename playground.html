@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <title>Mind Map Wizard -  Playground</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
         <meta charset="UTF-8">
         <meta
             name="description"
@@ -36,530 +36,12 @@
 
         <meta name="theme-color" content="#C667FF">
         <meta name="language" content="en">
-    <style >
-            :root {
-                --primary-color: #C667FF;
-                --secondary-color: #9D34D4;
-                --background-color: #F5F5F7;
-                --text-color: #1e293b;
-                --border-color: #e2e8f0;
-                --error-color: #dc2626;
-            }
-
-            @font-face {
-                    font-family: 'Open Sans';
-                    src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
-                    font-weight: 800;
-                    font-style: normal;
-                    font-display: swap;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                }
-
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-                min-height: 100vh;
-                overflow: hidden;
-                text-align: center;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15px 20px;
-                background-color: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(5px);
-                position: fixed;
-                top: 0;
-                height: 50px;
-                left: 0;
-                z-index: 1000;
-                box-sizing: border-box;
-                width: 100%;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            }
-
-            .header-left {
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-            }
-
-            .navbutton {
-                background-color: var(--primary-color);
-                padding: 6px 14px;
-                font-size: 1.1rem;
-                border: 2px solid var(--primary-color);
-                border-radius: 40px;
-                color: #fff !important;
-                transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-decoration: none;
-            }
-
-            .navbutton:hover {
-                background-color: var(--secondary-color);
-                border: 2px solid var(--secondary-color);
-            }
-
-            .nav-links {
-                margin-left: auto;
-                margin-right: 5px;
-                display: flex;
-                align-items: center;
-            }
-
-            .nav-links img {
-                position: relative;
-                top: 5px;
-            }
-
-            .nav-links a {
-                margin-left: 0;
-                margin-right: 10px;
-                text-decoration: none;
-                color: black;
-                font-weight: 500;
-                transition: color 0.3s ease;
-                border-radius: 10px;
-                padding: 5px 15px 10px;
-            }
-
-            .nav-links a:hover {
-                background-color: rgba(0, 0, 0, 0.032);
-                border-radius: 10px;
-                padding: 5px 15px 10px;
-            }
-
-            .share-button {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 10px !important;
-                border-radius: 20px !important;
-                margin: 0;
-                width: 40px !important;
-                height: 40px !important;
-                cursor: pointer;
-                background-color: var(--background-color) !important;
-                color: var(--text-color) !important;
-                font-size: 1.2rem;
-                border: none;
-                position: absolute;
-                top: 110px;
-            }
-            .save-button {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 5px 15px !important;
-                border-radius: 20px !important;
-                margin: 0;
-                height: 40px !important;
-                cursor: pointer;
-                background-color: var(--background-color) !important;
-                color: var(--text-color);
-                font-size: 1.2rem;
-                border: none;
-                position: absolute;
-                top: 110px;
-            }
-            
-            .share-button {
-                right: 20px;
-            }
-            
-            .save-button {
-                right: 70px;
-            }
-
-            .share-button:hover {
-                background-color: #ffffff;
-            }
-
-            .share-dialog {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 1.5rem;
-                border-radius: 25px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                width: 90%;
-                max-width: 400px;
-                z-index: 1100;
-            }
-
-            .share-dialog h3 {
-                font-size: 1.5rem;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-
-            .share-link {
-                width: 96%;
-                padding: 0.5rem;
-                border: 1px solid #e2e8f0;
-                border-radius: 0.375rem;
-                font-size: 1rem;
-                margin-top: 1rem;
-                background: #f8fafc;
-            }
-
-            .overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.32);
-                display: none;
-                z-index: 1050;
-            }
-
-            .dialog-buttons {
-                display: flex;
-                justify-content: flex-end;
-                gap: 0.75rem;
-                margin-top: 1rem;
-            }
-
-            .dialog-button {
-                padding: 0.5rem 1rem;
-                border-radius: 20px;
-                border: none;
-                cursor: pointer;
-                font-size: 0.875rem;
-                transition: background-color 0.2s ease;
-            }
-
-            .dialog-button.cancel {
-                background-color: #f1f5f9;
-                color: #64748b;
-            }
-
-            .dialog-button.cancel:hover {
-                background-color: #e2e8f0;
-            }
-
-            .dialog-button.confirm {
-                background-color: var(--primary-color);
-                color: white;
-            }
-
-            .dialog-button.confirm:hover {
-                background-color: var(--secondary-color);
-            }
-            .logo {
-                position: relative;
-                top: 5px;
-            }
-
-            .header h1 {
-                margin: 0;
-                font-size: 1.8rem;
-                color: var(--text-color);
-                font-family: 'Open Sans', sans-serif;
-                font-weight: 800;
-            }
-            
-
-            .logo-text {
-                bottom: 4px;
-                position: relative;
-            }
-
-            @media (max-width: 500px) {
-                .logo-text {
-                    display: none !important;
-                }
-            }
-
-            .container {
-                display: flex;
-                flex: 1;
-                padding-top: 80px;
-                box-sizing: border-box;
-                height: 100vh;
-            }
-
-            @media (max-width: 768px) {
-                .container {
-                    flex-direction: column-reverse;
-                    height: 100vh;
-                    padding-bottom: 20px;
-                }
-
-                .input-section,
-                .mindmap-section {
-                    flex: 1;
-                    min-height: 0;
-                    max-width: 100%;
-                    width: 95%;
-                    margin: 0 auto;
-                    padding: 20px 0;
-                }
-
-                .input-section {
-                    box-sizing: border-box;
-                    background-color: transparent;
-                }
-
-                #markdown-input {
-                    width: 100%;
-                    box-sizing: border-box;
-                    margin: 10px 0;
-                }
-
-                .markmap {
-                    height: 100%;
-                }
-            }
-
-            .input-section {
-                flex: 1;
-                display: flex;
-                padding: 20px 0 0 20px;
-                flex-direction: column;
-                background-color: #ffffff;
-                max-width: 33.333%;
-            }
-
-            @media (max-width: 950px) {
-                .input-section {
-                    max-width: 100%;
-                    padding: 20px 0 0 0;
-                }
-
-            }
-            @media (max-width: 650px) {
-               .logo-text {
-                    display: none;
-                }
-            }
-  
-            .mindmap-section {
-                flex: 2;
-                display: flex;
-                flex-direction: column;
-                padding: 35px 0 0 7px;
-            }
-
-            #markdown-input {
-                width: 97%;
-                flex: 1;
-                padding: 10px;
-                border: none;
-                border-radius: 10px;
-                font-family: monospace;
-                resize: none;
-                margin-top: 10px;
-                outline: none;
-                background-color: var(--background-color);
-            }
-
-            #markdown-input:active,
-            #markdown-input:focus,
-            #markdown-input:hover {
-                border: none;
-                outline: none;
-            }
-
-            .markmap {
-                flex: 1;
-                position: relative;
-                border: none;
-                border-radius: 4px;
-                margin-top: 10px;
-                width: 100%;
-                height: 60vw;
-
-            }
-
-            .markmap > svg {
-                width: 100%;
-                height: 60vw !important;
-            }
-
-            h1 {
-                margin: 0;
-                font-size: 24px;
-            }
-
-            .popup {
-                display: none;
-                position: fixed;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.32);
-                justify-content: center;
-                align-items: center;
-                z-index: 1100;
-            }
-
-            .popup-content {
-                background-color: white;
-                padding: 20px;
-                border-radius: 20px;
-                text-align: left;
-                max-width: 300px;
-                display: flex;
-                line-height: 1.5;
-                flex-direction: column;
-                align-items: space-between;
-            }
-
-            .accept-terms-button,
-            .decline-terms-button {
-                margin: 5px;
-                padding: 12px 20px;
-                border-radius: 20px;
-                cursor: pointer;
-                font-size: 0.9rem;
-            }
-
-            .accept-terms-button {
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                transition: all 0.3s ease;
-            }
-
-            .decline-terms-button {
-                background-color: var(--border-color);
-                color: black;
-                border: none;
-            }
-
-            .accept-terms-button:hover {
-                background-color: #b73cfe;
-            }
-
-            .decline-terms-button:hover {
-                background-color: rgb(215, 215, 215);
-            }
-
-            .legal-purposes {
-                margin: 0;
-                padding-left: 20px;
-            }
-
-            .popup-content a {
-                background-color: #f0f0f0;
-                padding: 3px;
-                border-radius: 6px;
-                text-decoration: none;
-                transition: all 0.1s ease;
-                font-size: 1rem;
-            }
-            .popup-content a:hover {
-                background-color: #e6e6e6;
-            }
-
-            .help-button {
-                width: 18px;
-                height: 18px;
-                border-radius: 50%;
-                background-color: rgba(255, 255, 255, 0.9);
-                border: none;
-                cursor: pointer;
-                position: fixed;
-                right: 50px;
-                bottom: 18px;
-                align-items: center;
-                justify-content: center;
-                font-size: 20px;
-                padding: 10px;
-                color: var(--text-color);
-                margin-left: 8px;
-                transition: all 0.3s ease;
-                z-index: 1000;
-            }
-
-            .info-button {
-                position: fixed;
-                bottom: 17px;
-                right: 14px;
-                display: flex;
-                align-items: center;
-                background-color: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border-radius: 25px;
-                padding: 8px;
-                text-decoration: none;
-                color: var(--text-color);
-                transition: all 0.3s ease;
-                z-index: 1000;
-                cursor: pointer;
-            }
-
-            .info-menu {
-                position: fixed;
-                bottom: 70px;
-                right: 20px;
-                background-color: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border-radius: 15px;
-                padding: 10px;
-                display: none;
-                flex-direction: column;
-                z-index: 1000;
-            }
-
-            .info-menu.show {
-                display: flex;
-            }
-
-            .info-menu a {
-                color: var(--text-color);
-                text-decoration: none;
-                padding: 8px 15px;
-                border-radius: 8px;
-                transition: background-color 0.3s ease;
-                white-space: nowrap;
-            }
-
-            .info-menu a:hover {
-                background-color: rgba(0, 0, 0, 0.05);
-            }
-            .markdown-badge {
-                position: fixed;
-                bottom: 5px;
-                left: 25px;
-                display: flex;
-                align-items: center;
-                padding: 8px;
-                transition: all 0.3s ease;
-                z-index: 1000;
-                cursor: pointer;
-                opacity: 0.7;
-                width: 23px;
-                height: 23px;
-            }
-
-            @media (max-width: 768px) {
-               .markdown-badge {
-                    display: none;
-                }
-            }
-    </style>
-
+        <link rel="stylesheet" href="/edit.css">
     </head>
     <body>
         <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
         class="markdown-badge">
-        <g fill="#1e293b"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+        <g fill="#777777"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
     </svg>
         <div class="info-button">
             <img src="/img/icons/info-icon.svg" alt="Info" width="22" height="22">
@@ -568,29 +50,6 @@
             <a href="/feedback.html">Feedback</a>
             <a href="/terms-of-use.html">Terms of Use</a>
             <a href="/privacy-policy.html">Privacy Policy</a>
-        </div>
-        <div class="popup" id="legalPopup">
-            <div class="popup-content">
-                <div>
-                    <h2>🍪 Cookies</h2>
-                    <p>To proceed, you need to agree to our
-                        <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
-                        and
-                        <a href="/privacy-policy.html" style="color: var(--text-color);">Privacy Policy</a>
-                        <br>
-                        <div class="whitespace"></div>
-
-                        <strong>Purposes:</strong>
-                        <ul class="legal-purposes">
-                            <li>Functionality</li>
-                            <li>Analytics</li>
-                        </ul>
-                    </p>
-                    <div class="whitespace"></div>
-                </div>
-                <button onclick="closePopup()" class="decline-terms-button">Decline</button>
-                <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
-            </div>
         </div>
       <div class="share-dialog" style="display: none;">
         <h3>Share Mind Map</h3>
@@ -615,57 +74,88 @@
                         <img src="/img/icons/history-icon.svg" height="22" width="22">
                             History</a>
                     </div>
-                    <a class="navbutton" href="/">Create with AI</a>
+                    <a class="navbutton" href="/new.html">Create with AI</a>
                 </div>
                 <div class="container">
+                
                     <div class="input-section">
-                        <h1>Input</h1>
+                        <div class="toolbar">
+                            <button onclick="shareMindmap()" class="share-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg></button>
+                            
+                            <button onclick="clearPlayground()" class="new-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                            <button onclick="saveToHistory()" class="save-button">Save</button>
+                        </div>
                 <textarea id="markdown-input" placeholder="Enter your markdown here...">
-# Playground 
+# Mind Map
 
-## Links 
-
-- [New Mind Map](https://mindmapwizard.com/new) 
-- [Mind Map History](https://mindmapwizard.com/history) 
-
-## Features
-
-Note that if blocks and lists appear at the same level, the lists will be ignored. 
-
-### Lists 
-
-- **strong** 
-- ~~del~~ 
-- *italic* 
-- `inline code` 
-- Ordered list 
-  1. item 1
-  2. item 2 
-
-### Blocks
-
-```js
-console.log('hello, JavaScript')
-```
-  
-![](https://mindmapwizard.com/img/favicon64.png)
+## Branch
+## Branch
                 </textarea>
             </div>
             <a class="help-button" href="/help/mind-map-editing.html" style="text-decoration: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>            </a>
 
             <div class="mindmap-section">
-            <button onclick="shareMindmap()" class="share-button">
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>            <button onclick="saveToHistory()" class="save-button">
-                Save</button>
-                <h1>Mind Map</h1>
                 <div class="markmap" id="markmap-container"></div>
             </div>
             </div>
+
+            <div class="notification" id="saveNotification">
+                <span class="success-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                Successfully saved to history!
+            </div>
+
+            <div class="notification" id="newMapNotification">
+                <span class="success-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                New Mind Map Created
+            </div>
+
+        <!-- Add new save dialog -->
+        <div class="share-dialog" id="saveDialog" style="display: none;">
+            <h3>Save Current Mind Map</h3>
+            <p>Enter a name for your mind map:</p>
+            <input type="text" id="mindmapName" class="share-link" placeholder="My Mind Map">
+            <div class="dialog-buttons">
+                <button class="dialog-button cancel" onclick="closeSaveDialog()">Cancel</button>
+                <button class="dialog-button confirm" onclick="saveWithName()">Save</button>
+            </div>
+        </div>
+
+        <!-- Add confirmation dialog for new mind map -->
+        <div class="share-dialog" id="newConfirmDialog" style="display: none;">
+            <h3>Create New Mind Map</h3>
+            <p>Do you really want to create a new mind map? If you didnt save your current mind map ip might be lost.</p>
+            <div class="dialog-buttons">
+                <button class="dialog-button cancel" onclick="closeNewConfirmDialog()">Keep old</button>
+                <button class="dialog-button confirm" onclick="createNewMindMap();">Create New</button>
+            </div>
+        </div>
+
         <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@latest"></script>
         <script>
             window.onload = function() {
-                showPopup();
+                if (typeof showPopup === 'function') {
+                    showPopup();
+                }
+                
+                let retryCount = 0;
+                const maxRetries = 5;
+                
+                function tryRenderMindMap() {
+                    if (window.markmap && window.markmap.Markmap && window.markmap.Transformer) {
+                        initializeMindMap();
+                    } else if (retryCount < maxRetries) {
+                        retryCount++;
+                        setTimeout(tryRenderMindMap, 300);
+                    }
+                }
+                
+                tryRenderMindMap();
             };
 
             const textarea = document.getElementById('markdown-input');
@@ -677,55 +167,103 @@ console.log('hello, JavaScript')
                 const helpContent = document.querySelector('.markdown-help');
                 helpContent.classList.toggle('visible');
             }
+            
+            function initializeMindMap() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('id') === 'new') {
+                    resetPlayground(); 
+                } else {
+                    const savedMindmap = localStorage.getItem('mindmap-playground');
+                    if (savedMindmap) {
+                        const mindmapData = JSON.parse(savedMindmap);
+                        textarea.value = mindmapData.markdown;
+                    } else {
+                        textarea.value = `# Playground 
+
+## Links
+                    
+### [New Mind Map](https://mindmapwizard.com/new) 
+### [Mind Map History](https://mindmapwizard.com/history) 
+                    
+## Features
+                    
+Note that if blocks and lists appear at the same level, the lists will be ignored. 
+                    
+### Lists 
+                    
+#### **strong** 
+#### ~~del~~ 
+####  *italic* 
+#### \`inline code\`
+                     
+### Ordered list 
+  1. item 1
+  2. item 2 
+                    
+### Blocks
+                    
+\`\`\`js
+console.log('hello, JavaScript')
+\`\`\`
+                      
+![](https://mindmapwizard.com/img/favicon64.png)`;
+                    }
+                }
+                
+                setTimeout(updateMindmap, 300);
+
+                urlParams.delete('id');
+                const newUrl = window.location.origin + window.location.pathname + '?' + urlParams.toString();
+                window.history.replaceState({}, document.title, newUrl);
+            }
 
             function updateMindmap() {
-                container.innerHTML = '';
-            
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                container.appendChild(svg);
-            
-                const {Markmap, Transformer} = window.markmap;
-                const transformer = new Transformer();
-                
-                let markdownWithConfig = textarea.value;
-                if (!markdownWithConfig.startsWith('---\nmarkmap:')) {
-                    markdownWithConfig = '---\nmarkmap:\n  maxWidth: 100\n---\n\n' + markdownWithConfig;
+                if (!window.markmap || !window.markmap.Markmap || !window.markmap.Transformer) {
+                    console.log("Markmap library not fully loaded yet, retrying in 300ms");
+                    setTimeout(updateMindmap, 300);
+                    return;
                 }
                 
-                const {root} = transformer.transform(markdownWithConfig);
-            
-                const mindmapData = {
-                    id: sessionId,
-                    markdown: textarea.value,
-                    timestamp: new Date().toISOString(),
-                    topic: textarea.value.split('\n')[0].replace('# ', '')
-                };
-                localStorage.setItem('mindmap-playground', JSON.stringify(mindmapData));
+                try {
+                    container.innerHTML = '';
                 
-            
-                const mm = Markmap.create(svg, {
-                    autoFit: true,
-                    duration: 500,
-                    maxWidth: 300,
-                    zoom: true,
-                    pan: true
-                }, root);
-            
-                mm.fit();
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    container.appendChild(svg);
+                
+                    const {Markmap, Transformer} = window.markmap;
+                    const transformer = new Transformer();
+                    
+                    let markdownWithConfig = textarea.value;
+                    if (!markdownWithConfig.startsWith('---\nmarkmap:')) {
+                        markdownWithConfig = '---\nmarkmap:\n  maxWidth: 100\n---\n\n' + markdownWithConfig;
+                    }
+                    
+                    const {root} = transformer.transform(markdownWithConfig);
+                
+                    const mindmapData = {
+                        id: sessionId,
+                        markdown: textarea.value,
+                        timestamp: new Date().toISOString(),
+                        topic: textarea.value.split('\n')[0].replace('# ', '')
+                    };
+                    localStorage.setItem('mindmap-playground', JSON.stringify(mindmapData));
+                    
+                    const mm = Markmap.create(svg, {
+                        autoFit: true,
+                        duration: 0, 
+                        maxWidth: 300,
+                        zoom: true,
+                        pan: true
+                    }, root);
+                
+                    mm.fit();
+                } catch (error) {
+                    console.error("Error rendering mind map:", error);
+                    setTimeout(updateMindmap, 300);
+                }
             }
             
-            window.addEventListener('load', () => {
-                const savedMindmap = localStorage.getItem('mindmap-playground');
-                if (savedMindmap) {
-                    const mindmapData = JSON.parse(savedMindmap);
-                    textarea.value = mindmapData.markdown;
-                }
-                updateMindmap();
-            });
             textarea.addEventListener('input', updateMindmap);
-
-            window.addEventListener('load', updateMindmap);
-            updateMindmap();
 
             function generateUUID() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -806,17 +344,133 @@ console.log('hello, JavaScript')
                 overlay.style.display = 'none';
             }
 
+            function clearPlayground() {
+                const newConfirmDialog = document.getElementById('newConfirmDialog');
+                const overlay = document.querySelector('.overlay');
+                
+                newConfirmDialog.style.display = 'block';
+                overlay.style.display = 'block';
+            }
+            
+            function closeNewConfirmDialog() {
+                const newConfirmDialog = document.getElementById('newConfirmDialog');
+                const overlay = document.querySelector('.overlay');
+                
+                newConfirmDialog.style.display = 'none';
+                overlay.style.display = 'none';
+                }
+            
+            function saveBeforeNew() {
+                const newConfirmDialog = document.getElementById('newConfirmDialog');
+                const saveDialog = document.getElementById('saveDialog');
+                const overlay = document.querySelector('.overlay');
+                
+                newConfirmDialog.style.display = 'none';
+                
+                saveDialog.dataset.afterSave = 'clear';
+                
+                const firstLine = textarea.value.split('\n')[0];
+                const defaultName = firstLine.replace(/^#+ /, '').trim();
+                document.getElementById('mindmapName').value = defaultName;
+                
+                saveDialog.style.display = 'block';
+                overlay.style.display = 'block';
+                document.getElementById('mindmapName').focus();
+            }
+            
+            function createNewMindMap() {
+                const newConfirmDialog = document.getElementById('newConfirmDialog');
+                const overlay = document.querySelector('.overlay');
+                
+                newConfirmDialog.style.display = 'none';
+                overlay.style.display = 'none';
+                
+                resetPlayground();
+            }
+                        
+            function resetPlayground() {
+                textarea.value = "# Mind Map\n\n## Branch\n## Branch";
+                
+                updateMindmap();
+                
+                const notification = document.getElementById('newMapNotification');
+                if (notification) {
+                    notification.classList.add('show');
+                    
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 2000);
+                }
+                
+                const mindmapData = {
+                    id: sessionId,
+                    markdown: textarea.value,
+                    timestamp: new Date().toISOString(),
+                    topic: 'Mind Map'
+                };
+                localStorage.setItem('mindmap-playground', JSON.stringify(mindmapData));
+            }
+
             function saveToHistory() {
-                const mindmapData = JSON.parse(localStorage.getItem('mindmap-playground'));
-                if (mindmapData) {
-                    const existingHistory = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                    existingHistory.unshift(mindmapData);
-                    if (existingHistory.length > 100) {
-                        existingHistory.pop();
-                    }
-                    localStorage.setItem('mindmap-history', JSON.stringify(existingHistory));
+                const saveDialog = document.getElementById('saveDialog');
+                const overlay = document.querySelector('.overlay');
+                
+                const firstLine = textarea.value.split('\n')[0];
+                const defaultName = firstLine.replace(/^#+ /, '').trim();
+                document.getElementById('mindmapName').value = defaultName;
+                
+                saveDialog.style.display = 'block';
+                overlay.style.display = 'block';
+                document.getElementById('mindmapName').focus();
+            }
+            
+            function saveWithName() {
+                const mindmapName = document.getElementById('mindmapName').value.trim();
+                if (!mindmapName) {
+                    alert("Please enter a name for your mind map");
+                    return;
+                }
+                
+                const mindmapData = {
+                    id: sessionId,
+                    markdown: textarea.value,
+                    timestamp: new Date().toISOString(),
+                    topic: mindmapName
+                };
+                
+                const existingHistory = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                existingHistory.unshift(mindmapData);
+                if (existingHistory.length > 100) {
+                    existingHistory.pop();
+                }
+                localStorage.setItem('mindmap-history', JSON.stringify(existingHistory));
+                
+                closeSaveDialog();
+                
+                const saveDialog = document.getElementById('saveDialog');
+                if (saveDialog.dataset.afterSave === 'clear') {
+                    resetPlayground();
+                    saveDialog.dataset.afterSave = '';
+                } else {
+                    const notification = document.getElementById('saveNotification');
+                    notification.classList.add('show');
+                    
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 2000);
                 }
             }
+
+            function closeSaveDialog() {
+                const saveDialog = document.getElementById('saveDialog');
+                const overlay = document.querySelector('.overlay');
+                
+                saveDialog.style.display = 'none';
+                overlay.style.display = 'none';
+                
+                saveDialog.dataset.afterSave = '';
+            }
+            
         </script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
