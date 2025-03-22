@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mind Map Wizard - History</title>
+        <title>Mind Map History | Mind Map Wizard</title>
         <meta
             name="description"
             content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
@@ -71,6 +71,20 @@
                 padding: 0;
                 background: var(--background-color);
                 color: var(--text-color);
+            }
+
+            .mindmap-item.fade-in-section {
+                opacity: 0;
+                transform: translateY(20px);
+                visibility: hidden;
+                transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+                will-change: opacity, visibility, transform;
+            }
+
+            .mindmap-item.fade-in-section.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
             }
 
             .header {
@@ -218,13 +232,20 @@
 
             .mindmap-item {
                 background: var(--card-background);
-                border-radius: 0.5rem;
-                padding: 1rem;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 4px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                 cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                transition: transform 0.2s, box-shadow 0.2s;
+                position: relative;
+                overflow: hidden;
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
             }
 
             .mindmap-info {
@@ -378,10 +399,6 @@
 
             .download-icon:hover {
                 background-color: rgba(0, 0, 0, 0.035);
-            }
-
-            .mindmap-item {
-                position: relative;
             }
 
             .mindmap-actions {
@@ -675,7 +692,7 @@
                 cursor: pointer;
                 transition: border-color 0.2s, box-shadow 0.2s;
                 appearance: none;
-                background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E");
                 background-repeat: no-repeat;
                 background-position: right 12px center;
             }
@@ -1117,8 +1134,9 @@
             </button>
         </div>
         <div class="options">
-            <a href="/new.html" class="back-link"><img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
-                Back</a>
+            <a href="javascript:void(0);" class="back-link" onclick="goBack()">
+                <img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px"> Back
+            </a>
         </div>
 
         <div class="container">
@@ -1151,8 +1169,19 @@
                         stroke-linejoin="round"
                         class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
                 </a>
-                <svg fill="none" height="30" viewBox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" style="position: fixed; bottom: 10px; left: 50px; width: 30px; height: 30px; color: #1e293b; display: flex; opacity: 0.6;"><g fill="#1e293b"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g></svg>
-
+                <svg
+                    fill="none"
+                    height="30"
+                    viewbox="0 0 208 128"
+                    width="30"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style="position: fixed; bottom: 10px; left: 50px; width: 30px; height: 30px; color: #1e293b; display: flex; opacity: 0.6;">
+                    <g fill="#1e293b"><path
+                        clip-rule="evenodd"
+                        d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z"
+                        fill-rule="evenodd"/><path
+                        d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
+                </svg>
 
                 <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
                 <button class="editor-button save-button" id="save-edit">Save</button>
@@ -1167,7 +1196,10 @@
                 Back</button>
             <h2 class="viewer-title" id="viewer-title"></h2>
             <div class="viewer-controls">
-                <button class="edit-mode-button" id="edit-mode-button">
+                <button class="control-button" id="mm-fit" title="Fit to Screen (F)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
+                </button>
+                <button class="edit-mode-button" id="edit-mode-button" title="Edit (E)">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -1183,7 +1215,8 @@
                 </button>
                 <button
                     onclick="document.getElementById('download-options-popup').style.display = 'flex'"
-                    class="viewer-controls-download-button">
+                    class="viewer-controls-download-button"
+                    title="Download (D)">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -1196,7 +1229,7 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 </button>
-                <button onclick="shareMindmap()" class="share-button">
+                <button onclick="shareMindmap()" class="share-button" title="Share (S)">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -1221,8 +1254,17 @@
             <div class="popup-header">
                 <h2>Download Mind Map</h2>
                 <button class="close-button" id="close-download-options-popup">
-                    <svg width="24" height="24" viewbox="0 0 24 24"><path
-                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
             <div class="download-options">
@@ -1304,6 +1346,27 @@
 </body>
 
 <script>
+
+    const fadeInSections = document.querySelectorAll('.fade-in-section');
+
+    const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry
+                    .target
+                    .classList
+                    .add('is-visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    });
+
+    fadeInSections.forEach(section => {
+        fadeInObserver.observe(section);
+    });
+
     function downloadMindmap(format) {
         try {
             const mindmapContainer = document.getElementById('viewer-content');
@@ -1456,12 +1519,12 @@
 
         if (history.length === 0) {
             list.innerHTML = `
-                    <div class="no-mindmaps">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-closed"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="M2 10h20"/></svg>
-                        <h2>No mind maps yet!</h2>
-                        <p>Generate your first mind map to see it here!</p>
-                    </div>
-                `;
+            <div class="no-mindmaps">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-closed"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="M2 10h20"/></svg>
+                <h2>No mind maps yet!</h2>
+                <p>Generate your first mind map to see it here!</p>
+            </div>
+        `;
             const clearHistory = document.getElementById('clearHistory');
             clearHistory.style.display = 'none';
             const optionsToggle = document.getElementById('optionsToggle');
@@ -1469,24 +1532,43 @@
             return;
         }
 
-        list.innerHTML = history
-            .reverse()
+        const sortedHistory = [...history].sort((a, b) => {
+            const dateA = new Date(a.timestamp);
+            const dateB = new Date(b.timestamp);
+            return dateB - dateA;
+        });
+
+        list.innerHTML = sortedHistory
             .map(
                 item => `
-                <div class="mindmap-item" onclick="handleMindmapClick(event, ${item.id})">
-                    <div class="mindmap-info">
-                        <div class="mindmap-title">${escapeHtml(item.topic)}</div>
-                        <div class="mindmap-date">${formatDate(item.timestamp)}</div>
-                    </div>
-                    
-                    <div class="mindmap-actions">
-                        <button class="action-button" onclick="renameMindmap(event, ${item.id})">Rename</button>
-                        <button class="action-button delete" onclick="deleteMindmap(event, ${item.id})">Delete</button>
-                    </div>
+            <div class="mindmap-item fade-in-section" onclick="handleMindmapClick(event, ${item.id})">
+                <div class="mindmap-info">
+                    <div class="mindmap-title">${escapeHtml(item.topic)}</div>
+                    <div class="mindmap-date">${formatDate(item.timestamp)}</div>
                 </div>
-            `
+                
+                <div class="mindmap-actions">
+                    <button class="action-button" onclick="renameMindmap(event, ${item.id})">Rename</button>
+                    <button class="action-button delete" onclick="deleteMindmap(event, ${item.id})">Delete</button>
+                </div>
+            </div>
+        `
             )
             .join('');
+
+        const mindmapItems = document.querySelectorAll('.mindmap-item');
+        mindmapItems.forEach((item, index) => {
+            setTimeout(() => {
+                item
+                    .classList
+                    .add('fade-in-section');
+                setTimeout(() => {
+                    item
+                        .classList
+                        .add('is-visible');
+                }, 20);
+            }, index * 30);
+        });
     }
 
     function handleMindmapClick(event, id) {
@@ -1496,45 +1578,48 @@
         }
         showMindmap(id);
     }
-    function showMindmap(id) {
-        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-        const item = history.find(item => item.id === id);
 
-        if (item) {
-            const viewer = document.getElementById('mindmap-viewer');
-            const content = document.getElementById('viewer-content');
-            const title = document.getElementById('viewer-title');
-            document
-                .getElementById('edit-mode-button')
-                .style
-                .display = 'flex';
+function showMindmap(id) {
+    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+    const item = history.find(item => item.id === id);
 
-            viewer.dataset.currentMindmap = JSON.stringify(item);
-            title.textContent = item.topic;
-            viewer.style.display = 'block';
+    if (item) {
+        const viewer = document.getElementById('mindmap-viewer');
+        const content = document.getElementById('viewer-content');
+        const title = document.getElementById('viewer-title');
+        document
+            .getElementById('edit-mode-button')
+            .style
+            .display = 'flex';
 
-            content.style.position = 'absolute';
-            content.style.top = '50px';
-            content.style.left = '0';
-            content.style.right = '0';
-            content.style.bottom = '0';
-            content.style.overflow = 'hidden';
-            content.style.display = 'block';
+        viewer.dataset.currentMindmap = JSON.stringify(item);
+        title.textContent = item.topic;
+        viewer.style.display = 'block';
 
-            content.innerHTML = '';
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute('width', '100%');
-            svg.setAttribute('height', '100%');
-            content.appendChild(svg);
+        content.style.position = 'absolute';
+        content.style.top = '50px';
+        content.style.left = '0';
+        content.style.right = '0';
+        content.style.bottom = '0';
+        content.style.overflow = 'hidden';
+        content.style.display = 'block';
 
-            const {root} = transformer.transform(item.markdown);
-            const {Markmap} = window.markmap;
-            Markmap.create(svg, {
-                autoFit: true,
-                zoom: true
-            }, root);
-        }
+        content.innerHTML = '';
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        content.appendChild(svg);
+
+        const {root} = transformer.transform(item.markdown);
+        const {Markmap} = window.markmap;
+        const mm = Markmap.create(svg, {
+            autoFit: true,
+            zoom: true
+        }, root);
+        
+        window.markmapInstance = mm;
     }
+}
     function closeViewer() {
         const viewer = document.getElementById('mindmap-viewer');
         viewer.style.display = 'none';
@@ -1605,6 +1690,7 @@
 
     function confirmClear() {
         localStorage.removeItem('mindmap-history');
+        localStorage.removeItem('mindmap-playground');
         loadMindmaps();
         closeClearPopup();
     }
@@ -1650,7 +1736,7 @@
         const dialog = document.createElement('div');
         dialog.className = 'rename-dialog';
         dialog.innerHTML = `
-                <h3>Rename Mindmap</h3>
+                <h3>Rename Mind Map</h3>
                 <input type="text" value="${escapeHtml(
             mindmap.topic
         )}" id="rename-input">
@@ -1735,47 +1821,54 @@
         loadMindmaps();
         closeDeletePopup();
     }
-
     document.addEventListener('DOMContentLoaded', function () {
-        loadMindmaps();
+    loadMindmaps();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const mindmapId = urlParams.get('id');
-        const optionsToggle = document.getElementById('optionsToggle');
-        const mindmapList = document.getElementById('mindmap-list');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mindmapId = urlParams.get('id');
+    const optionsToggle = document.getElementById('optionsToggle');
+    const mindmapList = document.getElementById('mindmap-list');
 
-        optionsToggle.addEventListener('click', function () {
-            const isShowingOptions = mindmapList
-                .classList
-                .toggle('show-all-actions');
-            optionsToggle.textContent = isShowingOptions
-                ? 'Hide Options'
-                : 'Options';
-        });
-
-        if (mindmapId) {
-            const id = parseInt(mindmapId);
-            if (!isNaN(id)) {
-                setTimeout(() => {
-                    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                    const mindmap = history.find(item => item.id === id);
-                    if (mindmap) {
-                        showMindmap(id);
-                    } else {
-                        window.location.href = `/view.html?id=${id}`;
-                    }
-                }, 100);
-            }
-        }
-
-        const editModeButton = document.getElementById('edit-mode-button');
-        const cancelEditButton = document.getElementById('cancel-edit');
-        const saveEditButton = document.getElementById('save-edit');
-
-        editModeButton.addEventListener('click', () => toggleEditMode(true));
-        cancelEditButton.addEventListener('click', () => toggleEditMode(false));
-        saveEditButton.addEventListener('click', updateMindmapFromEdit);
+    optionsToggle.addEventListener('click', function () {
+        const isShowingOptions = mindmapList
+            .classList
+            .toggle('show-all-actions');
+        optionsToggle.textContent = isShowingOptions
+            ? 'Hide Options'
+            : 'Options';
     });
+
+    if (mindmapId) {
+        const id = parseInt(mindmapId);
+        if (!isNaN(id)) {
+            setTimeout(() => {
+                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                const mindmap = history.find(item => item.id === id);
+                if (mindmap) {
+                    showMindmap(id);
+                } else {
+                    window.location.href = `/view.html?id=${id}`;
+                }
+            }, 100);
+        }
+    }
+
+    const editModeButton = document.getElementById('edit-mode-button');
+    const cancelEditButton = document.getElementById('cancel-edit');
+    const saveEditButton = document.getElementById('save-edit');
+
+    editModeButton.addEventListener('click', () => toggleEditMode(true));
+    cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+    saveEditButton.addEventListener('click', updateMindmapFromEdit);
+    
+    document.getElementById('mm-fit').addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (window.markmapInstance) {
+            window.markmapInstance.fit();
+        }
+    });
+});
 
     function toggleEditMode(show) {
         const viewer = document.getElementById('mindmap-viewer');
@@ -1918,7 +2011,8 @@
         document.execCommand('copy');
 
         if (window.dataLayer) {
-            window         .dataLayer
+            window
+                .dataLayer
                 .push(
                     {'event': 'mindmap_share_link_copy', 'mindmap_category': 'User Interaction', 'mindmap_action': 'Copy Share Link'}
                 );
@@ -1933,6 +2027,50 @@
         if (overlay) 
             overlay.remove();
         }
+    
+    document.addEventListener('keydown', function (e) {
+        const mindmapVisible = document
+            .getElementById('mindmap-viewer')
+            .style
+            .display === 'block';
+        const isTyping = ['input', 'textarea'].includes(
+            document.activeElement.tagName.toLowerCase()
+        );
+
+        if (mindmapVisible && !isTyping) {
+            // Edit: E
+            if (e.key === 'e') {
+                e.preventDefault();
+                document
+                    .getElementById('edit-mode-button')
+                    .click();
+            }
+
+            // Download: D
+            if (e.key === 'd') {
+                e.preventDefault();
+                document
+                    .getElementById('download-options-popup')
+                    .style
+                    .display = 'flex';
+            }
+
+            // Share: S
+            if (e.key === 's') {
+                e.preventDefault();
+                shareMindmap();
+            }
+
+            if (e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('mm-fit').click();
+                }
+        }
+    });
+
+    function goBack() {
+        window.history.back();
+    }
 </script>
 </body>
 </html>
