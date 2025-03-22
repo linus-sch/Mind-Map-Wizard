@@ -1,1 +1,24 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /new.html
+Allow: /history.html
+Allow: /playground.html
+Allow: /api.html
+Allow: /feedback.html
+Allow: /privacy-policy.html
+Allow: /terms-of-use.html
+Allow: /help/
 
+# Don't index API beta GUI
+Disallow: /api-beta-gui.html
+
+# Don't index stats and rating calculator
+Disallow: /stats.html
+Disallow: /rating-calculator.html
+
+# Don't index markdown editor
+Disallow: /markdown-editor.html
+
+# Sitemap
+Sitemap: https://mindmapwizard.com/sitemap.xml
