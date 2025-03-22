@@ -27,6 +27,7 @@ Mind Map Wizard is a free and open-source AI-powered mind mapping tool that allo
 - [x] More export options e.g. PNG or PDF
 - [ ] Explore further from specific branches
 - [ ] Upload files for reference or summarize Videos
+- [ ] Miltilinguality
 
 ## Mind Map Generation Process
 <br>
