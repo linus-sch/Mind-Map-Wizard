@@ -143,7 +143,7 @@
             font-size: 2.6rem;
             margin-bottom: 10px;
             margin-top: 0;
-            color: var(--primary-color);
+            color: var(--text-color);
         }
 
         .mmw-title {
@@ -232,76 +232,6 @@
                 margin-bottom: 10px;
             }
         }
-    </style>
-    <style>
-        .popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.32);
-            justify-content: center;
-            align-items: center;
-            z-index: 1100;
-        }
-
-        .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 20px;
-            text-align: left;
-            max-width: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: space-between;
-        }
-
-        .accept-terms-button,
-        .decline-terms-button {
-            margin: 5px;
-            padding: 12px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .accept-terms-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .decline-terms-button {
-            background-color: var(--border-color);
-            color: black;
-            border: none;
-        }
-
-        .accept-terms-button:hover {
-            background-color: #b73cfe;
-        }
-
-        .decline-terms-button:hover {
-            background-color: rgb(215, 215, 215);
-        }
-
-        .legal-purposes {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .popup-content a {
-            background-color: #f0f0f0;
-            padding: 3px;
-            border-radius: 6px;
-            text-decoration: none;
-            transition: all 0.1s ease;
-        }
-        .popup-content a:hover {
-            background-color: #e6e6e6;
-        }
 
         .whitespace {
             height: 15px;
@@ -328,37 +258,14 @@
                 padding: 0.5rem 1rem;
             }
 
+            a {
+                text-underline-offset: 2px; 
+                text-decoration: underline;
+            }
 
     </style>
 </head>
 <body>
-    <div class="popup" id="legalPopup">
-        <div class="popup-content">
-            <div>
-                <h2>🍪 Cookies</h2>
-                <p>To proceed, you need to agree to our
-                    <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
-                    and
-                    <a
-                        href="/privacy-policy.html"
-                        onclick="event.preventDefault();"
-                        style="color: var(--text-color);">Privacy Policy</a>
-                    <br>
-                    <div class="whitespace"></div>
-
-                    <strong>Purposes:</strong>
-                    <ul class="legal-purposes">
-                        <li>Functionality</li>
-                        <li>Analytics</li>
-                    </ul>
-                </p>
-                <div class="whitespace"></div>
-            </div>
-            <button onclick="closePopup()" class="decline-terms-button">Decline</button>
-            <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
-        </div>
-    </div>
-
     <div class="header">
         <div class="header-left">
             <a href="/" style="text-decoration: none;">
@@ -373,7 +280,7 @@
         <h1>Privacy Policy</h1>
         <h3 class="mmw-title">Mind Map Wizard</h3>
         <br>
-        <p>Last Updated: 2025-02-26</p>
+        <p>Last Updated: 2025-03-23</p>
         <h2>1. Introduction</h2>
         <p>This Privacy Policy outlines how we collect, use, disclose, and protect your
             personal information when you access or use our service. By accessing or using
@@ -415,8 +322,8 @@
         <button class="clear-history" onclick="clearHistory()" id="clearHistory">Clear Mind Map History</button>
 
         <h3>2.2.2. Data Anonymization Practices</h3>
-        <p>We are committed to protecting your privacy and implement the following data
-            anonymization measures before processing any analytics data:</p>
+        <p>We are committed to protecting your privacy. To ensure this, Cloudflare implements the following data anonymization measures before sending any data to Google Analytics:</p>
+        
         <ul>
             <li>
                 <strong>URL Query Parameter Removal</strong>: We automatically remove all query
@@ -485,20 +392,62 @@
             <li>
                 <p>
                     <strong>Service Providers</strong>: We share your information with third-party
-                    service providers who perform services on our behalf (e.g., hosting, analytics,
-                    customer support, mind map generation or storing of shared mind maps). These
-                    service providers are authorized to use your information to provide services to
-                    us. For example,
-                    <a
-                        href="https://pro-ai.glitch.me"
-                        style="color: #000; background-color: #f0f0f0; border-radius: 8px; padding: 3px 8px 3px 8px;  border: 1px solid #ddd; text-decoration: none;">Pro AI</a>
-                    for the generation of mind maps using artificial intelligence.
-                </p>
-                <p
-                    style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">Please
-                    refrain from entering any sensitive information unless it is in a secure
-                    context, such as a contact form. We cannot guarantee the complete security of
-                    your data when handled by our partners.</p>
+                    service providers who perform services on our behalf. These service providers are authorized to use your information to provide services to us:</p>
+
+                        <p style="margin-left: 30px;">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAJ1BMVEVHcEz0ZWr0Z2zzZWr0ZWr0ZmvzYGb1bnLyWV7////2iY395eX6xMXHHLlLAAAABXRSTlMAp+UmWBuQb6QAAAHHSURBVEiJlVaBFoMgCEQXaOn/f+9ARbH0rYHtJdx5UM0CqHY4533YmPfOHWDN7aDWXId/3sDFPn/ilfEeH8Lr+tXcnwIicdwiNBve0se9oiudk6Vrprgb4TofNjMc8O0dEUpPQiLNCs6Db+fFsRRhTBZAzYZCKDiZlMH5gDGiHMRHDfQ0/0DoMxmSp5SucCbun6uphI7HAFgVmk7Jn2fm5q98nrEGUNPsEND4UEizwoDAEJB1Wg8091DTFQKIfd5KIi6HT+SeRG16QECZXQFp1UM3mGZVIecr5ByunOkNQe4BkfQhj14J/FCIXI6UNFbYEmjqgX4TWtOth50CDW8KvQeVtA4sPEbLtwJNgFAxYOC3BZcBhHL1dNS8FrgIcElTD3gredmDnVYCUV/UKIym7aaiebVGIOpBmHche1nlMATaEmK9ccgPX3xDoHh7vN8Q+h+oBH6WZCw8CX6cR1mcN7LQvWxk0eK9EGJzviyrrTKScQ+uQhtjtRkbQCTevWstVBXic7vv+DIcHHJ/ui/NIvh1rbM2loTh8lK062wEupWXu63mSSGrEeuLfQg/KDRH9FNgseiEpBk/97G38XGinz97rPn8+QICAju3TjO0vwAAAABJRU5ErkJggg==" width="17" height="17" style="vertical-align: middle; margin-right: 5px;">
+                            <span style="font-weight: 700;">Pro AI</span> - Necessary
+                            <br>
+                            We use Pro AI for the generation of mind maps using artificial intelligence. Pro AI processes the data you input for mind map generation. 
+                            <br>
+                            <br>
+                            For more details, please see their <a href="https://pro-ai.glitch.me/privacy-policy" target="_blank">Privacy Policy</a>.
+                        </p>      
+
+                        <p style="margin-left: 30px;">    
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAATlBMVEVHcEz6tGX1iTD3o1r1hy36sEz7v2z5ok/1iCz1hSn+yYT5p1X5smr6r0n2iCz7nkv4nTn8wHn6sEv5rEP0gB/0fxz5q0H0gB75q0D1hCZUB3PlAAAAFHRSTlMAVnUZVPwlRbLfO4V+y8kul2rC/I7KC5EAAACmSURBVDiN7ZDZEoMgDEWDooi7LZDk/3+0saiDW6cf4Hk9d24WgIdLalP+sKZn7z2Pd75CdAIiDzfeLSDnF15vXhL2IDNrM5sEHJpTOabeYZX6YediQL+LTm3TT95xGYioWxbojw2I2lAI4ZswcTr6DfmDBiikIZCCfL2radp2UsrU5fKDemqJXlCtrWmDnNDEhgL4fIGkYQzzDgLwhZ9viEjDw398AOseFsWML7CEAAAAAElFTkSuQmCC" width="18px" height="18px" style="position: relative; top: 3px; margin-right: 5px;">
+                            <span style="font-weight: 700;">Cloudflare</span> - Necessary
+                            <br>
+                            We use Cloudflare to enhance our website's performance and security including CDN, DNS and Backend Services.
+                            Cloudflare also acts as a proxy for analytics data, helping us understand user interactions while maintaining your privacy. For more details, please refer to our <a href="#2.2.2.%20Data%20Anonymization%20Practices:~:text=2.2.2.%20Data%20Anonymization%20Practices">Data Anonymization Practices</a>.
+                            <br>
+                            <br>
+                            For more details, please see their <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Privacy Policy</a>.
+                        </p>
+
+                        <p style="margin-left: 30px;">    
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAM1BMVEVHcEz2qhvidiT2qhvqiB/idiTidiX1phvidiXidiXidiX2qhv2qhv2qhvidiX2qhvidiV0s5u2AAAAD3RSTlMAhG2oDUqhHrGA79+xsOSZgAGgAAAAeklEQVQ4jd3TyxLAEAwFUFQi9MH/f21LqhZtmOnS3bnOTBZEqZ+xetG9exdzrAzWAnZ5QOQMJswLAAl6wKQrJAObSkAEhgGKwDOgWYFB3wUh104GVOpDBlwnOwZQ30J9jQgPhbo42w34lZ1q/+G1ep48HwARuBosb8sJ01kVv6XDRtcAAAAASUVORK5CYII=" width="18px" height="18px" style="position: relative; top: 3px; margin-right: 5px;">
+                            <span style="font-weight: 700;">Google Analytics</span> - Analytics
+                            <br>
+                            We utilize Google Analytics through Cloudflare Zaraz to gather insights on user interactions with our website. This setup ensures that analytics scripts are not executed on the client side, and IP addresses are trimmed for enhanced privacy.
+                            <br>
+                            <br>
+                            For more details, please see their <a href="https://policies.google.com/technologies/partner-sites" target="_blank">Privacy Policy</a>.
+                        </p>
+
+                        <p style="margin-left: 30px;"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hexagon" style="position: relative; top: 2.5px;">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><circle cx="12" cy="12" r="4"/>
+                            </svg>
+                            <span style="font-weight: 700;">Third-Party CDNs and Libraries</span> - Necessary
+                            <br>
+                            We also use other third-party CDNs and scripts, including:
+                            <br>
+                                <span style="font-weight: 700; margin-left: 20px;">JSDelivr</span> - <a href="https://www.jsdelivr.com/" target="_blank">Learn more</a> <br>
+                                <span style="font-weight: 700; margin-left: 20px;">HTTP/3</span> - <a href="https://httpwg.org/" target="_blank">Learn more</a> <br>
+                                <span style="font-weight: 700; margin-left: 20px;">jQuery</span> - <a href="https://jquery.com" target="_blank">Learn more</a> <br>
+                            </ul>
+                        </p>
+                        
+                    
+                        
+                        <br>         
+                        <p
+                            style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">Please
+                            refrain from entering any sensitive information unless it is in a secure
+                            context, such as a contact form. We cannot guarantee the complete security of
+                            your data when handled by our partners.
+                        </p>             
             </li>
             <li>
                 <p>
@@ -630,6 +579,8 @@
                 <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">GitHub</a>
                 <span class="separator">|</span>
                 <a href="/feedback.html" class="footer-link">Feedback</a>
+                <span class="separator">|</span>
+                <a href="/api/docs.html" class="footer-link">API</a>
             </p>
         </div>
         <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
@@ -742,5 +693,7 @@ function clearHistory() {
         background-color: #b91c1c;
     }
     </style>
-</script>
+    <!-- 100% privacy-first analytics -->
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+
 </html>
