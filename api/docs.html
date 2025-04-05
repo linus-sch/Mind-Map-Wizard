@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+    <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>API - Mind Map Wizard</title>
+
+            <meta charset="UTF-8">
+            <meta
+                name="description"
+                content="Integrate text-to-mind map functionality into your website or tool with our powerful API. Get started today!">
+            <meta
+                name="keywords"
+                content="mind map API, mind mapping API, AI API, text to mind map API, mind map integration, developer API">
+
+            <meta property="og:title" content="Mind Map Wizard | API">
+            <meta
+                property="og:description"
+                content="Integrate text-to-mind map functionality into your website or tool with our powerful API. Get started today!">
+            <meta property="og:image" content="/img/meta-img.jpg">
+
+            <meta property="og:type" content="website">
+
+            <meta name="twitter:card" content="/img/meta-img.jpg">
+            <meta name="twitter:title" content="Mind Map Wizard | API">
+            <meta
+                name="twitter:description"
+                content="Integrate text-to-mind map functionality into your website or tool with our powerful API. Get started today!">
+            <meta name="twitter:image" content="/img/meta-img.jpg">
+
+            <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+            <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+            <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+            <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+            <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+            <link rel="apple-touch-icon" href="/img/logo.png">
+            <style>
+
+                :root {
+                    --primary-color: #C667FF;
+                    --secondary-color: #9D34D4;
+                    --background-color: #FFFFFF;
+                    --text-color: #1e293b;
+                    --border-color: #e2e8f0;
+                    --error-color: #dc2626;
+
+                    --blue: #9D34D4;
+                    --dark-blue: #9D34D4;
+                    --light-gray: #f4f4f5;
+                    --medium-gray: #E5E5EA;
+                    --dark-gray: #8e8e93;
+                    --black: #1d1d1f;
+                    --white: #FFFFFF;
+                    --border: #ceced5;
+                    --error: #fe382e;
+                    --success: #33c658;
+
+                }
+                @font-face {
+                    font-family: 'Open Sans';
+                    src: url("/OpenSans-ExtraBold.ttf") format('truetype'), url("/OpenSans-ExtraBold.ttf") format('ttf');
+                    font-weight: 800;
+                    font-style: normal;
+                    font-display: swap;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, 'Avenir', 'Montserrat', 'Corbel', 'URW Gothic', 'Source Sans Pro', sans-serif;
+                    font-weight: 400;
+                    margin: 0;
+                    padding: 0;
+                    background-color: var(--white);
+                    color: var(--black);
+                    line-height: 1.5;
+                    transition: background-color 0.3s ease;
+                    display: flex;
+                    flex-direction: column;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    margin: 0;
+                    overflow-x: hidden;
+                }
+
+                .navbar {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0;
+                    background-color: rgba(255, 255, 255, 0.9);
+                    backdrop-filter: blur(5px);
+                    height: 50px;
+                    z-index: 1000;
+                    box-sizing: border-box;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    padding: 0.8rem;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    display: flex;
+                    align-items: center;
+                    z-index: 1001;
+                }
+
+                .text-logo {
+                    display: flex !important;
+                    align-items: center !important;
+                    margin-left: 0;
+                }
+
+                .logo {
+                    margin-right: 10px;
+                    height: 40px;
+                    width: auto;
+                }
+
+                .logo-link {
+                    display: flex;
+                    align-items: center;
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .logo-text {
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 1.8em;
+                    font-weight: 800;
+                    width: calc(100vw - 400px);
+                    color: var(--text-color);
+                    margin-left: 0;
+                    text-decoration: none !important;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                @media (max-width: 730px) {
+                    .logo-text {
+                        display: none;
+                    }
+                }
+
+                @media (max-width: 400px) {
+                    .nav-links svg {
+                        display: none;
+                    }
+                }
+
+                .navbutton {
+                    background-color: var(--primary-color);
+                    padding: 3px;
+                    height: 40px;
+                    border: 2px solid var(--primary-color);
+                    padding-left: 8px;
+                    padding-right: 20px;
+                    border-radius: 6px;
+                    color: #fff !important;
+                    transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background-color 0.3s ease;
+                }
+
+                .navbutton:hover {
+                    background-color: var(--secondary-color);
+                    border: 2px solid var(--secondary-color);
+                }
+
+                @media (max-width: 520px) {
+                    .navbutton {
+                        display: none;
+                    }
+                }
+
+                .nav-links {
+                    margin-left: auto;
+                    margin-right: 5px;
+                    display: flex;
+                    align-items: center;
+                    position: relative;
+                }
+
+                .info-button {
+                    display: none;
+                }
+
+                .info-menu {
+                    display: none;
+                }
+
+                .info-menu a {
+                    display: none;
+                }
+
+                .info-menu a:hover {
+                    display: none;
+                }
+
+                .nav-links svg {
+                    position: relative;
+                    top: 4.4px;
+                }
+
+                .nav-links a {
+                    margin-left: 0;
+                    margin-right: 10px;
+                    font-size: 1.1rem;
+                    text-decoration: none;
+                    color: black;
+                    font-weight: 500;
+                    transition: color 0.3s ease;
+                    border-radius: 10px;
+                    padding: 4px 13px 6px;
+                }
+
+                .nav-links a:hover {
+                    background-color: rgba(0, 0, 0, 0.032);
+                    border-radius: 10px;
+                    padding: 4px 13px 6px;
+                }
+
+                .whitespace {
+                    height: 40px;
+                }
+
+                .container {
+                    text-align: center;
+                    margin-top: 70px;
+                }
+
+                .cssbuttons-io-button {
+                    background-color: var(--text-color);
+                    color: var(--white);
+                    font-family: inherit;
+                    padding: 0.5em 20px 0.45em 0.4em;
+                    font-size: 17px;
+                    font-weight: 500;
+                    border-radius: 40px;
+                    border: 1px solid var(--border-color);
+                    letter-spacing: 0.05em;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    overflow: hidden;
+                    position: relative;
+                    height: 40px;
+                    cursor: pointer;
+                    margin-left: 10px;
+                    white-space: nowrap;
+                    transition: all 0.1s ease;
+                }
+
+                .cssbuttons-io-button .icon {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 25px;
+                    width: 2em;
+                    border-radius: 40px;
+                    transition: all 0.3s;
+                }
+
+                .cssbuttons-io-button .icon svg {
+                    width: 1.1em;
+                    transition: transform 0.3s;
+                    color: white;
+                    position: relative;
+                    top: 4px;
+                    margin-bottom: 8px;
+                }
+
+                label {
+                    margin-bottom: 10px;
+                    font-weight: bold;
+                    color: #333;
+                    transition: color 0.3s ease;
+                }
+
+                form {
+                    border: 1.5px solid #e2e2e7;
+                    display: flex;
+                    font-size: 1em;
+                    max-width: 500px;
+                    margin: 40px auto;
+                    padding: 20px;
+                    display: inline-block;
+                    text-align: center;
+                    border-radius: 20px;
+                    font-family: system-ui, Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+                    font-weight: 300;
+                    background-color: #fff;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                }
+
+                form h4 {
+                    margin: 0;
+                    color: #fff;
+                    font-size: 1.8em;
+                }
+
+                input[type="text"],
+                input[type="email"],
+                textarea,
+                select {
+                    width: 95%;
+                    padding: 10px;
+                    height: 18px;
+                    border: 1.5px solid #e2e2e7;
+                    border-radius: 20px;
+                    color: var(--text-color);
+                    font-family: system-ui, Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+                    font-weight: 300;
+                    background-color: #fff;
+                    font-size: 1em;
+                }
+
+                textarea::placeholder {
+                    font-size: 1em;
+                }
+
+                #submit {
+                    background-color: var(--text-color);
+                    color: white;
+                    cursor: pointer;
+                    width: 100%;
+                    height: 40px;
+                    text-decoration: none;
+                    font-size: 1em;
+                    margin-top: 10px;
+                    font-weight: 300;
+                    padding: 10px;
+                    border-radius: 30px;
+                    border: none;
+                    transition: background-color 0.3s, transform 0.2s;
+                }
+
+                #submit:hover {
+                    background-color: black;
+                }
+
+                p {
+                    font-size: 1rem;
+                    line-height: 1.5;
+
+                }
+
+                footer {
+                    background-color: var(--text-color);
+                    padding: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 0.8em;
+                    margin-top: 40px;
+                    position: relative;
+                    color: #ffffff;
+                }
+
+                .footer-content {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                    margin-bottom: 30px;
+                }
+
+                .footer-links {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .separator {
+                    color: #9b9999;
+                    margin: 0 3px;
+                    font-size: 1em;
+                }
+
+                .footer-link {
+                    color: #ffffff;
+                    transition: color 0.3s;
+                    text-decoration: none;
+                    font-size: 15px;
+
+                }
+
+                .footer-link:hover {
+                    color: var(--primary-color);
+                    text-decoration: none;
+                }
+
+                .copyright {
+                    margin: 0;
+                    font-size: 15px;
+                }
+
+                @media (max-width: 720px) {
+                    .footer-content {
+                        flex-direction: column;
+                        margin-bottom: 20px;
+                    }
+
+                    .footer-links {
+                        margin-bottom: 10px;
+                    }
+                }
+
+                .copyright {
+                    margin: 0;
+                    font-size: 15px;
+                }
+
+                @media (max-width: 720px) {
+                    .footer-content {
+                        flex-direction: column;
+                        margin-bottom: 20px;
+                    }
+
+                    .footer-links {
+                        margin-bottom: 10px;
+                    }
+                }
+
+                .footer-positioning {
+                    height: 20vw;
+                }
+
+                @media (max-width: 720px) {
+                    .footer-positioning {
+                        height: 70vw;
+                    }
+                }
+
+                .rating {
+                    display: inline-block;
+                }
+
+                .rating input {
+                    display: none;
+                }
+
+                .rating label {
+                    float: right;
+                    cursor: pointer;
+                    color: #ccc;
+                    transition: color 0.3s;
+                }
+
+                .rating label:before {
+                    content: '\2605';
+                    font-size: 30px;
+                }
+
+                .rating input:checked ~ label,
+                .rating label:hover,
+                .rating label:hover ~ label {
+                    color: #ffe65b;
+                    transition: color 0.3s;
+                }
+
+                .hero {
+                    position: relative;
+                    text-align: center;
+                    padding: 100px 0 50px;
+                    color: #fff;
+                    background: linear-gradient(49deg, rgba(231,189,255,1) 0%, rgba(155,25,225,1) 55%, rgba(144,2,221,1) 72%, rgba(182,94,228,1) 97%);
+                }
+
+                .hero h1 {
+                    font-size: 48px;
+                    margin-bottom: 30px;
+                    margin-top: 0;
+                    font-weight: 700;
+                    line-height: 1.2;
+                }
+
+                .hero a {
+                    text-decoration: none;
+                    color: var(--text-color);
+                    background-color: #ffffff;
+                    font-weight: 600;
+                    font-size: 18px;
+                    padding: 10px 20px;
+                    border-radius: 20px;
+                    transition: background-color 0.3s ease;
+                }
+
+                .hero a svg {
+                    position: relative;
+                    top: 5px;
+
+                }
+
+                .hero p {
+                    font-size: 20px;
+                    margin-bottom: 0;
+                    font-weight: 500;
+                }
+                .container {
+                    margin-top: 10px;
+                }
+
+                .api-docs {
+                    max-width: 750px;
+                    margin: 0 auto 60px;
+                    text-align: left;
+                }
+
+                .api-docs h1 {
+                    font-size: 40px;
+                    font-weight: 600;
+                    letter-spacing: -0.015em;
+                    color: var(--black);
+                    margin-bottom: 24px;
+                }
+
+                .api-docs h2 {
+                    font-size: 28px;
+                    font-weight: 600;
+                    letter-spacing: -0.01em;
+                    color: var(--black);
+                    margin-top: 48px;
+                    margin-bottom: 16px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--border);
+                }
+
+                .api-docs h3 {
+                    font-size: 22px;
+                    font-weight: 600;
+                    color: var(--black);
+                    margin-top: 32px;
+                    margin-bottom: 12px;
+                }
+
+                .api-docs p {
+                    font-size: 17px;
+                    line-height: 1.6;
+                    color: var(--black);
+                    margin-bottom: 16px;
+                }
+
+                .api-section {
+                    margin-bottom: 48px;
+                }
+
+                .endpoint-url {
+                    background-color: var(--light-gray);
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+                    font-size: 15px;
+                    font-weight: 500;
+                    color: var(--blue);
+                    margin: 16px 0;
+                    display: inline-block;
+                    border: 1px solid var(--border);
+                }
+
+                .code-block {
+                    background-color: var(--light-gray);
+                    padding: 20px;
+                    border-radius: 8px;
+                    font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+                    font-size: 14px;
+                    line-height: 1.5;
+                    overflow-x: auto;
+                    margin: 20px 0;
+                    border: 1px solid var(--border);
+                }
+
+                .param-table {
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    margin: 20px 0;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    border: 1px solid var(--border);
+                }
+
+                .param-table td,
+                .param-table th {
+                    text-align: left;
+                    padding: 12px 16px;
+                    border-bottom: 1px solid var(--border);
+                }
+
+                .param-table th {
+                    background-color: var(--light-gray);
+                    font-weight: 600;
+                    font-size: 15px;
+                    color: var(--black);
+                }
+
+                .param-table tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .param-table td {
+                    font-size: 15px;
+                    background-color: var(--white);
+                }
+
+                .note {
+                    background-color: rgba(143, 0, 204, 0.05);
+                    border: 1.5px solid var(--blue);
+                    padding: 16px 20px;
+                    margin: 20px 0;
+                    border-radius: 8px;
+                }
+
+                .note p {
+                    margin: 0;
+                    color: var(--black);
+                }
+
+                @media (max-width: 768px) {
+                    .api-docs {
+                        padding: 24px;
+                        margin-bottom: 40px;
+                    }
+
+                    .api-docs h1 {
+                        font-size: 32px;
+                    }
+
+                    .api-docs h2 {
+                        font-size: 24px;
+                    }
+
+                    form {
+                        padding: 24px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+
+            <div class="navbar">
+                <div class="text-logo">
+                    <a href="/" class="logo-link">
+                        <img src="/img/favicon96.png" alt="Logo" class="logo">
+                        <h3 class="logo-text" id="logo-text">
+                            Mind Map Wizard
+                        </h3>
+                    </a>
+                </div>
+
+                <div class="nav-links">
+                    <a href="/history.html">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewbox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+                        History</a>
+
+                    <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
+                        <div class="icon">
+                            <svg
+                                height="18"
+                                width="18"
+                                viewbox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                                    fill="#fff"
+                                    stroke="#fff"
+                                    stroke-width="0.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        New Mind Map
+
+                    </button>
+
+                    <div class="info-button">
+                        <img src="/img/icons/info-icon.svg" alt="Info">
+                        <div class="info-menu">
+                            <a href="/feedback.html">Feedback</a>
+                            <a href="/privacy-policy.html">Privacy Policy</a>
+                            <a href="/terms-of-use.html">Terms of Use</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero">
+            <p>Documentation</p>
+            <h1>Text to Mind Map API</h1>
+            <a href="/api/test.html">Try it out
+                <svg
+                    width="24"
+                    height="24"
+                    viewbox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--text-color)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+            </a>
+        </div>
+        <div class="container">
+
+            <div class="api-docs">
+
+                <p>Integrate text-to-mind map functionality directly into your website or
+                    application with our powerful API. Our service converts plain text into
+                    beautifully structured mind maps with just a simple API call.</p>
+
+                <div class="api-section">
+                    <h2>API Endpoint</h2>
+                    <div class="endpoint-url">https://api.mindmapwizard.com/</div>
+                    <p>All API requests should be made to this endpoint.</p>
+                </div>
+
+                <div class="api-section">
+                    <h2>Authentication</h2>
+                    <p>All API requests require authentication using an API key. Include your API
+                        key in the request headers.</p>
+                    <div class="code-block">
+                        <strong>Headers:</strong><br>
+                        X-Api-Key: YOUR_API_KEY
+                    </div>
+                    <p class="note">To obtain an API key, please fill out the form below. We'll
+                        contact you with your API key and discuss pricing based on your usage
+                        requirements.</p>
+                </div>
+
+                <div class="api-section">
+                    <h2>Request Format</h2>
+                    <p>Send a POST request with a JSON payload containing the text you want to
+                        convert to a mind map.</p>
+                    <div class="code-block">
+                        <strong>Method:</strong>
+                        POST<br><br>
+                        <strong>Payload:</strong><br>
+                        { "input": "Your text content to convert into a mind map" }
+                    </div>
+                </div>
+
+                <div class="api-section">
+                    <h2>Response Format</h2>
+                    <p>The API returns a JSON response containing the generated mind map in multiple
+                        formats.</p>
+                    <div class="code-block">
+                        { "topic": "Mind Map Title", "svg": "SVG Mind Map", "raw": "Mind Map Markdown
+                        Structure" }
+                    </div>
+
+                    <table class="param-table">
+                        <tr>
+                            <th>Field</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>topic</td>
+                            <td>The automatically generated title for the mind map</td>
+                        </tr>
+                        <tr>
+                            <td>svg</td>
+                            <td>The complete SVG code for the mind map, ready to embed in your application</td>
+                        </tr>
+                        <tr>
+                            <td>raw</td>
+                            <td>The mind map in markdown structure format</td>
+                        </tr>
+                    </table>
+
+                    <p class="note">The SVG response contains colors that make the mind map readable
+                        on both dark and light backgrounds. We're continuously improving our outputs and
+                        welcome your feedback.</p>
+                </div>
+
+                <div class="api-section">
+                    <h2>Rate Limits & Pricing</h2>
+                    <p>API usage is subject to rate limits based on your subscription plan. Pricing
+                        depends on your expected monthly API call volume.</p>
+                    <p>To discuss pricing and get an API key, please fill out the form below.</p>
+                </div>
+            </div>
+
+            <form method="post">
+                <div style="text-align: left;">
+                    <h2>Get API Access</h2>
+                    <p>Interested in using our text-to-mind map API? Enter your email below and
+                        we'll contact you with your API key and pricing information based on your usage
+                        needs.</p>
+                </div>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com">
+                <input type="hidden" name="source" value="Mind Map Wizard - API Information">
+                <input type="submit" value="Request API Key" id="submit">
+            </form>
+            <div id="error-message" style="color: red; display: none; margin-top: 10px;"></div>
+            <div class="whitespace"></div>
+            <div class="whitespace"></div>
+
+        </div>
+        <div class="footer-positioning"></div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <p style="margin: 0;">
+                        <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
+                        <span class="separator">|</span>
+                        <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
+                        <span class="separator">|</span>
+                        <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
+                        <span class="separator">|</span>
+                        <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">GitHub</a>
+                        <span class="separator">|</span>
+                        <a href="/feedback.html" class="footer-link" style="text-decoration: bold;">Feedback</a>
+                        <span class="separator">|</span>
+                        <a href="/api/docs.html" class="footer-link" style="text-decoration: bold;">API</a>
+                    </p>
+                </div>
+                <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
+            </div>
+        </footer>
+        <script>
+            const form = document.forms[0];
+            const submitButton = document.getElementById('submit');
+            const errorMessage = document.getElementById('error-message');
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                errorMessage.style.display = 'none';
+                submitButton.value = 'Sending...';
+                submitButton.disabled = true;
+                const scriptURL = "https://post.mindmapwizard.com";
+
+                const formData = new FormData(form);
+                const rating = formData.get('rating');
+                if (rating) {
+                    formData.set('rating', `${rating}/5`);
+                }
+
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            form.reset();
+                            submitButton.value = 'Send';
+                            submitButton.disabled = false;
+                        } else {
+                            throw new Error(data.message || 'An error occurred');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error!', error.message);
+                        errorMessage.textContent = error.message;
+                        errorMessage.style.display = 'block';
+                        submitButton.value = 'Send';
+                        submitButton.disabled = false;
+                    });
+            });
+        </script>
+    </body>
+</html>
