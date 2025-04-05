@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Mind Map Wizard -  Playground</title>
+        <title>Mind Map Editor - Mind Map Wizard</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
         <meta charset="UTF-8">
         <meta
             name="description"
-            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+            content="Mind Map Editor: Create and edit mind maps with our free editor. Free, no sign-up, no ads.">
         <meta
             name="keywords"
-            content="mind map, mind mapping, AI, text to mind map, free mind map generator, no sign up, no ads">
+            content="mind map editor, mind map editor, edit mind map, free mind map, free mind map editor, no sign up, no ads, make mind map">
 
-        <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta property="og:title" content="Mind Map Wizard | Free Mind Map Editor">
         <meta
             property="og:description"
-            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+            content="Create and edit mind maps with our free editor. Free, no sign-up, no ads.">
         <meta property="og:image" content="/img/meta-img.jpg">
 
         <meta property="og:type" content="website">
 
         <meta name="twitter:card" content="/img/meta-img.jpg">
-        <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
+        <meta name="twitter:title" content="Mind Map Wizard | Interactive Mind Map Editor">
         <meta
             name="twitter:description"
-            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+            content="Create and edit mind maps with our interactive editor. Free, no sign-up, no ads.">
         <meta name="twitter:image" content="/img/meta-img.jpg">
 
         <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
@@ -36,7 +36,54 @@
 
         <meta name="theme-color" content="#C667FF">
         <meta name="language" content="en">
-        <link rel="stylesheet" href="/edit.css">
+        <link rel="stylesheet" href="/styles/edit.css">
+        <script src="/sidebar.js" defer></script>
+        <style>
+            #markdown-editor {
+              width: 100%;
+              height: 300px;
+              font-family: monospace;
+              white-space: pre-wrap;
+              line-height: 1.6;
+              border: 1px solid #ccc;
+              padding: 8px;
+              overflow: auto;
+              background-color: white;
+              outline: none;
+            }
+            #markdown-editor div {
+              padding-left: calc(max(0em, 2em * (var(--indent-level, 0) - 1)));
+              font-size: calc(1.6rem - min(0.9rem, 0.3rem * var(--heading-level, 0)));
+              font-weight: calc(700 - min(200, 100 * (var(--heading-level, 0) - 1))); 
+              min-height: 1.6em;
+            }
+            
+            #markdown-editor div[style*="--heading-level: 1"],
+            #markdown-editor div[style*="--heading-level: 2"],
+            #markdown-editor div[style*="--heading-level: 3"] {
+              font-weight: 700;
+            }
+            
+            #markdown-editor div[style*="--indent-level: 2"] {
+              margin-top: 0.8em;
+            }
+
+            #markdown-editor div[style*="--indent-level: 1"] {
+              padding-left: 0em;
+            }
+
+            #markdown-editor div[style*="--indent-level: 2"] {
+              padding-left: 0.5em;
+            }
+            #markdown-editor div[style*="--indent-level: 3"] {
+              margin-top: 0.5em;
+            }
+
+            .hash-prefix {
+              color: #bcbcbc;
+              opacity: 0.7;
+            }
+        </style>
     </head>
     <body>
         <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
@@ -488,5 +535,8 @@ console.log('hello, JavaScript')
                 });
             });
         </script>
+            <!-- 100% privacy-first analytics -->
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+
     </body>
 </html>
