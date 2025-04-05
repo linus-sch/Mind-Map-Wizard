@@ -11,4 +11,4 @@ This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 Int
 - Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 - NonCommercial — You may not use the material for commercial purposes.
 <br>
-For commercial use, please contact us at contact@mindmapwizard.com. We welcome opportunities for collaboration and partnership.
+**For commercial use, please contact us at contact@mindmapwizard.com. We welcome opportunities for collaboration and partnership.**
