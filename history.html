@@ -113,6 +113,8 @@
                 display: flex;
                 align-items: center;
                 gap: 1rem;
+                position: relative;
+                left: 5px;
             }
 
             .header-left h1 {
@@ -235,7 +237,6 @@
                 border-radius: 10px;
                 padding: 15px;
                 margin-bottom: 4px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                 cursor: pointer;
                 transition: transform 0.2s, box-shadow 0.2s;
                 display: flex;
@@ -471,9 +472,9 @@
 
             .rename-dialog input {
                 width: 96%;
-                padding: 0.5rem;
+                padding: 0.6rem;
                 border: 1px solid var(--border-color);
-                border-radius: 0.52rem;
+                border-radius: 20px;
                 font-size: 1rem;
             }
 
@@ -527,12 +528,12 @@
             }
 
             .dialog-button.confirm {
-                background-color: var(--primary-color);
+                background-color: var(--text-color);
                 color: white;
             }
 
             .dialog-button.confirm:hover {
-                background-color: var(--secondary-color);
+                background-color: black;
             }
 
             .delete-popup {
@@ -803,17 +804,15 @@
                 background-color: rgba(0, 0, 0, 0.05);
             }
 
-            /* From Uiverse.io by adamgiebl */
             .cssbuttons-io-button {
-                margin-left: 5px;
-                background: var(--primary-color);
+                background-color: var(--text-color);
                 color: white;
                 font-family: inherit;
-                padding: 0.5em 0.25em 0.45em 15px;
+                padding: 0.5em 20px 0.45em 0.4em;
                 font-size: 17px;
                 font-weight: 500;
                 border-radius: 40px;
-                border: none;
+                border: 1px solid var(--border-color);
                 letter-spacing: 0.05em;
                 display: flex;
                 align-items: center;
@@ -824,15 +823,14 @@
                 cursor: pointer;
                 margin-left: 10px;
                 white-space: nowrap;
+                transition: all 0.1s ease;
             }
 
             .cssbuttons-io-button .icon {
-                background: white;
-                margin-left: 10px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                height: 32px;
+                height: 25px;
                 width: 2em;
                 border-radius: 40px;
                 transition: all 0.3s;
@@ -841,15 +839,10 @@
             .cssbuttons-io-button .icon svg {
                 width: 1.1em;
                 transition: transform 0.3s;
-                color: var(--secondary-color);
-            }
-
-            .cssbuttons-io-button:hover .icon {
-                transform: scale(0.90);
-            }
-
-            .cssbuttons-io-button:active .icon {
-                transform: scale(0.90);
+                color: white;
+                position: relative;
+                top: 4px;
+                margin-bottom: 8px;
             }
 
             .edit-mode-button {
@@ -1114,28 +1107,30 @@
             </div>
 
             <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
-                New Mind Map
                 <div class="icon">
                     <svg
-                        height="24"
-                        width="24"
+                        height="18"
+                        width="18"
                         viewbox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 0h24v24H0z" fill="none"></path>
                         <path
                             d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            stroke-width="2"
+                            fill="#fff"
+                            stroke="#fff"
+                            stroke-width="0.5"
                             stroke-linecap="round"
                             stroke-linejoin="round"></path>
                     </svg>
                 </div>
+                New Mind Map
+
             </button>
         </div>
         <div class="options">
             <a href="javascript:void(0);" class="back-link" onclick="goBack()">
-                <img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px"> Back
+                <img src="/img/icons/arrow-back-primary.svg" height="22px" width="22px">
+                Back
             </a>
         </div>
 
@@ -1197,7 +1192,17 @@
             <h2 class="viewer-title" id="viewer-title"></h2>
             <div class="viewer-controls">
                 <button class="control-button" id="mm-fit" title="Fit to Screen (F)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
                 </button>
                 <button class="edit-mode-button" id="edit-mode-button" title="Edit (E)">
                     <svg
@@ -1283,36 +1288,6 @@
             </div>
         </div>
     </div>
-
-    <div class="popup" id="legalPopup">
-        <div class="popup-content">
-            <div>
-                <h2>🍪 Cookies</h2>
-                <p>To proceed, you need to agree to our
-                    <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
-                    and
-                    <a
-                        href="/privacy-policy.html"
-                        onclick="event.preventDefault();"
-                        style="color: var(--text-color);">Privacy Policy</a>
-                    <br>
-                    <div style="height: 15px;"></div>
-
-                    <strong>Purposes:</strong>
-                    <ul class="legal-purposes">
-                        <li>Functionality</li>
-                        <li>Analytics</li>
-                    </ul>
-                </p>
-                <div style="height: 15px;"></div>
-            </div>
-            <button onclick="closePopup()" class="decline-terms-button">Decline</button>
-            <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
-
-        </div>
-
-    </div>
-
     <div id="mindmap-viewer"></div>
 
     <div class="info-button" onclick="toggleInfoMenu()">
@@ -1579,47 +1554,47 @@
         showMindmap(id);
     }
 
-function showMindmap(id) {
-    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-    const item = history.find(item => item.id === id);
+    function showMindmap(id) {
+        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+        const item = history.find(item => item.id === id);
 
-    if (item) {
-        const viewer = document.getElementById('mindmap-viewer');
-        const content = document.getElementById('viewer-content');
-        const title = document.getElementById('viewer-title');
-        document
-            .getElementById('edit-mode-button')
-            .style
-            .display = 'flex';
+        if (item) {
+            const viewer = document.getElementById('mindmap-viewer');
+            const content = document.getElementById('viewer-content');
+            const title = document.getElementById('viewer-title');
+            document
+                .getElementById('edit-mode-button')
+                .style
+                .display = 'flex';
 
-        viewer.dataset.currentMindmap = JSON.stringify(item);
-        title.textContent = item.topic;
-        viewer.style.display = 'block';
+            viewer.dataset.currentMindmap = JSON.stringify(item);
+            title.textContent = item.topic;
+            viewer.style.display = 'block';
 
-        content.style.position = 'absolute';
-        content.style.top = '50px';
-        content.style.left = '0';
-        content.style.right = '0';
-        content.style.bottom = '0';
-        content.style.overflow = 'hidden';
-        content.style.display = 'block';
+            content.style.position = 'absolute';
+            content.style.top = '50px';
+            content.style.left = '0';
+            content.style.right = '0';
+            content.style.bottom = '0';
+            content.style.overflow = 'hidden';
+            content.style.display = 'block';
 
-        content.innerHTML = '';
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.setAttribute('width', '100%');
-        svg.setAttribute('height', '100%');
-        content.appendChild(svg);
+            content.innerHTML = '';
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            content.appendChild(svg);
 
-        const {root} = transformer.transform(item.markdown);
-        const {Markmap} = window.markmap;
-        const mm = Markmap.create(svg, {
-            autoFit: true,
-            zoom: true
-        }, root);
-        
-        window.markmapInstance = mm;
+            const {root} = transformer.transform(item.markdown);
+            const {Markmap} = window.markmap;
+            const mm = Markmap.create(svg, {
+                autoFit: true,
+                zoom: true
+            }, root);
+
+            window.markmapInstance = mm;
+        }
     }
-}
     function closeViewer() {
         const viewer = document.getElementById('mindmap-viewer');
         viewer.style.display = 'none';
@@ -1822,53 +1797,57 @@ function showMindmap(id) {
         closeDeletePopup();
     }
     document.addEventListener('DOMContentLoaded', function () {
-    loadMindmaps();
+        loadMindmaps();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const mindmapId = urlParams.get('id');
-    const optionsToggle = document.getElementById('optionsToggle');
-    const mindmapList = document.getElementById('mindmap-list');
+        const urlParams = new URLSearchParams(window.location.search);
+        const mindmapId = urlParams.get('id');
+        const optionsToggle = document.getElementById('optionsToggle');
+        const mindmapList = document.getElementById('mindmap-list');
 
-    optionsToggle.addEventListener('click', function () {
-        const isShowingOptions = mindmapList
-            .classList
-            .toggle('show-all-actions');
-        optionsToggle.textContent = isShowingOptions
-            ? 'Hide Options'
-            : 'Options';
-    });
+        optionsToggle.addEventListener('click', function () {
+            const isShowingOptions = mindmapList
+                .classList
+                .toggle('show-all-actions');
+            optionsToggle.textContent = isShowingOptions
+                ? 'Hide Options'
+                : 'Options';
+        });
 
-    if (mindmapId) {
-        const id = parseInt(mindmapId);
-        if (!isNaN(id)) {
-            setTimeout(() => {
-                const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                const mindmap = history.find(item => item.id === id);
-                if (mindmap) {
-                    showMindmap(id);
-                } else {
-                    window.location.href = `/view.html?id=${id}`;
+        if (mindmapId) {
+            const id = parseInt(mindmapId);
+            if (!isNaN(id)) {
+                setTimeout(() => {
+                    const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                    const mindmap = history.find(item => item.id === id);
+                    if (mindmap) {
+                        showMindmap(id);
+                    } else {
+                        window.location.href = `/view.html?id=${id}`;
+                    }
+                }, 100);
+            }
+        }
+
+        const editModeButton = document.getElementById('edit-mode-button');
+        const cancelEditButton = document.getElementById('cancel-edit');
+        const saveEditButton = document.getElementById('save-edit');
+
+        editModeButton.addEventListener('click', () => toggleEditMode(true));
+        cancelEditButton.addEventListener('click', () => toggleEditMode(false));
+        saveEditButton.addEventListener('click', updateMindmapFromEdit);
+
+        document
+            .getElementById('mm-fit')
+            .addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.markmapInstance) {
+                    window
+                        .markmapInstance
+                        .fit();
                 }
-            }, 100);
-        }
-    }
-
-    const editModeButton = document.getElementById('edit-mode-button');
-    const cancelEditButton = document.getElementById('cancel-edit');
-    const saveEditButton = document.getElementById('save-edit');
-
-    editModeButton.addEventListener('click', () => toggleEditMode(true));
-    cancelEditButton.addEventListener('click', () => toggleEditMode(false));
-    saveEditButton.addEventListener('click', updateMindmapFromEdit);
-    
-    document.getElementById('mm-fit').addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (window.markmapInstance) {
-            window.markmapInstance.fit();
-        }
+            });
     });
-});
 
     function toggleEditMode(show) {
         const viewer = document.getElementById('mindmap-viewer');
@@ -2062,15 +2041,22 @@ function showMindmap(id) {
             }
 
             if (e.key === 'f') {
-                    e.preventDefault();
-                    document.getElementById('mm-fit').click();
-                }
+                e.preventDefault();
+                document
+                    .getElementById('mm-fit')
+                    .click();
+            }
         }
     });
 
     function goBack() {
-        window.history.back();
+        window
+            .history
+            .back();
     }
 </script>
+<!-- 100% privacy-first analytics -->
+<script async="async" src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+
 </body>
 </html>
