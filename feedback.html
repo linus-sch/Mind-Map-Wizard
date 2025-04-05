@@ -3,7 +3,7 @@
     <html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Submit Feedback - Mind Map Wizard</title>
+            <title>Feedback - Share Your Thoughts on Mind Map Wizard</title>
 
             <meta charset="UTF-8">
             <meta
@@ -190,22 +190,27 @@
                     top: 4.4px;
                 }
 
+                .nav-links {
+                    text-align: center;
+                }
+
                 .nav-links a {
+                    display: inline-block;
                     margin-left: 0;
-                    margin-right: 10px;
+                    margin-right: 8px;
                     font-size: 1.1rem;
                     text-decoration: none;
                     color: black;
                     font-weight: 500;
                     transition: color 0.3s ease;
                     border-radius: 10px;
-                    padding: 5px 10px 10px;
+                    padding: 5px 13px 10px;
                 }
 
                 .nav-links a:hover {
                     background-color: rgba(0, 0, 0, 0.032);
                     border-radius: 10px;
-                    padding: 5px 10px 10px;
+                    padding: 5px 13px 10px;
                 }
 
                 .popup {
@@ -287,17 +292,15 @@
                     margin-top: 70px;
                 }
 
-                /* From Uiverse.io by adamgiebl */
                 .cssbuttons-io-button {
-                    margin-left: 5px;
-                    background: var(--primary-color);
-                    color: white;
+                    background-color: var(--text-color);
+                    color: #fff;
                     font-family: inherit;
-                    padding: 0.5em 0.25em 0.45em 15px;
+                    padding: 0.5em 20px 0.45em 0.4em;
                     font-size: 17px;
                     font-weight: 500;
                     border-radius: 40px;
-                    border: none;
+                    border: 1px solid var(--border-color);
                     letter-spacing: 0.05em;
                     display: flex;
                     align-items: center;
@@ -308,15 +311,14 @@
                     cursor: pointer;
                     margin-left: 10px;
                     white-space: nowrap;
+                    transition: all 0.1s ease;
                 }
 
                 .cssbuttons-io-button .icon {
-                    background: white;
-                    margin-left: 10px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    height: 32px;
+                    height: 25px;
                     width: 2em;
                     border-radius: 40px;
                     transition: all 0.3s;
@@ -325,17 +327,10 @@
                 .cssbuttons-io-button .icon svg {
                     width: 1.1em;
                     transition: transform 0.3s;
-                    color: var(--secondary-color);
+                    color: white;
                     position: relative;
-                    margin-bottom: 7px;
-                }
-
-                .cssbuttons-io-button:hover .icon {
-                    transform: scale(0.90);
-                }
-
-                .cssbuttons-io-button:active .icon {
-                    transform: scale(0.90);
+                    top: 4px;
+                    margin-bottom: 8px;
                 }
 
                 label {
@@ -388,7 +383,7 @@
                 }
 
                 #submit {
-                    background-color: var(--primary-color);
+                    background-color: var(--text-color);
                     color: white;
                     cursor: pointer;
                     width: 100%;
@@ -403,7 +398,7 @@
                 }
 
                 #submit:hover {
-                    background-color: var(--secondary-color);
+                    background-color: black;
                 }
 
                 p {
@@ -525,34 +520,6 @@
         </head>
 
         <body>
-            <div class="popup" id="legalPopup">
-                <div class="popup-content">
-                    <div>
-                        <h2>🍪 Cookies</h2>
-                        <p>To proceed, you need to agree to our
-                            <a href="/terms-of-use.html" style="color: var(--text-color);">Terms of Use</a>
-                            and
-                            <a
-                                href="/privacy-policy.html"
-                                onclick="event.preventDefault();"
-                                style="color: var(--text-color);">Privacy Policy</a>
-                            <br>
-                            <div class="whitespace"></div>
-
-                            <strong>Purposes:</strong>
-                            <ul class="legal-purposes">
-                                <li>Functionality</li>
-                                <li>Analytics</li>
-                            </ul>
-                        </p>
-                        <div class="whitespace"></div>
-                    </div>
-                    <button onclick="closePopup()" class="decline-terms-button">Decline</button>
-                    <button onclick="acceptDisclaimer()" class="accept-terms-button">Accept and Continue</button>
-
-                </div>
-
-            </div>
 
             <div class="navbar">
                 <div class="text-logo">
@@ -580,23 +547,24 @@
                         History</a>
 
                     <button class="cssbuttons-io-button" onclick="window.location.href='/new.html'">
-                        New Mind Map
                         <div class="icon">
                             <svg
-                                height="24"
-                                width="24"
+                                height="18"
+                                width="18"
                                 viewbox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"></path>
                                 <path
                                     d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
-                                    fill="currentColor"
-                                    stroke="currentColor"
-                                    stroke-width="2"
+                                    fill="#fff"
+                                    stroke="#fff"
+                                    stroke-width="0.5"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"></path>
                             </svg>
                         </div>
+                        New Mind Map
+
                     </button>
 
                     <div class="info-button">
@@ -654,6 +622,8 @@
                         <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">GitHub</a>
                         <span class="separator">|</span>
                         <a href="/feedback.html" class="footer-link" style="text-decoration: bold;">Feedback</a>
+                        <span class="separator">|</span>
+                        <a href="/api/docs.html" class="footer-link">API</a>
                     </p>
                 </div>
                 <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
@@ -701,5 +671,8 @@
                     });
             });
         </script>
+        <!-- 100% privacy-first analytics -->
+        <script async="async" src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+
     </body>
 </html>
