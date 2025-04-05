@@ -17,16 +17,16 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mindmapwizard.com/api.html</loc>
+    <loc>https://mindmapwizard.com/api/docs.html</loc>
+    <priority>0.6</priority>
+  </url>
+    <url>
+    <loc>https://mindmapwizard.com/api/test.html</loc>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://mindmapwizard.com/feedback.html</loc>
     <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://mindmapwizard.com/privacy-policy.html</loc>
-    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://mindmapwizard.com/terms-of-use.html</loc>
