@@ -795,10 +795,11 @@ body {
     border-radius: 30px;
     padding: 8px 16px;
     font-size: 1rem;
-    cursor: pointer;
+    cursor: not-allowed;
     transition: all 0.3s ease;
     margin: -10px auto 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    opacity: 0.5;
 }
 
 .youtube-button:hover {
@@ -1354,9 +1355,16 @@ body {
     margin-bottom: 20px;
     border-radius: 8px;
 }
+
+@media (max-width: 981px) {
+    .reviews-section {
+        padding: 40px 20px !important;
+    }
+}
+
 .reviews-section {
     width: 100%;
-    padding: 40px 20px;
+    padding: 40px 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1473,6 +1481,56 @@ body {
     height: 35px;
     width: auto;
     opacity: 0.7;
+}
+@media (max-width: 981px) {
+    .review-carousel {
+        display: none !important;
+    }
+}
+
+@media (min-width: 981px) {
+    body {
+        overflow-x: hidden;
+    }
+    
+    .reviews-grid {
+        display: none; 
+    }
+    
+    .carousel-container {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        margin: 20px auto;
+    }
+    
+    .review-carousel {
+        display: flex;
+        width: fit-content;
+        animation: scroll 40s linear infinite;
+    }
+    
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+    
+    .carousel-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #cbd5e047;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        width: 300px;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
 }
 
 .fade-in-section {
@@ -1981,7 +2039,7 @@ footer {
     cursor: pointer;
     transition: width 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-top: -7px;
+    margin-top: -9.5px;
     overflow: hidden;
     padding-left: 11px;
 }
@@ -2039,7 +2097,7 @@ footer {
 }
 
 [data-tooltip]:hover::after {
-    opacity: 0;
+    opacity: 1;
     visibility: visible;
 }
 .white-section {
@@ -2115,3 +2173,4 @@ a {
     text-underline-offset: 2px;
     text-decoration: underline;
 }
+
