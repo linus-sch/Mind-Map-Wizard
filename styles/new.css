@@ -75,16 +75,15 @@
     position: fixed;
     bottom: 70px;
     right: 20px;
-    background-color: #ffffff;
+    background-color: #ffffffc9;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 25px;
+    border-radius: 20px;
     padding: 10px;
     display: none;
     flex-direction: column;
     z-index: 1800;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
     overflow: hidden;
 }
 
@@ -99,7 +98,7 @@
     color: var(--text-color);
     text-decoration: none;
     padding: 8px 15px;
-    border-radius: 8px;
+    border-radius: 12px;
     transition: background-color 0.3s ease;
     white-space: nowrap;
 }
@@ -451,6 +450,12 @@ body {
     margin: 3px;
 }
 
+.outage-notification {
+    display: none;
+}
+.banner-outage {
+    display: none;
+}
 .ai-content-disclaimer {
     position: fixed;
     bottom: 10px;
@@ -701,9 +706,10 @@ body {
     padding: 8px 16px;
     font-size: 1rem;
     font-weight: 500;
-    cursor: pointer;
+    cursor: not-allowed;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    opacity: 0.5;
 }
 
 .youtube-btn:hover {
@@ -1145,10 +1151,20 @@ h2 {
     background: var(--background-color);
 }
 
+@keyframes spin-counterclockwise {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
 .regenerate-button.rotating svg {
-    animation: spin 1s linear infinite;
+    animation: spin-counterclockwise 1s linear infinite;
     color: var(--text-color);
 }
+
 
 .download-icon {
     position: absolute;
@@ -1417,7 +1433,7 @@ h2 {
 }
 
 [data-tooltip]:hover::after {
-    opacity: 0;
+    opacity: 1;
     visibility: visible;
 }
 
