@@ -76,7 +76,10 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            const {topic, markdown} = formatMarkdown(data.response);
+            // Check if data has a response property, otherwise use data directly
+            const responseData = data.response || data;
+            const {topic, markdown} = formatMarkdown(responseData);
+            
             if (markdown) {
                 renderMindmap(markdown);
                 saveMindmapToHistory(topic || "YouTube: " + youtubeUrl, markdown);
@@ -258,15 +261,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function formatMarkdown(text) {
-        const topicMatch = text.match(/topic="([^"]+)"/);
-        const markdownMatch = text.match(/markdown="([^"]+)"/);
+function formatMarkdown(text) {
+    // Handle undefined or null input
+    if (!text) {
+        console.error("Received empty response from API");
+        return { topic: "Mind Map", markdown: "# Mind Map\n\nError: No content received" };
+    }
+    
+    // Check if text is an object with topic and raw properties (new format)
+    if (typeof text === 'object' && text.topic && text.raw) {
+        return {
+            topic: text.topic,
+            markdown: text.raw.trim().replace(/\n\s*\n/g, '\n\n').replace(/```/g, '')
+        };
+    }
+    
+    // Ensure text is a string for the other formats
+    text = String(text);
+    
+    // Check if the response is in the expected format with topic and markdown attributes
+    const topicMatch = text.match(/topic="([^"]+)"/);
+    const markdownMatch = text.match(/markdown="([^"]+)"/);
 
-        if (!topicMatch || !markdownMatch) {
-            console.error("Invalid response format");
-            return {topic: null, markdown: null};
-        }
-
+    if (topicMatch && markdownMatch) {
+        // Original format with topic and markdown attributes
         const topic = topicMatch[1];
         let markdown = markdownMatch[1];
 
@@ -277,111 +295,189 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/```/g, '');
 
         return {topic, markdown};
-    }
-
-    function generateMindmap(mindmapTopic, isRegenerate = false) {
-        if (!mindmapTopic) 
-            return;
+    } else {
+        // Raw markdown text format
+        // Extract the first heading as the topic
+        const firstHeadingMatch = text.match(/^#\s+(.+)$/m);
+        const topic = firstHeadingMatch ? firstHeadingMatch[1] : "Mind Map";
         
-        if (!isRegenerate) {
-            document
-                .getElementById("header")
-                .style
-                .display = "none";
-            document
-                .getElementById("recent-mindmaps")
-                .style
-                .display = "none";
-            document
-                .getElementById("ai-content-disclaimer")
-                .style
-                .display = "block";
-            document
-                .getElementById("mindmap")
-                .style
-                .display = "none";
-        }
+        // Use the entire text as markdown
+        const markdown = text
+            .trim()
+            .replace(/\n\s*\n/g, '\n\n')
+            .replace(/```/g, '');
+        
+        return {topic, markdown};
+    }
+}
 
+function generateMindmap(mindmapTopic, isRegenerate = false) {
+    if (!mindmapTopic)
+        return;
+    
+    if (!isRegenerate) {
         document
-            .getElementById("loading-animation")
+            .getElementById("header")
             .style
-            .display = "flex";
-
-        if (isRegenerate) {
-            const regenerateBtn = document.getElementById('regenerate-button');
-            regenerateBtn
-                .classList
-                .add('rotating');
-        }
-
-        currentMindmapTitle = mindmapTopic;
-
+            .display = "none";
+        document
+            .getElementById("recent-mindmaps")
+            .style
+            .display = "none";
+        document
+            .getElementById("ai-content-disclaimer")
+            .style
+            .display = "block";
         document
             .getElementById("mindmap")
             .style
-            .display = "block";
-
-        fetch('https://generate.mindmapwizard.com', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({input: mindmapTopic})
-        })
-            .then(response => response.json())
-            .then(data => {
-                const {topic, markdown} = formatMarkdown(data.response);
-                if (markdown) {
-                    renderMindmap(markdown);
-                    if (!isRegenerate) {
-                        saveMindmapToHistory(topic || mindmapTopic, markdown);
-                    } else {
-                        saveMindmapToHistory(topic || mindmapTopic, markdown);
-                    }
-                    currentMindmapTitle = topic || mindmapTopic;
-
-                    if (window.dataLayer) {
-                        window
-                            .dataLayer
-                            .push({
-                                'event': 'mindmap_generated',
-                                'mindmap_type': isRegenerate
-                                    ? 'regenerated'
-                                    : 'new'
-                            });
-                    }
-                }
-                document
-                    .getElementById("loading-animation")
-                    .style
-                    .display = "none";
-
-                document
-                    .getElementById("button-container")
-                    .style
-                    .display = "flex";
-
-                if (isRegenerate) {
-                    const regenerateBtn = document.getElementById('regenerate-button');
-                    regenerateBtn
-                        .classList
-                        .remove('rotating');
-                }
-            })
-            .catch(error => {
-                console.error("Error generating the mindmap:", error);
-                document
-                    .getElementById("loading-animation")
-                    .style
-                    .display = "none";
-                if (isRegenerate) {
-                    const regenerateBtn = document.getElementById('regenerate-button');
-                    regenerateBtn
-                        .classList
-                        .remove('rotating');
-                }
-            });
+            .display = "none";
     }
+    
+    document
+        .getElementById("loading-animation")
+        .style
+        .display = "flex";
+    
+    if (isRegenerate) {
+        const regenerateBtn = document.getElementById('regenerate-button');
+        regenerateBtn
+            .classList
+            .add('rotating');
+    }
+    
+    currentMindmapTitle = mindmapTopic;
+    
+    document
+        .getElementById("mindmap")
+        .style
+        .display = "block";
+    
+    fetch('https://generate.mindmapwizard.com', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({input: mindmapTopic})
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Check if the response contains an error
+            if (data.error) {
+                showErrorPopup(data.error);
+                return;
+            }
+
+            const responseData = data.response || data;
+            const {topic, markdown} = formatMarkdown(responseData);
+                        
+            if (markdown) {
+                renderMindmap(markdown);
+                if (!isRegenerate) {
+                    saveMindmapToHistory(topic || mindmapTopic, markdown);
+                } else {
+                    saveMindmapToHistory(topic || mindmapTopic, markdown);
+                }
+                currentMindmapTitle = topic || mindmapTopic;
+                
+                if (window.dataLayer) {
+                    window
+                        .dataLayer
+                        .push({
+                            'event': 'mindmap_generated',
+                            'mindmap_type': isRegenerate
+                                ? 'regenerated'
+                                : 'new'
+                        });
+                }
+            }
+                
+            document
+                .getElementById("loading-animation")
+                .style
+                .display = "none";
+                
+            document
+                .getElementById("button-container")
+                .style
+                .display = "flex";
+                
+            if (isRegenerate) {
+                const regenerateBtn = document.getElementById('regenerate-button');
+                regenerateBtn
+                    .classList
+                    .remove('rotating');
+            }
+        })
+        .catch(error => {
+            console.error("Error generating the mindmap:", error);
+            showErrorPopup("An error occurred while generating the mindmap");
+            
+            document
+                .getElementById("loading-animation")
+                .style
+                .display = "none";
+            
+            if (isRegenerate) {
+                const regenerateBtn = document.getElementById('regenerate-button');
+                regenerateBtn
+                    .classList
+                    .remove('rotating');
+            }
+        });
+}
+
+// Function to display error popup
+function showErrorPopup(errorMessage) {
+    // Create popup container if it doesn't exist
+    let errorPopup = document.getElementById('error-popup');
+    
+    if (!errorPopup) {
+        errorPopup = document.createElement('div');
+        errorPopup.id = 'error-popup';
+        errorPopup.style.position = 'fixed';
+        errorPopup.style.top = '50%';
+        errorPopup.style.left = '50%';
+        errorPopup.style.transform = 'translate(-50%, -50%)';
+        errorPopup.style.backgroundColor = 'white';
+        errorPopup.style.padding = '20px';
+        errorPopup.style.borderRadius = '5px';
+        errorPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        errorPopup.style.zIndex = '1000';
+        errorPopup.style.maxWidth = '400px';
+        errorPopup.style.textAlign = 'center';
+        
+        document.body.appendChild(errorPopup);
+    }
+    
+    // Update popup content
+    errorPopup.innerHTML = `
+        <h3 style="color: #e53935; margin-top: 0;">Error</h3>
+        <p>${errorMessage}</p>
+        <button id="close-error-popup" style="background-color: #e53935; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">Close</button>
+    `;
+    
+    // Show the popup
+    errorPopup.style.display = 'block';
+    
+    // Add event listener to close button
+    document.getElementById('close-error-popup').addEventListener('click', function() {
+        errorPopup.style.display = 'none';
+    });
+    
+    // Reset UI elements
+    document
+        .getElementById("loading-animation")
+        .style
+        .display = "none";
+        
+    if (document.getElementById('regenerate-button')) {
+        document
+            .getElementById('regenerate-button')
+            .classList
+            .remove('rotating');
+    }
+}
 
     function renderMindmap(markdown) {
         currentMarkdown = markdown;
@@ -1812,3 +1908,28 @@ window.openMindmap = openMindmap;
       window.location.href = 'https://mindmapwizard.com' + window.location.pathname + window.location.search;
     }
   };
+
+
+const texts = [
+    "Generate a Mind Map with AI",
+    "Generate a Mind Map with AI",
+    "Generate a Mind Map with AI",
+    "Generate a Mind Map with AI",
+    "What do you want to discover?",
+    "What do you want to discover?",
+    "What do you want to discover?",
+
+    "Research Made Easy",
+    "Get an Overview with AI",
+    "Get the Full Picture"
+];
+
+function getRandomText() {
+    const randomIndex = Math.floor(Math.random() * texts.length);
+    return texts[randomIndex];
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const randomTextElement = document.getElementById("randomText");
+    randomTextElement.textContent = getRandomText();
+});
