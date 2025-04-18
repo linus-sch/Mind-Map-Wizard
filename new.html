@@ -49,6 +49,13 @@
 
     </head>
     <body>
+        <div class="banner-outage">
+            <div class="outage-banner-content">
+              <div class="banner-text">
+                <span class="status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></span>
+                We're Currently Facing Some Issues - We're Working to Resolve It </div>
+            </div>
+          </div>
         <button
             id="leftSidebarToggle"
             class="left-sidebar-toggle navbar-toggle"
@@ -154,8 +161,7 @@
 
         <div class="header" id="header">
             <div class="whitespace" style="height: 100px;"></div>
-
-            <h1>Generate a Mind Map with AI</h1>
+            <h1 id="randomText"></h1>
             <div class="input-wrapper">
                 <input
                     type="text"
@@ -212,7 +218,33 @@
                     Manual
                 </a>
             </div>
+            <div class="outage-notification">
 
+
+                <p style="margin-top: 20px;">The generation of new mind maps with AI is currently not available. However, you can...</p>
+                <div class="page-links">
+                    <a href="/edit.html?id=new">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="manual-icon"><path
+                        d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2-2"/><path d="m18 16 2-2"/><path
+                        d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/><path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                        Create Manually</a>
+                         <p style="margin-top: 8px;">or</p>
+                        <a href="/history.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="manual-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> 
+                        View History</a>
+                </div>
+            </div>
         </div>
 
         <small class="legals-disclaimer" id="legals-disclaimer">By sending a topic on Mind Map Wizard, you agree to our
