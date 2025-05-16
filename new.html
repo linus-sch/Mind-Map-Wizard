@@ -3,27 +3,29 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        <title>AI Mind Map Maker - Generate Mind Map | Mind Map Wizard</title>
         <meta
             name="description"
-            content="Mind Map Wizard: Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+            content="AI Mind Maps: Generate mind maps in seconds just by typing in a topic. Free, no sign-up">
         <meta
             name="keywords"
-            content="mind map, mind mapping, AI, text to mindmap, free mind map generator, no sign up, no ads">
+            content="mind map, mind mapping, AI, text to mind map, free mind map generator, no sign up">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="language" content="en">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
         <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
         <meta
             property="og:description"
-            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+            content="AI Mind Maps: Generate mind maps in seconds just by typing in a topic. Free, no sign-up">
         <meta property="og:image" content="/img/meta-img.jpg">
-
         <meta property="og:type" content="website">
 
         <meta name="twitter:card" content="/img/meta-img.jpg">
         <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
         <meta
             name="twitter:description"
-            content="Generate mind maps effortlessly by typing in a topic. Free, no sign-up, no ads.">
+            content="AI Mind Maps: Generate mind maps in seconds just by typing in a topic. Free, no sign-up">
         <meta name="twitter:image" content="/img/meta-img.jpg">
 
         <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
@@ -33,11 +35,12 @@
         <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
         <link rel="apple-touch-icon" href="/img/logo.png">
 
-        <meta name="theme-color" content="#ffffff">
-        <meta name="language" content="en">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="Mind Map Wizard">
 
-        <title>AI Mind Map Maker - Generate Mind Map | Mind Map Wizard</title>
         <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
+        <link rel="stylesheet" href="/styles/new.css">
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
         <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
@@ -45,15 +48,16 @@
         <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <link rel="stylesheet" href="/styles/new.css">
-
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8940556207214695"
+     crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="banner-outage">
             <div class="outage-banner-content">
               <div class="banner-text">
                 <span class="status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></span>
-                We're Currently Facing Some Issues - We're Working to Resolve It </div>
+                We're Currently Facing Some Issues
+            </div>
             </div>
           </div>
         <button
@@ -218,9 +222,10 @@
                     Manual
                 </a>
             </div>
-            <div class="outage-notification">
 
 
+            
+            <div class="outage-notification" style="display: none;">
                 <p style="margin-top: 20px;">The generation of new mind maps with AI is currently not available. However, you can...</p>
                 <div class="page-links">
                     <a href="/edit.html?id=new">
@@ -244,6 +249,21 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="manual-icon"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> 
                         View History</a>
                 </div>
+            </div>
+
+            <div class="input-wrapper-boxlet">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8940556207214695"
+                            crossorigin="anonymous"></script>
+                        <!-- Input Field Ad Box -->
+                        <ins class="adsbygoogle"
+                            style="display:block"
+                            data-ad-client="ca-pub-8940556207214695"
+                            data-ad-slot="3261337555"
+                            data-ad-format="auto"
+                            data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
 
@@ -339,7 +359,7 @@
 </div>
 
 <div id="mindmap"></div>
-<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information - Pro AI</small>
+<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information</small>
 
 <div
     id="download-options-popup"
@@ -551,6 +571,20 @@
     <div class="left-sidebar-content">
         <div id="leftSidebarMindmapList" class="sidebar-mindmap-list">
             <!-- Mind map items will be loaded here -->
+        </div>
+        <div class="sidebar-boxlet">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8940556207214695"
+                crossorigin="anonymous"></script>
+            <!-- Sidebar Box Ad -->
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-8940556207214695"
+                data-ad-slot="3799641607"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
         </div>
     </div>
 </div>
