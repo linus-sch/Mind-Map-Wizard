@@ -262,7 +262,7 @@ body {
     color: var(--primary-color);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 840px) {
     .nav-links {
         display: none;
     }
@@ -1911,6 +1911,14 @@ footer {
     }
 
 }
+@media (max-width: 775px) {
+   .launch-platform-badge-2 {
+        display: none;
+
+    }
+
+}
+
 
 @media (max-width: 920px) {
     .launch-platform-badge {
@@ -2173,4 +2181,62 @@ a {
     text-underline-offset: 2px;
     text-decoration: underline;
 }
+
+
+.social-proof-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 20px auto;
+  flex-wrap: wrap;
+}
+
+.award-summary {
+  padding: 10px 20px;
+  border-radius: 18px;
+  text-align: center;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #cbd5e047;
+  height: 70px;
+}
+
+.award-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.award-text {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  position: relative;
+  padding: 0 30px;
+}
+
+.award-text::before,
+.award-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 1px;
+  background-color: #C667FF;
+}
+
+.award-text::before {
+  left: 0;
+}
+
+.award-text::after {
+  right: 0;
+}
+
+.award-source {
+  font-size: 0.9em;
+  color: #555;
+}
+
 
