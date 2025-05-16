@@ -228,6 +228,10 @@ body {
     }
 }
 
+.outage-notification {
+    display: none;
+}
+
 .navbutton {
     background-color: var(--primary-color);
     padding: 3px;
@@ -450,9 +454,6 @@ body {
     margin: 3px;
 }
 
-.outage-notification {
-    display: none;
-}
 .banner-outage {
     display: none;
 }
@@ -1949,4 +1950,24 @@ h2 {
 
 .popup-fadeOut {
     animation: popupFadeOut 0.3s forwards;
+}
+
+.input-wrapper-boxlet {
+    width: 95%;
+    max-width: 600px;
+    background-color: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border-radius: 5px;
+}
+
+.sidebar-boxlet {
+    width: 95%;
+    max-width: 600px;
+    background-color: #f6f6f6;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border-radius: 5px;
 }
