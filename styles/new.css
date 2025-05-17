@@ -1084,6 +1084,27 @@ h2 {
     background: #f8fafc;
 }
 
+.qr-code-container {
+    display: none; 
+    margin: 1rem auto;
+    text-align: center;
+}
+
+.qr-code-container-hr {
+    display: none;
+}
+
+@media (min-width: 769px) { 
+    .qr-code-container {
+        display: block;
+    }
+
+    .qr-code-container-hr {
+        display: block;
+    }
+}
+
+
 .share-button img {
     display: block;
     margin: 0;
