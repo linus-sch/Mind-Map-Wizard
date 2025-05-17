@@ -27,15 +27,15 @@ Mind Map Wizard is a free AI-powered mind mapping tool that allows you to easily
 
 ## Roadmap
 
-- [x] Editing Mind Maps
-- [x] Sharing Mind Maps
-- [x] Downloading Mind Maps
-- [x] Renaming Mind Maps
-- [x] Inline code support for Mind Maps
-- [x] More export options e.g. PNG or PDF
-- [ ] Explore further from specific branches
-- [ ] Upload files for reference or summarize Videos
-- [ ] Miltilinguality
+- [x] Done Editing Mind Maps
+- [x] Done Sharing Mind Maps
+- [x] Done Downloading Mind Maps
+- [x] Done Renaming Mind Maps
+- [x] Done Inline code support for Mind Maps
+- [x] Done More export options e.g. PNG or PDF
+- [ ] Soon Explore further from specific branches
+- [ ] Soon Upload files for reference or summarize Videos
+- [ ] Soon Miltilinguality
 
 ## Mind Map Generation Process
 <br>
