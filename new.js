@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            // Check if data has a response property, otherwise use data directly
             const responseData = data.response || data;
             const {topic, markdown} = formatMarkdown(responseData);
             
@@ -169,12 +168,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="loading-spinner"></div>
         `;
 
-        document
-            .body
-            .appendChild(overlay);
-        document
-            .body
-            .appendChild(dialog);
+        document.body.appendChild(overlay);
+        document.body.appendChild(dialog);
             
         try {
             updateCurrentMindmap();
@@ -191,53 +186,65 @@ document.addEventListener('DOMContentLoaded', function () {
                 )
             });
 
+            if (!response.ok) {
+                let errorData = { message: `Failed to share mindmap. Status: ${response.status}` };
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    console.error("Failed to parse error response JSON:", e);
+                }
+                throw new Error(errorData.message || `Failed to share mindmap. Status: ${response.status}`);
+            }
+
             const data = await response.json();
 
             if (window.dataLayer) {
-                window
-                    .dataLayer
-                    .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
+                window.dataLayer.push({'event': 'mindmap_share_success', 'action': 'Share Success'});
             }
 
             const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
 
-            const overlay = document.createElement('div');
-            overlay.className = 'overlay';
-            overlay.style.display = 'block';
-
-            const dialog = document.createElement('div');
-            dialog.className = 'share-dialog';
             dialog.innerHTML = `
-                <h3>Share Mindmap</h3>
-                <p>Copy this link to share your mindmap:</p>
+                <div id="dialog-qr-code-container" style="margin: 20px auto; width: 128px; height: 128px;" class="qr-code-container"></div>
+                <hr style="border: 1.5px solid; border-color: #E2E8F0; border-radius: 5px; margin: 10px 0 10px 0;" class="qr-code-container-hr">
+                <h3>Share Mind Map</h3>
+                <p>Scan the qr code or copy this link to share your mind map.</p>
                 <input type="text" class="share-link" value="${shareUrl}" readonly>
                 <div class="dialog-buttons">
                     <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
                     <button class="dialog-button confirm" onclick="copyShareLink()">Copy Link</button>
                 </div>
             `;
+            
+            const qrCodeContainerInDialog = dialog.querySelector("#dialog-qr-code-container");
+            
+            if (qrCodeContainerInDialog) {
+                new QRCode(qrCodeContainerInDialog, {
+                    text: shareUrl,
+                    width: 128,
+                    height: 128,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            } else {
+                console.error("QR code container '#dialog-qr-code-container' not found in dialog.");
+                dialog.innerHTML += '<p style="color: red; text-align: center;">Error: Could not display QR code.</p>';
+            }
 
-            document
-                .body
-                .appendChild(overlay);
-            document
-                .body
-                .appendChild(dialog);
 
         } catch (error) {
             console.error('Error sharing mindmap:', error);
             dialog.innerHTML = `
                 <h3>Share Mindmap</h3>
-                <p style="color: red;">Failed to share mindmap. Please try again.</p>
+                <p style="color: red;">${error.message || 'Failed to share mindmap. Please try again.'}</p>
                 <div class="dialog-buttons">
                     <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
                 </div>
             `;
 
             if (window.dataLayer) {
-                window
-                    .dataLayer
-                    .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
+                window.dataLayer.push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
             }
         } finally {
             if (shareButton) {
@@ -261,30 +268,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-function formatMarkdown(text) {
-    // Handle undefined or null input
-    if (!text) {
-        console.error("Received empty response from API");
-        return { topic: "Mind Map", markdown: "# Mind Map\n\nError: No content received" };
-    }
-    
-    // Check if text is an object with topic and raw properties (new format)
-    if (typeof text === 'object' && text.topic && text.raw) {
-        return {
-            topic: text.topic,
-            markdown: text.raw.trim().replace(/\n\s*\n/g, '\n\n').replace(/```/g, '')
-        };
-    }
-    
-    // Ensure text is a string for the other formats
+    function formatMarkdown(text) {
+        if (!text) {
+            console.error("Received empty response from API");
+            return { topic: "Mind Map", markdown: "# Mind Map\n\nError: No content received" };
+        }
+        
+        if (typeof text === 'object' && text.topic && text.raw) {
+            return {
+                topic: text.topic,
+                markdown: text.raw.trim().replace(/\n\s*\n/g, '\n\n').replace(/```/g, '').replace(/(?<!\n)(?<!\#)(\s*#)/g, '\n$1')
+            };
+        }
+        
     text = String(text);
     
-    // Check if the response is in the expected format with topic and markdown attributes
     const topicMatch = text.match(/topic="([^"]+)"/);
     const markdownMatch = text.match(/markdown="([^"]+)"/);
 
     if (topicMatch && markdownMatch) {
-        // Original format with topic and markdown attributes
         const topic = topicMatch[1];
         let markdown = markdownMatch[1];
 
@@ -292,24 +294,24 @@ function formatMarkdown(text) {
             .replace(/\\n/g, '\n')
             .trim()
             .replace(/\n\s*\n/g, '\n\n')
-            .replace(/```/g, '');
+            .replace(/```/g, '')
+            .replace(/(?<!\n)(?<!\#)(\s*#)/g, '\n$1');
 
         return {topic, markdown};
     } else {
-        // Raw markdown text format
-        // Extract the first heading as the topic
         const firstHeadingMatch = text.match(/^#\s+(.+)$/m);
         const topic = firstHeadingMatch ? firstHeadingMatch[1] : "Mind Map";
         
-        // Use the entire text as markdown
         const markdown = text
             .trim()
             .replace(/\n\s*\n/g, '\n\n')
-            .replace(/```/g, '');
+            .replace(/```/g, '')
+            .replace(/(?<!\n)(?<!\#)(\s*#)/g, '\n$1');
         
         return {topic, markdown};
     }
 }
+
 
 function generateMindmap(mindmapTopic, isRegenerate = false) {
     if (!mindmapTopic)
@@ -362,7 +364,6 @@ function generateMindmap(mindmapTopic, isRegenerate = false) {
     })
         .then(response => response.json())
         .then(data => {
-            // Check if the response contains an error
             if (data.error) {
                 showErrorPopup(data.error);
                 return;
@@ -427,9 +428,7 @@ function generateMindmap(mindmapTopic, isRegenerate = false) {
         });
 }
 
-// Function to display error popup
 function showErrorPopup(errorMessage) {
-    // Create popup container if it doesn't exist
     let errorPopup = document.getElementById('error-popup');
     
     if (!errorPopup) {
@@ -441,8 +440,8 @@ function showErrorPopup(errorMessage) {
         errorPopup.style.transform = 'translate(-50%, -50%)';
         errorPopup.style.backgroundColor = 'white';
         errorPopup.style.padding = '20px';
-        errorPopup.style.borderRadius = '5px';
-        errorPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        errorPopup.style.borderRadius = '20px';
+        errorPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.05)';
         errorPopup.style.zIndex = '1000';
         errorPopup.style.maxWidth = '400px';
         errorPopup.style.textAlign = 'center';
@@ -450,22 +449,21 @@ function showErrorPopup(errorMessage) {
         document.body.appendChild(errorPopup);
     }
     
-    // Update popup content
     errorPopup.innerHTML = `
-        <h3 style="color: #e53935; margin-top: 0;">Error</h3>
+        <h3 style="color: #1e293b; margin-top: 0;">Error</h3>
+                <p>An error occurred. Please try again later.</p>
+                <br>
+                <br>
         <p>${errorMessage}</p>
-        <button id="close-error-popup" style="background-color: #e53935; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">Close</button>
+        <button id="close-error-popup" style="background-color:rgb(255, 83, 80); color: white; border: none; padding: 8px 16px; border-radius: 40px; cursor: pointer; margin-top: 10px;">Close</button>
     `;
     
-    // Show the popup
     errorPopup.style.display = 'block';
     
-    // Add event listener to close button
     document.getElementById('close-error-popup').addEventListener('click', function() {
         errorPopup.style.display = 'none';
     });
     
-    // Reset UI elements
     document
         .getElementById("loading-animation")
         .style
@@ -1094,93 +1092,6 @@ function showErrorPopup(errorMessage) {
         }
         return 'Just now';
     }
-    
-
-
-    async function shareMindmap() {
-        closeShareDialog();
-        
-        const shareButton = document.querySelector('.share-button');
-        if (shareButton) {
-            shareButton.disabled = true;
-            shareButton.style.opacity = '0.5';
-        }
-
-        const overlay = document.createElement('div');
-        overlay.className = 'overlay';
-        overlay.style.display = 'block';
-
-        const dialog = document.createElement('div');
-        dialog.className = 'share-dialog';
-        dialog.innerHTML = `
-        <h3>Share Mindmap</h3>
-        <p>Generating share link...</p>
-        <div class="loading-spinner"></div>
-    `;
-
-        document
-            .body
-            .appendChild(overlay);
-        document
-            .body
-            .appendChild(dialog);
-
-        try {
-            updateCurrentMindmap();
-            if (!currentMindmap.markdown) {
-                throw new Error('No mind map content available to share');
-            }
-            const response = await fetch('https://share.mindmapwizard.com/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(
-                    {topic: currentMindmap.topic, markdown: currentMindmap.markdown, timestamp: new Date().toISOString()}
-                )
-            });
-
-            const data = await response.json();
-
-            if (window.dataLayer) {
-                window
-                    .dataLayer
-                    .push({'event': 'mindmap_share_success', 'action': 'Share Success'});
-            }
-
-            const shareUrl = `${window.location.origin}/view.html?id=${data.id}`;
-            dialog.innerHTML = `
-            <h3>Share Mindmap</h3>
-            <p>Copy this link to share your mindmap:</p>
-            <input type="text" class="share-link" value="${shareUrl}" readonly>
-            <div class="dialog-buttons">
-                <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
-                <button class="dialog-button confirm" onclick="copyShareLink()">Copy Link</button>
-            </div>
-        `;
-
-        } catch (error) {
-            console.error('Error sharing mindmap:', error);
-            dialog.innerHTML = `
-            <h3>Share Mindmap</h3>
-            <p style="color: red;">Failed to share mindmap. Please try again.</p>
-            <div class="dialog-buttons">
-                <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
-            </div>
-        `;
-
-            if (window.dataLayer) {
-                window
-                    .dataLayer
-                    .push({'event': 'mindmap_share_error', 'action': 'Share Failed'});
-            }
-        } finally {
-            if (shareButton) {
-                shareButton.disabled = false;
-                shareButton.style.opacity = '1';
-            }
-        }
-    }
 
     function copyShareLink() {
         const input = document.querySelector('.share-link');
@@ -1524,6 +1435,9 @@ function loadMindMapById(id) {
     document.getElementById('recent-mindmaps').style.display = 'none';
     document.getElementById('legals-disclaimer').style.display = 'none';
     document.getElementById('button-container').style.display = 'flex';
+    document.getElementById('ai-content-disclaimer').style.display = 'none';
+
+    
     
     currentMindmapTitle = mindMap.topic;
     renderMindmap(mindMap.markdown);
@@ -1918,7 +1832,6 @@ const texts = [
     "What do you want to discover?",
     "What do you want to discover?",
     "What do you want to discover?",
-
     "Research Made Easy",
     "Get an Overview with AI",
     "Get the Full Picture"
