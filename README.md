@@ -38,16 +38,13 @@ Mind Map Wizard is a free AI-powered mind mapping tool that allows you to easily
 - [ ] Soon - Miltilinguality
 
 ## Mind Map Generation Process
-<br>
-<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/generation-process.webp" alt="Mind Map Generation Process" style="width: 80%;">
-<br>
 Creating a mind map involves a few simple steps. Here’s how it works:
 
 1. **User Submits Topic:**  
    You start by entering a topic or subject that you want to explore in your mind map.
 
-2. **Send to Pro-AI:**  
-   Once you submit your topic, it gets sent off to Pro-AI.
+2. **Send to Pollinations AI:**  
+   Once you submit your topic, it gets sent off to ChatGPT.
 
 3. **AI Processes Request:**  
    The AI takes a moment to analyze your topic and comes up with a structured outline that captures the key ideas.
