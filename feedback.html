@@ -2,10 +2,9 @@
 <html lang="en">
     <html>
         <head>
+            <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Feedback - Share Your Thoughts on Mind Map Wizard</title>
-
-            <meta charset="UTF-8">
             <meta
                 name="description"
                 content="Your input is the driving force behind our growth. Thanks for being an
@@ -20,7 +19,6 @@
                 content="Your input is the driving force behind our growth. Thanks for being an
                     integral part of our story!">
             <meta property="og:image" content="/img/meta-img.jpg">
-
             <meta property="og:type" content="website">
 
             <meta name="twitter:card" content="/img/meta-img.jpg">
@@ -37,6 +35,10 @@
             <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
             <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
             <link rel="apple-touch-icon" href="/img/logo.png">
+            
+            <meta name="mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-title" content="Mind Map Wizard">
+    
             <style>
 
                 :root {
@@ -369,7 +371,7 @@
                     width: 95%;
                     margin: 10px 0;
                     padding: 10px;
-                    border: 1px solid #e0e0e0;
+                    border: 2px solid #e0e0e0;
                     border-radius: 15px;
                     color: var(--text-color);
                     font-family: system-ui, Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
@@ -386,12 +388,12 @@
                     background-color: var(--text-color);
                     color: white;
                     cursor: pointer;
-                    width: 100%;
+                    float: left;
                     height: 40px;
                     text-decoration: none;
                     font-size: 1em;
                     font-weight: 300;
-                    padding: 10px;
+                    padding: 0.7rem 2.2rem;
                     border-radius: 30px;
                     border: none;
                     transition: background-color 0.3s, transform 0.2s;
@@ -403,90 +405,188 @@
 
                 p {
                     font-size: 15px;
+                    line-height: 1.5;
                 }
 
                 footer {
-                    background-color: var(--text-color);
-                    padding: 20px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    font-size: 0.8em;
-                    margin-top: 40px;
-                    position: relative;
-                    color: #ffffff;
+                    background: #1E293B;
+                    color: white;
+                    padding: 2rem 0;
+                    margin-top: 100px;
                 }
 
                 .footer-content {
+                    margin: 0 auto;
+                    padding: 0 2rem;
+                    display: grid;
+                    grid-template-rows: auto 1fr auto;
+                    min-height: 10px;
+                    position: relative;
+                }
+
+                .footer-top {
                     display: flex;
                     justify-content: space-between;
-                    width: 100%;
-                    margin-bottom: 30px;
+                    align-items: center;
+                }
+
+                .footer-icons {
+                    display: flex;
+                    gap: 20px;
+                }
+
+                .footer-logo {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .footer-logo img {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 6px;
+                }
+
+                .footer-logo span {
+                    font-size: 1.3rem;
+                    color: #94a3b8;
+                    font-family: 'Open Sans', sans-serif;
+                    font-weight: 800;
+                    white-space: nowrap;
                 }
 
                 .footer-links {
                     display: flex;
-                    align-items: center;
-                }
-
-                .separator {
-                    color: #9b9999;
-                    margin: 0 3px;
-                    font-size: 1em;
+                    gap: 2rem;
+                    align-items: center !important;
+                    justify-content: center;
+                    flex: 1;
                 }
 
                 .footer-link {
-                    color: #ffffff;
-                    transition: color 0.3s;
+                    color: #fff;
                     text-decoration: none;
-                    font-size: 15px;
-
+                    font-size: 1rem;
+                    transition: all 0.2s ease;
                 }
 
                 .footer-link:hover {
-                    color: var(--primary-color);
+                    text-decoration: underline;
+                    text-underline-offset: 4px;
+                }
+
+                .footer-middle {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .footer-contact {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                }
+
+                .footer-contact p {
+                    margin: 0;
+                    font-size: 0.9rem;
+                    color: #cbd5e1;
+                }
+
+                .footer-email a {
+                    color: #94a3b8;
+                    text-decoration: none;
+                    transition: all 0.2s ease;
+                }
+
+                .footer-email a:hover {
+                    color: #fff;
+                    text-decoration: underline;
+                    text-underline-offset: 4px;
+                }
+
+                .footer-social {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .social-icon {
+                    width: 36px;
+                    height: 36px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 6px;
+                    transition: all 0.2s ease;
                     text-decoration: none;
                 }
 
-                .copyright {
-                    margin: 0;
-                    font-size: 15px;
+                .social-icon:hover {
+                    background: rgba(198,103,255,0.1);
                 }
 
-                @media (max-width: 720px) {
+                .social-icon svg {
+                    width: 18px;
+                    height: 18px;
+                    fill: #94a3b8;
+                    transition: fill 0.2s ease;
+                }
+
+                .social-icon:hover svg {
+                    fill: #C667FF;
+                }
+
+                .footer-bottom {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-top: 2rem;
+                    position: absolute;
+                    bottom: 0;
+                    right: 2rem;
+                }
+
+                .copyright {
+                    color: #94a3b8;
+                    font-size: 0.85rem;
+                }
+
+                @media (max-width: 768px) {
                     .footer-content {
-                        flex-direction: column;
-                        margin-bottom: 20px;
+                        grid-template-rows: auto auto auto;
+                        min-height: auto;
                     }
 
                     .footer-links {
-                        margin-bottom: 10px;
+                        flex-wrap: wrap;
+                        gap: 1rem;
                     }
-                }
 
-                .copyright {
-                    margin: 0;
-                    font-size: 15px;
-                }
-
-                @media (max-width: 720px) {
-                    .footer-content {
+                    .footer-middle {
                         flex-direction: column;
-                        margin-bottom: 20px;
+                        gap: 1.5rem;
+                        align-items: flex-start;
                     }
 
-                    .footer-links {
-                        margin-bottom: 10px;
+                    .footer-bottom {
+                        justify-content: flex-start;
                     }
                 }
 
-                .footer-positioning {
-                    height: 20vw;
-                }
+                @media (max-width: 480px) {
+                    footer {
+                        padding: 1.5rem 0;
+                    }
 
-                @media (max-width: 720px) {
-                    .footer-positioning {
-                        height: 70vw;
+                    .footer-content {
+                        padding: 0 1rem;
+                    }
+
+                    .footer-middle {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 0.75rem;
                     }
                 }
 
@@ -600,6 +700,7 @@
 
                 </div>
                 <input type="text" name="name" placeholder="Name">
+                <input type="email" name="email" placeholder="Email">
                 <textarea name="message" rows="5" placeholder="Feedback"></textarea>
                 <input type="hidden" name="source" value="Mind Map Wizard - Feedback">
                 <input type="submit" value="Send" id="submit">
@@ -609,27 +710,43 @@
         </div>
         <div class="footer-positioning"></div>
 
-        <footer>
-            <div class="footer-content">
-                <div class="footer-links">
-                    <p style="margin: 0;">
-                        <a href="mailto:contact@mindmapwizard.com" class="footer-link">Contact</a>
-                        <span class="separator">|</span>
-                        <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
-                        <span class="separator">|</span>
-                        <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
-                        <span class="separator">|</span>
-                        <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">GitHub</a>
-                        <span class="separator">|</span>
-                        <a href="/feedback.html" class="footer-link" style="text-decoration: bold;">Feedback</a>
-                        <span class="separator">|</span>
-                        <a href="/api/docs.html" class="footer-link">API</a>
-                    </p>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <img src="/img/favicon64.png" alt="Mind Map Wizard Logo">
                 </div>
-                <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
+                  <div class="footer-icons">
+                      <a href="https://www.youtube.com/@mindmapwizard" target="_blank" class="icon-link">
+                        <svg viewBox="0 0 256 180" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid"><path d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134Z" fill="white"/><path fill="#1E293B" d="m102.421 128.06 66.328-38.418-66.328-38.418z"/></svg>
+                      </a>
+
+                      <a href="https://github.com/linus-sch/Mind-Map-Wizard" target="_blank" class="icon-link">
+                        <svg width="24px" height="24px" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z" transform="scale(64)" fill="#ffff"/></svg>
+                      </a>
+
+                    </div>
+            </div>
+                <div class="footer-links">
+                    <a href="/privacy-policy.html" class="footer-link">Privacy</a>
+                    <a href="/terms-of-use.html" class="footer-link">Terms</a>
+                    <a href="/api/docs.html" class="footer-link">API</a>
+                </div>
+            <div class="footer-middle">
+                <div class="footer-contact">
+                    <p>Linus Schärli</p>
+                    <p class="footer-email"><a href="mailto:linus@mindmapwizard.com">linus@mindmapwizard.com</a></p>
+                </div>
+               
             </div>
 
-        </footer>
+            <div class="footer-bottom">
+                <div class="copyright">© 2025 Mind Map Wizard</div>
+            </div>
+        </div>
+    </footer>
+
         <script>
             const form = document.forms[0];
             const submitButton = document.getElementById('submit');
