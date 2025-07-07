@@ -35,7 +35,6 @@
 
         <meta name="theme-color" content="#C667FF">
         <meta name="language" content="en">
-
         <style>
 
             :root {
@@ -95,13 +94,14 @@
 
             .home-button {
                 display: inline-block;
-                padding: 1rem 2rem;
+                padding: 0.7rem 2rem;
                 background: var(--text-color);
                 border: 2px solid var(--text-color);
                 color: white;
                 text-decoration: none !important;
                 border-radius: 50px;
                 font-weight: 600;
+                margin-top: 10px;
                 transition: transform 0.2s, background-color 0.2s;
                 box-shadow: 0 4px 6px rgba(198, 103, 255, 0.1);
             }
@@ -112,6 +112,9 @@
                 border: 2px solid var(--text-color);
 
             }
+
+       
+
 
             a {
                 font-size: 1.2rem;
@@ -180,6 +183,8 @@
                     flex-direction: column;
                     margin-bottom: 20px;
                 }
+
+
 
                 .footer-links {
                     margin-bottom: 10px;
@@ -255,7 +260,10 @@
             .popup-content a:hover {
                 background-color: #e6e6e6;
             }
-            
+            a {
+                text-underline-offset: 3px; 
+                text-decoration: underline;
+            }
         </style>
 
     </head>
@@ -296,8 +304,7 @@
                 style="margin-bottom: 30px;">
             <h1 class="error-code">404</h1>
             <p class="error-message">Oops! This page seems to have wandered off the map.</p>
-            <a href="/" style="margin-right: 30px;">Whats Mind Map Wizard?</a>
-            <a href="/new" class="home-button">Return Home</a>
+            <a href="/" class="home-button">Return Home</a>
         </div>
         <div style="height: 30px;"></div>
         <footer>
@@ -309,15 +316,13 @@
                         <a href="/privacy-policy.html" class="footer-link">Privacy Policy</a>
                         <span class="separator">|</span>
                         <a href="/terms-of-use.html" class="footer-link">Terms of Use</a>
-                        <span class="separator">|</span>
-                        <a href="https://github.com/linus-sch/Mind-Map-Wizard" class="footer-link">Github</a>
-                        <span class="separator">|</span>
-                        <a href="/feedback.html" class="footer-link">Feedback</a>
                     </p>
                 </div>
                 <p class="copyright" style="margin: 0;">© 2025 Mind Map Wizard.</p>
             </div>
         </footer>
+            <!-- 100% privacy-first analytics -->
+        <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 
     </body>
 </html>
