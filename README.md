@@ -16,7 +16,7 @@
 </div>
 
 <h4 align="center">
-  <a href="https://mindmapwizard/new">
+  <a href="https://mindmapwizard.com/new">
     <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 120px;">
 </a>
 </h4>
