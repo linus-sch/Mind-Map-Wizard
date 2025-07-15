@@ -102,7 +102,7 @@ Complete with facts, not just the basic starting point. If there’s too much co
 ```
 <br>
 
-## How to Edit Markmap Mind Maps
+## How to Edit Mind Maps
 
 Markmap mind maps are created and edited using Markdown syntax. The branch level is determined by the count of `#` symbols before the text:
 
