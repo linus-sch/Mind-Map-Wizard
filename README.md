@@ -1,17 +1,25 @@
 # Mind Map Wizard
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-logo-banner.jpg" alt="Screenshot of Mind Map Wizard" style="width: 100%;">
 
+<h4 align="center">
+  <a href="https://mindmapwizard/new">Demo</a> |
+  <a href="https://plus.excalidraw.com/blog">Manual Creation</a> |
+  <a href="https://markmap.js.org">Markmap</a> 
+</h4>
+
 <div align="center">
   <h2>
     AI-Powered Text to Mind Map Generator</br>
    Get a visual overview of any topic in seconds</br>
-  <br />
+      <br />
   </h2>
 </div>
 
 <div align="center">
   <figure>
+    <a href="https://mindmapwizard.com/new" target="_blank" rel="noopener">
       <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-browser-mockup.jpg" alt="Product showcase" />
+      </a>
     <figcaption>
       <p align="center">
        Generate comprehensive Mind Maps about any topic using Artificial Intelligence.
