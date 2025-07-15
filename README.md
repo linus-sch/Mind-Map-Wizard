@@ -1,5 +1,5 @@
 # Mind Map Wizard
-<span id="#readme-top"></span>
+  <a name="readme-top"></a>
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-logo-banner.jpg" alt="Screenshot of Mind Map Wizard" style="width: 100%;">
 
 <h4 align="center">
