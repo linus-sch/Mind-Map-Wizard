@@ -59,7 +59,7 @@
 - [x] Done - Inline code support for Mind Maps
 - [x] Done - More export options e.g. PNG or PDF
 - [ ] Soon - Exploring further from specific branches
-- [ ] Soon - Miltilinguality
+- [ ] Soon - Multilinguality
 
 ## Mind Map Generation Process
 Creating a mind map involves a few simple steps. Here’s how it works:
@@ -67,16 +67,15 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 1. **User Submits Topic:**  
    You start by entering a topic or subject that you want to explore in your mind map.
 
-2. **Send to Pollinations AI:**  
+2. **Sending to AI Provider:**  
    Once you submit your topic, it gets sent off to the ChatGPT API.
 
-3. **AI Processes Request:**  
+3. **LLM Processes Request:**  
    The AI takes a moment to analyze your topic and comes up with a structured outline that captures the key ideas.
 
 4. **Formatting the AI-Generated Markdown:**  
-   Next, the AI's output is formatted into Markdown, which is a user-friendly way to create structured documents.
-
-5. **Render as SVG:**  e
+    The AI's output is then formatted into Markdown, which simplifies the definition of the mind map's branch hierarchy.
+5. **Render as SVG:**
    Finally, the Markdown is transformed into an SVG (Scalable Vector Graphics) format using [markmap.js](https://github.com/markmap/markmap), giving you a visually appealing mind map.
 
 
