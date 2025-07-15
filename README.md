@@ -4,7 +4,7 @@
 
 <h4 align="center">
   <a href="https://mindmapwizard/new">Demo</a> |
-  <a href="https://plus.excalidraw.com/blog">Manual Creation</a> |
+  <a href="https://mindmapwizard.com/edit">Manual Creation</a> |
   <a href="https://markmap.js.org">Markmap</a> 
 </h4>
 
@@ -68,7 +68,7 @@ Creating a mind map involves a few simple steps. Here’s how it works:
    You start by entering a topic or subject that you want to explore in your mind map.
 
 2. **Send to Pollinations AI:**  
-   Once you submit your topic, it gets sent off to ChatGPT.
+   Once you submit your topic, it gets sent off to the ChatGPT API.
 
 3. **AI Processes Request:**  
    The AI takes a moment to analyze your topic and comes up with a structured outline that captures the key ideas.
@@ -76,7 +76,7 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 4. **Formatting the AI-Generated Markdown:**  
    Next, the AI's output is formatted into Markdown, which is a user-friendly way to create structured documents.
 
-5. **Render as SVG:**  
+5. **Render as SVG:**  e
    Finally, the Markdown is transformed into an SVG (Scalable Vector Graphics) format using [markmap.js](https://github.com/markmap/markmap), giving you a visually appealing mind map.
 
 
@@ -102,13 +102,194 @@ Complete with facts, not just the basic starting point. If there’s too much co
 ```
 <br>
 
+## How to Edit Markmap Mind Maps
+
+Markmap mind maps are created and edited using Markdown syntax. The branch level is determined by the count of `#` symbols before the text:
+
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          text-align: left;
+          background-color: #f2f2f2;
+          width: 600px;
+        "
+      >
+        Code
+      </th>
+      <th
+        style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;"
+      >
+        Rendered Mind Map
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 50%;
+        "
+      >
+        <pre><code># my mind map
+    ## branch 1
+    ## branch 2
+        ### text
+        ### text
+</code></pre>
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        <img
+          src="https://mindmapwizard.com/img/screenshots/basic-mindmap-structure.webp"
+          alt="An example mind map"
+          style="width: 500px; height: auto; display: block;"
+        />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+There are also formatting options available for the texts in mind map branches.
+
+
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          text-align: left;
+          background-color: #f2f2f2;"
+      >
+        Markdown Code Example
+      </th>
+      <th
+        style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;"
+      >
+        How it Renders (within a branch)
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 600px;
+        "
+      >
+        **example branch**
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        <strong>example branch</strong>
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 600px;
+        "
+      >
+        ~~example branch~~
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        <del>example branch</del>
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 600px;
+        "
+      >
+        *example branch*
+      </td>
+      <td style="padding: 4px; border: 1px solid #ddd; vertical-align: top;">
+        <em>example branch</em>
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 600px;
+        "
+      >
+        `example branch`
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        <code
+          style="
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 85%;
+            font-family: monospace;
+          "
+          >example branch</code
+        >
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 600px;
+        "
+      >
+        [Example Link](https://example.com)
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        <a href="https://example.com" target="_blank" rel="noopener noreferrer"
+          >Example Link</a
+        >
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          width: 600px;
+        "
+      >
+        ![](IMAGE_URL)
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        This renders an image.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ## Contact
 
 If you have any questions or feedback, please get in touch with us.
 <br>
 
-contact @ mindmapwizard.com
-
+<a href="mailto:contact@mindmapwizard.com">contact@mindmapwizard.com</a>
+<br>
 <p align="right" style="font-size: 14px; color: #555; margin-top: 20px;">
     <a href="#readme-top" style="text-decoration: none; color: #007bff; font-weight: bold;">
         ↑ Back to Top ↑
