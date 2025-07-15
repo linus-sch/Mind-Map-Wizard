@@ -7,18 +7,17 @@ Mind Map Wizard is a free AI-powered mind mapping tool that allows you to easily
 
 ## Features
 
-- AI Mind Map Generation
-- Downloading Mind Map (JPG, PDF, SVG, Text, Link)
-- Sharing Mind Map
-- Editing Mind Map
-- Generation History
+- ✨ AI Mind Map Generation
+- 🖼️ Downloading Mind Map (JPG, PDF, SVG, Text, Link)
+- 🔗 Sharing Mind Map
+- ✍️ Editing Mind Map
+- 📋 Generation History
 
 ## Why use Mind Map Wizard?
 
-- **100% Free:** No hidden costs or premium features. Everything is completely free.
-- **No Sign Up:** Begin creating mind maps right away. No account needed.
-- **Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
-- **Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
+- **✅ No Sign Up:** Begin creating mind maps right away. No account needed.
+- **✅ Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
+- **✅ Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
 
 ## How It Works
 1. **Enter Your Topic:** Just type any topic you'd like to explore in the input field.
