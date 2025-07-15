@@ -5,15 +5,7 @@
     <source media="(prefers-color-scheme: dark)" alt="Mind Map Wizard" srcset="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/logo-banner-wide-dark.jpg" />
     <img alt="Mind Map Wizard" src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/logo-banner-wide-light.jpg" />
   </picture>
-</a>
-<h4 align="center">
-  <a href="https://mindmapwizard/new">
-    <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 120px;">
-</a>
-
-</h4>
-  
-</h4>
+</a>  
 
 <div align="center">
   <h2>
@@ -22,6 +14,12 @@
       <br />
   </h2>
 </div>
+
+<h4 align="center">
+  <a href="https://mindmapwizard/new">
+    <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 120px;">
+</a>
+</h4>
 
 <div align="center">
   <figure>
