@@ -28,7 +28,7 @@
       </a>
     <figcaption>
       <p align="center">
-       Generate comprehensive Mind Maps about any topic using Artificial Intelligence.
+         Generate comprehensive mind maps about any topic using artificial intelligence.
       </p>
     </figcaption>
   </figure>
@@ -36,11 +36,11 @@
 
 ## Features
 
-- ✨ AI Mind Map Generation
-- 🖼️ Downloading Mind Map (JPG, PDF, SVG, Text, Link)
-- 🔗 Sharing Mind Map
-- ✍️ Editing Mind Map
-- 📋 Generation History
+- ✨ AI mind map generation
+- 🖼️ Downloading mind map (JPG, PDF, SVG, Text, Link)
+- 🔗 Sharing mind map
+- ✍️ Editing mind map
+- 📋 Generation history
 - 🔍 Zoom and panning
 
 
