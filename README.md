@@ -2,6 +2,7 @@
 <a name="readme-top"></a>
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-logo-banner.jpg" alt="Screenshot of Mind Map Wizard" style="width: 100%;">
 
+
 <h4 align="center">
   <a href="https://mindmapwizard/new">Demo</a> |
   <a href="https://mindmapwizard.com/edit">Manual Creation</a> |
