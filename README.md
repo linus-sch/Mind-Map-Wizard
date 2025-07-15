@@ -1,4 +1,3 @@
-# Mind Map Wizard
 <a name="readme-top"></a>
 
 <a href="https://mindmapwizard.com" target="_blank" rel="noopener">
@@ -7,7 +6,12 @@
     <img alt="Mind Map Wizard" src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/logo-banner-wide-light.jpg" />
   </picture>
 </a>
+<h4 align="center">
+  <a href="https://mindmapwizard/new">
+    <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 150px;">
+</a>
 
+</h4>
   
 </h4>
 
