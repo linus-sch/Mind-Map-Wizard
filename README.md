@@ -1,4 +1,5 @@
 # Mind Map Wizard
+<span id="#readme-top"></span>
 <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-logo-banner.jpg" alt="Screenshot of Mind Map Wizard" style="width: 100%;">
 
 <h4 align="center">
@@ -108,3 +109,8 @@ If you have any questions or feedback, please get in touch with us.
 
 contact @ mindmapwizard.com
 
+<p align="right" style="font-size: 14px; color: #555; margin-top: 20px;">
+    <a href="#readme-top" style="text-decoration: none; color: #007bff; font-weight: bold;">
+        ↑ Back to Top ↑
+    </a>
+</p>
