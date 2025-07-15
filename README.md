@@ -4,9 +4,9 @@
 
 
 <h4 align="center">
-  <a href="https://mindmapwizard/new">Demo</a> |
-  <a href="https://mindmapwizard.com/edit">Manual Creation</a> |
-  <a href="https://markmap.js.org">Markmap</a> 
+  <a href="https://mindmapwizard/new"><img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 150px;">
+</a>
+  
 </h4>
 
 <div align="center">
