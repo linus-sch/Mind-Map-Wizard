@@ -12,6 +12,8 @@ Mind Map Wizard is a free AI-powered mind mapping tool that allows you to easily
 - 🔗 Sharing Mind Map
 - ✍️ Editing Mind Map
 - 📋 Generation History
+- 🔍 Zoom and panning
+
 
 ## Why use Mind Map Wizard?
 
