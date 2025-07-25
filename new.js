@@ -524,7 +524,7 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 
     // Analytics tracking - Fire and forget
     try {
-      await fetch('https://abacus.jasoncameron.dev/hit/mindmapwizard.com/mind-map-generated', {
+      await fetch('https://stats.mindmapwizard.com/get/mmw/mind-map-generated', {
         method: 'GET',
       });
     } catch (trackingError) {
