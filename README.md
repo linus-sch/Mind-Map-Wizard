@@ -286,6 +286,15 @@ There are also formatting options available for the texts in mind map branches.
     </tr>
   </tbody>
 </table>
+<br>
+<hr>
+<br>
+
+  <picture>
+    <source media="(prefers-color-scheme: dark)" alt="GitHub Repo Stars history" srcset="https://app.repohistory.com/api/svg?repo=linus-sch/mind-map-wizard&type=Date&background=0D1117&color=6278f8)](https://app.repohistory.com/star-history" />
+    <img alt="Mind Map Wizard" src="https://app.repohistory.com/api/svg?repo=linus-sch/mind-map-wizard&type=Date&background=FFFFFF&color=6278f8" />
+  </picture>
+</a>  
 
 ## Contact
 
