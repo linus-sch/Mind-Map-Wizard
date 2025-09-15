@@ -1,5 +1,4 @@
 # License for Mind Map Wizard
-<img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/l-graphic.webp" alt="Mind Map Wizard" style="width: 80%;">
 
 This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
 
