@@ -2,25 +2,20 @@
 
 <a href="https://mindmapwizard.com" target="_blank" rel="noopener">
   <picture>
-    <source media="(prefers-color-scheme: dark)" alt="Mind Map Wizard" srcset="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/logo-banner-wide-dark.jpg" />
+    <source media="(prefers-color-scheme: dark)" alt="Mind Map Wizard" srcset="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-logo-banner.jpg" />
     <img alt="Mind Map Wizard" src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/logo-banner-wide-light.jpg" />
   </picture>
 </a>  
-
+  <p align="center">
+    <em>This is the open-source project behind <a href="https://mindmapwizard.com">mindmapwizard.com</a></em>
+  </p>
 <div align="center">
   <h2>
     AI-Powered Text to Mind Map Generator</br>
    Get a visual overview of any topic in seconds</br>
-      <br />
+    <br>
   </h2>
 </div>
-
-<h4 align="center">
-  <a href="https://mindmapwizard.com/new">
-    <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 120px;">
-</a>
-</h4>
-
 <div align="center">
   <figure>
     <a href="https://mindmapwizard.com/new" target="_blank" rel="noopener">
@@ -34,11 +29,16 @@
   </figure>
 </div>
 
+<h4 align="center">
+  <a href="https://mindmapwizard.com/new">
+    <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/demo-link-button.webp" alt="Demo button of Mind Map Wizard" style="width: 120px;">
+</a>
+</h4>
+
 ## Features
 
 - ✨ AI mind map generation
 - 🖼️ Downloading mind map (JPG, PDF, SVG, Text, Link)
-- 🔗 Sharing mind map
 - ✍️ Editing mind map
 - 📋 Generation history
 - 🔍 Zoom and panning
@@ -46,19 +46,19 @@
 
 ## Why use Mind Map Wizard?
 
-- **✅ No Sign Up:** Begin creating mind maps right away. No account needed.
 - **✅ Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
 - **✅ Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
+- **✅ BYOK:** Use your own API key for enhanced privacy and control over your mind map generation. Supports both OpenAI and local AI providers.
 
 ## How It Works
 1. **Enter Your Topic:** Just type any topic you'd like to explore in the input field.
 2. **AI Processing:** Our AI will examine your topic and create a comprehensive mind map.
-3. **Share Your Mind Map:** Quickly view, edit, and share your beautifully crafted mind map in just seconds.
+3. **View Your Mind Map:** Quickly view, edit, and download your beautifully crafted mind map in just seconds.
 
 ## Roadmap
 
 - [x] Done - Editing Mind Maps
-- [x] Done - Sharing Mind Maps
+
 - [x] Done - Downloading Mind Maps
 - [x] Done - Renaming Mind Maps
 - [x] Done - Inline code support for Mind Maps
@@ -73,16 +73,12 @@ Creating a mind map involves a few simple steps. Here’s how it works:
    You start by entering a topic or subject that you want to explore in your mind map.
 
 2. **Sending to AI Provider:**  
-   Once you submit your topic, it gets sent off to the ChatGPT API.
+   Once you submit your topic, it gets sent off to the  AI API.
 
 3. **LLM Processes Request:**  
    The AI takes a moment to analyze your topic and comes up with a structured outline that captures the key ideas.
-
-4. **Formatting the AI-Generated Markdown:**  
-    The AI's output is then formatted into Markdown, which simplifies the definition of the mind map's branch hierarchy.
-5. **Render as SVG:**
+4. **Render as SVG:**
    Finally, the Markdown is transformed into an SVG (Scalable Vector Graphics) format using [markmap.js](https://github.com/markmap/markmap), giving you a visually appealing mind map.
-
 
 ## System Prompt
 ```
@@ -282,6 +278,113 @@ There are also formatting options available for the texts in mind map branches.
       </td>
       <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
         This renders an image.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Keyboard Shortcuts
+
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          text-align: left;
+          background-color: #f2f2f2;
+          width: 300px;
+        "
+      >
+        Shortcut
+      </th>
+      <th
+        style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;"
+      >
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          font-family: monospace;
+          background-color: #f9f9f9;
+        "
+      >
+        <kbd>K</kbd>
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        Search through all generated mind maps
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          font-family: monospace;
+          background-color: #f9f9f9;
+        "
+      >
+        <kbd>E</kbd>
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        Toggle edit mode for the current mind map
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          font-family: monospace;
+          background-color: #f9f9f9;
+        "
+      >
+        <kbd>D</kbd>
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        Download the current mind map
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          font-family: monospace;
+          background-color: #f9f9f9;
+        "
+      >
+        <kbd>G</kbd>
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        Regenerate the current mind map with AI
+      </td>
+    </tr>
+    <tr>
+      <td
+        style="
+          padding: 8px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          font-family: monospace;
+          background-color: #f9f9f9;
+        "
+      >
+        <kbd>F</kbd>
+      </td>
+      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
+        Fit mind map to screen
       </td>
     </tr>
   </tbody>
