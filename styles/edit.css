@@ -3,7 +3,7 @@
     --secondary-color: #9D34D4;
     --background-color: #F5F5F7;
     --text-color: #1e293b;
-    --border-color: #e2e8f0;
+    --light-grey: #e2e8f0;
     --error-color: #dc2626;
 }
 
@@ -20,7 +20,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     min-height: 100vh;
     overflow: hidden;
     text-align: center;
@@ -48,19 +48,17 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
-    background-color: var(--background-color);
     width: 30%;
 }
 
-@media (max-width: 1080px) {
-    .logo-text {
-        display: none !important;
-    }
+
+p {
+    line-height: 1.5;
 }
 
 .navbutton {
     background-color: var(--primary-color);
-    padding: 6px 14px;
+    padding: 6px 16px;
     font-size: 1.1rem;
     border: 2px solid var(--primary-color);
     border-radius: 40px;
@@ -82,11 +80,7 @@ body {
     margin-right: 5px;
     display: flex;
     align-items: center;
-}
-
-.nav-links img {
-    position: relative;
-    top: 5px;
+    gap: 10px;
 }
 
 .nav-links a {
@@ -96,23 +90,23 @@ body {
     text-decoration: none;
     color: var(--text-color);
     font-weight: 500;
-    transition: all 0.1s ease;
-    border-radius: 10px;
-    padding: 2px 15px 10px;
+    transition: all 0.3s ease;
+    border-radius: 40px;
+    padding: 2px 5px;
     background-color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem; 
 }
 
-@media (max-width: 770px) {
-    .nav-links a {
-        background-color: var(--background-color);
-    }
-
+.nav-links a svg {
+    vertical-align: middle;
 }
+
 .nav-links a:hover {
-    background-color: #F5F5F7;
-    border-radius: 10px;
-    padding: 2px 15px 10px;
+    opacity: 0.6;
 }
+
 
 .toolbar {
     display: flex;
@@ -124,7 +118,7 @@ body {
     background-color: #fff;
     border-radius: 12px;
     position: absolute;
-    left: 34.5%;
+    left: 35.5%;
     margin-top: -15px;
     z-index: 1000;
 }
@@ -143,7 +137,7 @@ body {
     font-size: 1.2rem;
     background-color: #ffffff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
-    transition: all 0.1s ease;
+    transition: all 0.3s ease;
     border: none;
     position: relative;
     top: auto;
@@ -187,7 +181,9 @@ body {
     position: relative;
     top: auto;
     z-index: auto;
+    display: none;
 }
+
 
 .new-button:hover,
 .save-button:hover,
@@ -208,6 +204,8 @@ body {
     max-width: 400px;
     z-index: 1100;
     text-align: left;
+    animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
 }
 
 .share-dialog h3 {
@@ -288,11 +286,6 @@ body {
     position: relative;
 }
 
-@media (max-width: 500px) {
-    .logo-text {
-        display: none !important;
-    }
-}
 
 .container {
     display: flex;
@@ -313,34 +306,28 @@ body {
         display: flex;
         flex-direction: column;
         height: calc(100vh - 80px);
-        margin-top: 80px;
+        margin-top: 0px;
         overflow: hidden;
         padding: 0;
     }
 
     .mindmap-section {
         order: 1;
-        height: 80vh !important;
+        height: 100% !important;
         width: 100%;
         overflow: hidden;
         padding: 0;
         margin: 0;
     }
 
-    .markmap {
-        height: 100% !important;
-        width: 100%;
-    }
-
     .input-section {
         order: 2;
-        height: 70vh !important;
+        height: 100vh !important;
         width: 100%;
         padding: 10px;
         box-sizing: border-box;
         position: relative;
         background-color: var(--background-color);
-        border-top: 1px solid var(--border-color);
     }
 
     #markdown-input {
@@ -351,6 +338,7 @@ body {
         padding: 15px;
         font-size: 16px;
         border-radius: 12px;
+        margin-top: -10px !important;
     }
 
     .toolbar {
@@ -368,8 +356,7 @@ body {
         top: 0;
         left: 0;
         width: 100%;
-        background-color: var(--background-color);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background-color: #fff;
         z-index: 1000;
         padding: 10px;
         box-sizing: border-box;
@@ -385,9 +372,8 @@ body {
     }
 
     .nav-links a {
-        padding: 2px 10px 10px;
+        padding: 2px 5px 10px;
         margin-right: 5px;
-        font-size: 1.2rem;
     }
 
     .navbutton {
@@ -431,6 +417,7 @@ body {
         font-size: 14px;
     }
 
+
     @supports (-webkit-touch-callout: none) {
         .container {
             height: -webkit-fill-available;
@@ -446,6 +433,7 @@ body {
 @media (max-width: 480px) {
     .header {
         padding: 8px;
+        box-shadow: none;
     }
 
     .header-left h1 {
@@ -458,19 +446,21 @@ body {
         width: 30px;
     }
 
-    .nav-links {
-        margin-right: 2px;
-    }
 
     .nav-links a {
-        padding: 2px 8px 8px;
-        margin-right: 2px;
-        font-size: 0.8rem;
+        padding: 2px 8px 5px;
+        margin-right: 8px;
+        font-size: 1rem;
+    }
+
+    .nav-links a svg {
+        display: none !important;
     }
 
     .navbutton {
-        padding: 4px 8px;
-        font-size: 0.8rem;
+        padding: 6px 12px;
+        font-size: 1rem;
+        margin-left: 10px;
     }
 
     .toolbar button {
@@ -498,11 +488,6 @@ body {
     .input-section {
         max-width: 100%;
         padding: 20px 10px;
-    }
-}
-@media (max-width: 650px) {
-    .logo-text {
-        display: none;
     }
 }
 
@@ -540,7 +525,7 @@ body {
     flex: 1;
     position: relative;
     border: none;
-    border-radius: 4px;
+    border-radius: 0px;
     margin-top: 10px;
     width: 100%;
     height: 80vw;
@@ -549,7 +534,17 @@ body {
 
 .markmap > svg {
     width: 100%;
-    height: 80vw !important;
+    height: 100vh;
+    font-family: 350 16px/20px BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;;
+    font-weight: 350;
+}
+
+.markmap > svg > g > g > line {
+  stroke-linecap: round;
+}
+
+.markmap-foreign pre > code, .markmap-foreign code {
+    border-radius: 8px;
 }
 
 h1 {
@@ -567,6 +562,7 @@ h1 {
     justify-content: center;
     align-items: center;
     z-index: 1100;
+    
 }
 
 .popup-content {
@@ -580,7 +576,20 @@ h1 {
     line-height: 1.5;
     flex-direction: column;
     align-items: space-between;
+    animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
 
 .accept-terms-button,
 .decline-terms-button {
@@ -599,7 +608,7 @@ h1 {
 }
 
 .decline-terms-button {
-    background-color: var(--border-color);
+    background-color: var(--light-grey);
     color: black;
     border: none;
 }
@@ -637,7 +646,7 @@ h1 {
     border: none;
     cursor: pointer;
     position: fixed;
-    right: 53px;
+    right: 17px;
     bottom: 17px;
     align-items: center;
     justify-content: center;
@@ -690,7 +699,7 @@ h1 {
     color: var(--text-color);
     text-decoration: none;
     padding: 8px 15px;
-    border-radius: 8px;
+    border-radius: 12px;
     transition: background-color 0.3s ease;
     white-space: nowrap;
 }
@@ -700,8 +709,8 @@ h1 {
 }
 .markdown-badge {
     position: fixed;
-    bottom: 5px;
-    left: 25px;
+    bottom: 8px;
+    left: 20px;
     display: flex;
     align-items: center;
     padding: 2px;
@@ -709,16 +718,10 @@ h1 {
     transition: all 0.3s ease;
     z-index: 1000;
     cursor: pointer;
-    width: 23px;
-    height: 23px;
-    background-color: var(--background-color);
+    color: #1e293b;
+    opacity: 0.6;
 }
 
-@media (max-width: 768px) {
-    .markdown-badge {
-        display: none;
-    }
-}
 
 .notification {
     position: fixed;
@@ -760,4 +763,116 @@ h1 {
     stroke: white;
     position: relative;
     top: 0;
+}
+
+#floating-ad-container {
+    position: fixed;
+    bottom: 60px;
+    right: 15px;
+    width: 520px;
+    max-width: 90%;
+    background-color: #fcfcfc;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.10);
+    z-index: 1000;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(110%); 
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    font-family: sans-serif;
+    display: none;
+}
+
+#floating-ad-container.visible {
+    opacity: 1;
+    transform: translateX(0); 
+}
+
+#ad-content-area {
+    padding: 10px;
+    width: 100%;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ad-close-btn {
+    position: absolute;
+    top: 8px; 
+    right: 8px;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    width: 30px; 
+    height: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 30px; 
+    text-align: center;
+    cursor: default; 
+    opacity: 1;
+    transform: scale(1); 
+    transition: background-color 0.2s ease, color 0.2s ease;
+    z-index: 1002;
+}
+
+ #ad-close-btn:not(:disabled) { 
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 28px; 
+ }
+
+ #ad-close-btn:not(:disabled):hover {
+    background: rgba(0, 0, 0, 0.05);
+ }
+
+ #ad-close-btn:disabled {
+    background: rgb(237, 237, 237);
+    color: var(--text-color);
+ }
+
+ #ad-close-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+ }
+
+#ad-close-btn.visible {
+    opacity: 1;
+    transform: scale(1); 
+}
+
+#ad-timer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001; 
+    transition: opacity 0.5s ease 0.2s; 
+}
+
+ #ad-timer-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+ }
+
+.ad-timer-text {
+    font-size: 13px;
+    color: #555;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+#ad-countdown {
+    font-weight: bold;
+}
+
+.ad-close-svg-icon {
+    position: relative;
+    top: 3.5px;
 }
