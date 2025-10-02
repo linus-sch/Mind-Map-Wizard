@@ -1,5 +1,7 @@
 # License for Mind Map Wizard
 
+Created by Linus Schärli — licensed CC BY‑NC 4.0
+
 This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
 
 **You are free to:**
@@ -11,3 +13,4 @@ This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 Int
 - NonCommercial — You may not use the material for commercial purposes.
 <br>
 For commercial use, please contact us at contact@mindmapwizard.com. We welcome opportunities for collaboration and partnership.
+
