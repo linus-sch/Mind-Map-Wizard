@@ -223,6 +223,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="reasoning-toggle-container" style="margin-top: 12px;">
+                <label for="reasoning-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9em; color: var(--text-color);">
+                    <input type="checkbox" id="reasoning-toggle" style="margin: 0;">
+                    <span>Disable Reasoning</span>
+                </label>
+            </div>
             
             <div
                 style="display: flex; justify-content: center; gap: 10px; margin-top: 18px;">
@@ -452,6 +459,10 @@
         </svg>
         API Key
     </a>
+    <a href="#" onclick="showLicensePopup(); return false;" class="license-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scale-icon lucide-scale" style="margin-right: 8px; flex-shrink: 0;"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+        License
+    </a>
     <a
         href="#"
         onclick="clearHistory(); return false;"
@@ -472,6 +483,45 @@
         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
     </svg>
         Clear History</a>
+</div>
+
+<!-- License Popup -->
+<div id="licensePopup" class="license-popup">
+    <div class="license-popup-content">
+        <div class="popup-header">
+            <h2>License</h2>
+            <button class="close-button" id="closeLicensePopup">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewbox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+        <div class="license-content">
+            <p><em>Created by Linus Schärli — licensed CC BY‑NC 4.0</em></p>
+            <p>This work is licensed under a <strong>Creative Commons Attribution-NonCommercial 4.0 International License</strong>.</p>
+            
+            <h4>You are free to:</h4>
+            <ul>
+                <li><strong>Share</strong> — copy and redistribute the material in any medium or format</li>
+                <li><strong>Adapt</strong> — remix, transform, and build upon the material</li>
+            </ul>
+            
+            <h4>Under the following terms:</h4>
+            <ul>
+                <li><strong>Attribution</strong> — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.</li>
+                <li><strong>NonCommercial</strong> — You may not use the material for commercial purposes.</li>
+            </ul>
+            
+            <p class="license-footer">For commercial use, please contact us at <a href="mailto:contact@mindmapwizard.com">contact@mindmapwizard.com</a>. We welcome opportunities for collaboration and partnership.</p>
+        </div>
+    </div>
 </div>
 
 <!-- Left Sidebar -->
