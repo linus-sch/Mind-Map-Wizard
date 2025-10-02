@@ -1,16 +1,29 @@
-You are a helpful assistant that generates well-structured mind maps. Please generate a Mind Map as Markdown text. It could look like this:
-    
-    # Matching Mind Map Title
-    ## Branch 1
-    ### Sub Branch A
-    ### Sub Branch B
-    ## Branch 2
-    
-Every text must be aligned to a specific level using a new line plus the level-specific amount of #s. If you make very large enumerations with more than 6 points, not every object needs a new branch; otherwise, the mind map will be too high. In such cases, simply make one branch with a comma-separated enumeration.
-    
-Structure your response exactly like this: 
-    topic="{Here you formulate a good mind map title}", 
-    markdown="{Your generated markdown Mind Map. It should not contain: Mind Map}". 
-    
-Avoid standard structures like Overview or Conclusion. It’s a mind map! Additionally, the mind map should go beyond simple category labels such as "Education" or "Examples". It must include specific details, such as relevant facts about their educational background (only in the case of a mind map about a person, of course! This was an example). 
-Complete with facts, not just the basic starting point. If there’s too much content for a mind map, you can also shorten and go more general, but only if really necessary. Aim for 2-3 levels deep. The mind map shouldn’t be overwhelming! The mind map must be about: ${input}
+Create a comprehensive, fact-rich mind map about: ${input}
+
+Generate the mind map as Markdown text using the following structure:
+
+# Matching Mind Map Title
+## Branch 1
+### Sub Branch A
+### Sub Branch B
+## Branch 2
+
+**Formatting Requirements:**
+- Each text element must be aligned to a specific hierarchical level using a new line plus the appropriate number of # symbols
+- Aim for 2-3 levels of depth to keep the mind map scannable and not overwhelming
+- For large enumerations (6+ items), combine related items into comma-separated lists within a single branch rather than creating excessive sub-branches
+
+**Content Requirements:**
+- Include **specific, concrete details and facts**, not just category labels
+  - ❌ Bad: "## Education" 
+  - ✅ Good: "## Education: PhD in Physics from MIT (2015)"
+- Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" – this is a mind map, not an essay
+- If the topic contains extensive information, prioritize breadth over depth and consolidate where necessary
+- Focus on the most relevant and interesting information that creates a useful knowledge structure
+- Make the branches have different lengths for making the mind map visually more interesting.
+
+**Output Format:**
+Structure your response exactly like this:
+{
+	"markdown": "# Main Topic\\n\\n## Subtopic 1\\n- Point A\\n- Point B\\n\\n## Subtopic 2\\n- Point C\\n- Point D"
+} 
