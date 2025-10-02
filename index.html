@@ -3,1647 +3,610 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AI Mind Map Maker | Mind Map Wizard</title>
+        <title>Mind Map Wizard</title>
         <meta
             name="description"
-            content="Create infinite Mind Maps using AI. Totally free! Just type in a topic to create mind maps easily. That’s it! You’ll get your mind map instantly. It’s free and no sign-up needed.">
+            content="AI Mind Maps: Generate mind maps in seconds just by typing in a topic.">
         <meta
             name="keywords"
-            content="mind map, mind mapping, AI, text to mind map, free mind map generator, no sign up">
-        <meta name="theme-color" content="#ffffff">
+            content="mind map, mind mapping, AI, text to mind map, AI mind map generator, no sign up">
         <meta name="language" content="en">
         <meta name="referrer" content="no-referrer-when-downgrade">
 
         <meta property="og:title" content="Mind Map Wizard | Text to Mind Map AI">
         <meta
             property="og:description"
-            content="Create infinite Mind Maps using AI. Totally free! Just type in a topic to create mind maps easily. That’s it! You’ll get your mind map instantly. It’s free and no sign-up needed.">
+            content="AI Mind Maps: Generate mind maps in seconds just by typing in a topic.">
         <meta property="og:image" content="/img/meta-img.jpg">
+        <meta property="og:site_name" content="Mind Map Wizard" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Mind Map Wizard Logo" />
         <meta property="og:type" content="website">
 
         <meta name="twitter:card" content="/img/meta-img.jpg">
         <meta name="twitter:title" content="Mind Map Wizard | Text to Mind Map AI">
         <meta
             name="twitter:description"
-            content="Create infinite Mind Maps using AI. Totally free! Just type in a topic to create mind maps easily. That’s it! You’ll get your mind map instantly. It’s free and no sign-up needed.">
+            content="AI Mind Maps: Generate mind maps in seconds just by typing in a topic.">
         <meta name="twitter:image" content="/img/meta-img.jpg">
 
-        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
-        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
-        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
         <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
         <link rel="apple-touch-icon" href="/img/logo.png">
 
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-title" content="Mind Map Wizard">
 
-        <link rel="canonical" href="https://mindmapwizard.com/" />
+        <link rel="stylesheet" href="/styles/mmw.css">
+        <link rel="stylesheet" href="/styles/new.css">
+        
+        <script src="/scripts/libraries/jspdf.umd.min.js"></script>
+        <script src="/scripts/libraries/jquery-3.7.1.min.js"></script>
 
-        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
-        <link rel="stylesheet" href="/styles/index.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-        <script type="application/ld+json">
-            {
-              "@context": "https://schema.org",
-              "@graph": [
-                {
-                  "@type": "WebSite",
-                  "@id": "https://mindmapwizard.com/#website",
-                  "url": "https://mindmapwizard.com",
-                  "inLanguage": "en"
-                },
-                {
-                  "@type": "CollectionPage",
-                  "@id": "https://mindmapwizard.com/#webpage",
-                  "url": "https://mindmapwizard.com/",
-                  "name": "AI Mind Map Maker | Mind Map Wizard",
-                  "isPartOf": {
-                    "@id": "https://mindmapwizard.com/#website"
-                  },
-                  "inLanguage": "en",
-                  "description": "Create infinite Mind Maps using AI. Totally free! Just type in a topic to create mind maps easily. That’s it! You’ll get your mind map instantly. It’s free and no sign-up needed."
-                }
-              ]
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.16.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
+        <script src="/scripts/mmw.js" defer="defer"></script>
+        <script src="/scripts/new.js" defer="defer"></script>
+        <style>
+            @font-face {
+                font-family: "Open Sans";
+                src: url("/OpenSans-ExtraBold.ttf") format("truetype"),
+                    url("/OpenSans-ExtraBold.ttf") format("ttf");
+                font-weight: 800;
+                font-style: normal;
+                font-display: swap;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
-          </script>
+        </style>
     </head>
-<body>
+    <body>
+        <div class="banner-outage">
+            <div class="outage-banner-content">
+              <div class="banner-text">
+                We’re currently facing some technical issues and are working to resolve them.
+            </div>
+            </div>
+          </div>
+        <div class="menubar" id="menubar"></div>
+        <button
+            id="leftSidebarToggle"
+            class="left-sidebar-toggle navbar-toggle"
+            aria-label="Toggle Left Sidebar">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewbox="0 0 24 24"
+                fill="none"
+                stroke="var(--text-color)"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <path d="M9 3v18"/>
+            </svg>
+        </button>
 
-    <div class="navbar">
-        <div class="text-logo">
-            <a href="/" class="logo-link">
-                <img src="/img/favicon96.png" alt="Logo" class="logo">
-                <h3 class="logo-text">Mind Map Wizard</h3>
-                <div class="logo-badge" id="logo.badge">
-                    <p>Free</p>
-                </div>
-            </a>
-        </div>
-        <div class="nav-links">
-            <a href="https://github.com/linus-sch/Mind-Map-Wizard">GitHub</a>
-            <a href="#whats-a-mind-map">What's a Mind Map?</a>
+        <button id="new-mind-map-button" class="new-mind-map-button" aria-label="Create a New Mind Map">
+            <svg
+                height="18"
+                width="18"
+                viewbox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                    d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                    fill="var(--text-color)"
+                    stroke="var(--text-color)"
+                    stroke-width="0.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+            </svg>
+        </button>
 
-            <a class="navbutton" href="/new.html">Get Started</a>
+        <button
+        id="openSearchPopupBtn"
+        class="search-mind-maps-button"
+        title="Search Mind Maps"
+        aria-label="Search for Mind Maps"
+        >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-color)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+        </svg>
+        </button>
+
+        <div class="navbar">
+
+            <div class="nav-links" id="nav-links">
+            </div>
         </div>
     </div>
+</p>
 
-    <div id="youtubeModal" class="modal">
-        <div class="modal-content">
-            <span class="close">
+<div id="app">
+
+
+
+
+    <div class="loading-animation" id="loading-animation">
+        <div class="analyze">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewbox="0 0 24 24"
+                height="54"
+                width="54">
+                <rect height="45" width="45"></rect>
+                <path
+                    stroke-linecap="round"
+                    stroke-width="1.5"
+                    stroke="var(--primary-color)"
+                    d="M19.25 9.25V5.25C19.25 4.42157 18.5784 3.75 17.75 3.75H6.25C5.42157 3.75 4.75 4.42157 4.75 5.25V18.75C4.75 19.5784 5.42157 20.25 6.25 20.25H12.25"
+                    class="board"></path>
+                <path
+                    d="M9.18748 11.5066C9.12305 11.3324 8.87677 11.3324 8.81234 11.5066L8.49165 12.3732C8.47139 12.428 8.42823 12.4711 8.37348 12.4914L7.50681 12.8121C7.33269 12.8765 7.33269 13.1228 7.50681 13.1872L8.37348 13.5079C8.42823 13.5282 8.47139 13.5714 8.49165 13.6261L8.81234 14.4928C8.87677 14.6669 9.12305 14.6669 9.18748 14.4928L9.50818 13.6261C9.52844 13.5714 9.5716 13.5282 9.62634 13.5079L10.493 13.1872C10.6671 13.1228 10.6671 12.8765 10.493 12.8121L9.62634 12.4914C9.5716 12.4711 9.52844 12.428 9.50818 12.3732L9.18748 11.5066Z"
+                    class="star-2"></path>
+                <path
+                    d="M11.7345 6.63394C11.654 6.41629 11.3461 6.41629 11.2656 6.63394L10.8647 7.71728C10.8394 7.78571 10.7855 7.83966 10.717 7.86498L9.6337 8.26585C9.41605 8.34639 9.41605 8.65424 9.6337 8.73478L10.717 9.13565C10.7855 9.16097 10.8394 9.21493 10.8647 9.28335L11.2656 10.3667C11.3461 10.5843 11.654 10.5843 11.7345 10.3667L12.1354 9.28335C12.1607 9.21493 12.2147 9.16097 12.2831 9.13565L13.3664 8.73478C13.5841 8.65424 13.5841 8.34639 13.3664 8.26585L12.2831 7.86498C12.2147 7.83966 12.1607 7.78571 12.1354 7.71728L11.7345 6.63394Z"
+                    class="star-1"></path>
+                <path
+                    class="stick"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    stroke="var(--secondary-color)"
+                    d="M17 14L21.2929 18.2929C21.6834 18.6834 21.6834 19.3166 21.2929 19.7071L20.7071 20.2929C20.3166 20.6834 19.6834 20.6834 19.2929 20.2929L15 16M17 14L15.7071 12.7071C15.3166 12.3166 14.6834 12.3166 14.2929 12.7071L13.7071 13.2929C13.3166 13.6834 13.3166 14.3166 13.7071 14.7071L15 16M17 14L15 16"></path>
+            </svg>
+        </div>
+        <br>
+        <small>Generating Mind Map...</small>
+    </div>
+
+    <div class="centered-div">
+
+        <div class="header" id="header">
+            <div class="whitespace" style="height: 100px;"></div>
+            <h1 id="randomText"></h1>
+            <div class="input-wrapper">
+                <input
+                    type="text"
+                    name="text"
+                    class="input"
+                    id="prompt"
+                    placeholder="Visualize anything..."/>
+                <button id="generate-mindmap-btn" class="send-prompt-btn" aria-label="Generate Mind Map">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#FFFFFF"><path d="M166.67-179.67Q150-173 135-182.5T120-210v-193.33L428-480l-308-78v-192q0-18 15-27.5t31.67-2.83l640 269.33Q827-502 827-480t-20.33 31l-640 269.33Z"/></svg>
+                </button>
+            </div>
+
+            <div class="model-selector-container" style="margin-top: 6px;">
+                <div class="model-dropdown-wrapper">
+                    <button type="button" id="model-dropdown-btn" class="model-dropdown-btn">
+                        <span id="current-model-name"></span>
+                        <svg id="dropdown-arrow" class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+
+                    <div id="model-dropdown" class="model-dropdown">
+                        <div class="model-search-container">
+                            <svg class="model-search-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                            <input type="text" id="model-search" placeholder="Search models..." class="model-search-input">
+                        </div>
+                        <div id="model-options" class="model-options">
+                            <div class="model-loading" id="model-loading">
+                                <div class="model-loading-spinner"></div>
+                                <span>Loading models...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div
+                style="display: flex; justify-content: center; gap: 10px; margin-top: 18px;">
+                <a href="/edit.html?id=new" class="manual-btn">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="manual-icon">
+                            <path
+                            d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/>
+                            <path d="m8 6 2-2"/>
+                            <path d="m18 16 2-2"/>
+                            <path
+                            d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/>
+                            <g class="rotatable-group" fill="var(--white)">
+                                    <path
+                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                                    <path d="m15 5 4 4"/>
+                            </g>
+                  </svg>
+                    Manual
+                </a>
+            </div>
+
+
+
+            
+            <div class="outage-notification" style="display: none;">
+                <p style="margin-top: 20px;">The generation of new mind maps with AI is currently not available. However, you can...</p>
+                <div class="page-links">
+                    <a href="/edit.html?id=new">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewbox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="manual-icon"><path
+                        d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2-2"/><path d="m18 16 2-2"/><path
+                        d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/><path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                        Create Manually</a>
+                </div>
+            </div>
+
+        </div>
+
+        <small class="legals-disclaimer" id="legals-disclaimer">Enter your OpenRouter API key above to start generating mind maps.</small>
+
+        <div id="youtube-popup" class="youtube-popup">
+            <div class="youtube-popup-content">
+                <div class="youtube-popup-header">
+                    <h2>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            x="0px"
+                            y="0px"
+                            width="34"
+                            height="34"
+                            viewbox="0 0 48 48"
+                            class="title-youtube-icon"
+                            style="vertical-align: middle; margin-bottom: 5px;  margin-right: 6px;">
+                            <path
+                                fill="#FF3D00"
+                                d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
+                            <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
+                        </svg>
+                        YouTube Video URL
+                    </h2>
+                    <button class="youtube-close-button" id="close-youtube-popup">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewbox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                </div>
+                <p class="youtube-description">Enter a YouTube video URL to generate a mind map from its content.</p>
+                <div class="youtube-input-wrapper">
+                    <input
+                        type="text"
+                        id="youtube-url"
+                        placeholder="https://www.youtube.com/watch..."
+                        class="youtube-input">
+                    <button id="youtube-generate-btn" class="youtube-send-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#FFFFFF"><path d="M166.67-179.67Q150-173 135-182.5T120-210v-193.33L428-480l-308-78v-192q0-18 15-27.5t31.67-2.83l640 269.33Q827-502 827-480t-20.33 31l-640 269.33Z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mindmap"></div>
+<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information</small>
+
+<div
+    id="download-options-popup"
+    class="download-options-popup"
+    style="padding: 0px;">
+    <div class="download-options-popup-content">
+        <div class="popup-header">
+            <h2>Download Mind Map</h2>
+            <button class="close-button" id="close-download-options-popup">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
                     viewbox="0 0 24 24"
                     fill="none"
-                    stroke="currentColor"
+                    stroke="var(--tex-color)"
                     stroke-width="2"
                     stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-
-            </span>
-            <h2>
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="34"
-                    height="34"
-                    viewbox="0 0 48 48"
-                    class="title-youtube-icon"
-                    style="vertical-align: middle; margin-bottom: 5px;  margin-right: 6px;">
-                    <path
-                        fill="#FF3130"
-                        d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
-                    <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
-                </svg>
-                Enter YouTube Video URL</h2>
-            <p>Paste a YouTube video URL to generate a mind map from its content.</p>
-            <div class="youtube-input-wrapper">
-                <input
-                    type="text"
-                    id="youtubeUrl"
-                    class="input"
-                    placeholder="https://www.youtube.com/watch..."
-                    style="--placeholder-color: #1e293b;">
-                <button id="generateFromYoutube" class="send-prompt-btn">
-                    <img
-                        src="/img/icons/send-icon.png"
-                        alt="Generate"
-                        height="26px"
-                        width="26px"
-                        class="send-icon">
-                </button>
+                    stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+        <div class="download-options">
+            <div class="format-selector">
+                <label for="download-format">File format</label>
+                <select id="download-format" class="material-dropdown">
+                    <option value="jpg">JPG - Image</option>
+                    <option value="svg">SVG - Vector Graphics</option>
+                    <option value="pdf">PDF - Document</option>
+                    <option value="markdown">Markdown - Text</option>
+                </select>
             </div>
-            <small class="youtube-link">
-                <a
-                    href="https://youtube.com"
-                    target="_blank"
-                    style="color: var(--text-color) !important; text-decoration: none !important;">
-                    Open YouTube</a>
-            </small>
-            <div id="youtubeError" class="error-message"></div>
+            <button class="download-button primary" id="download-btn">
+                Download
+            </button>
         </div>
     </div>
-
-    <div class="container">
-        <div class="centered-div">
-            <div class="header" id="header">
-                <div class="header-badge">
-                    <a style="color: #1e293b; text-decoration: none;">
-                        <p>Free & Open Source
-                        </a>
-                    </p>
-                </div>
-                <h1>Generate a Mind Map with AI</h1>
-                <p class="topic-input-cta">Type a topic for your mind map!</p>
-                <div class="input-wrapper">
-                    <input
-                        type="text"
-                        name="prompt"
-                        id="prompt"
-                        class="input"
-                        placeholder="Enter your mind map topic..."/>
-                    <button onclick="generateMindmap('mindmapTopic')" class="send-prompt-btn">
-                        <img
-                            src="/img/icons/send-icon.png"
-                            alt="Generate"
-                            height="26px"
-                            width="26px"
-                            class="send-icon">
-                    </button>
-                </div>
-                <div
-                    style="display: flex; justify-content: center; gap: 10px; margin-top: 18px;">
-                    <button
-                        id="youtube-btn"
-                        class="youtube-button"
-                        data-tooltip="Not available at the moment">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            x="0px"
-                            y="0px"
-                            width="24"
-                            height="24"
-                            viewbox="0 0 48 48"
-                            class="youtube-icon">
-                            <path
-                                fill="#FF3D00"
-                                d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
-                            <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
-                        </svg>
-                        YouTube
-                    </button>
-                    <a href="/edit.html?id=new" class="manual-btn">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewbox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="manual-icon"><path
-                            d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2-2"/><path d="m18 16 2-2"/><path
-                            d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/><path
-                            d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                        <span class="manual-text">Create Manually</span>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
 </div>
 
-</div>
-</div>
-
-<div class="process-section">
-<h2 class="section-title">How It Works</h2>
-<div class="process-boxes">
-<div class="process-box">
-    <img src="/img/p1-enter-topic.webp" alt="Topic Input Box" class="process-img">
-    <div class="process-title">
-        <span class="process-number">1</span>
-        <h3>Enter Your Topic</h3>
-    </div>
-    <p>Just type any topic you'd like to explore in the input field.</p>
-</div>
-
-<div class="process-box">
-    <img
-        src="/img/p2-gen-mind-map.webp"
-        alt="AI Generation Bot"
-        class="process-img">
-    <div class="process-title">
-        <span class="process-number">2</span>
-        <h3>AI Processing</h3>
-    </div>
-    <p>Our AI will examine your topic and create a comprehensive mind map.</p>
-</div>
-<div class="process-box">
-    <img
-        src="/img/p3-edit-mind-map.webp"
-        alt="Mind Map Editing Screenshot"
-        class="process-img">
-    <div class="process-title">
-        <span class="process-number">3</span>
-        <h3>Share Your Mind Map</h3>
-    </div>
-    <p>Quickly view, edit, and share your beautifully crafted mind map in just seconds.</p>
-</div>
-</div>
-<div style="height: 50px;"></div>
-
-</div>
-
-<div class="pricing-section">
-<h2 class="section-title">Choose a plan</h2>
-<div class="pack-container">
-<div class="pricing-header">
-    <p class="title">
-        Completely Free
-    </p>
-    <div class="price-container">
-        <span>$</span>0
-        <span>/mo</span>
-    </div>
-</div>
-<div>
-    <ul class="lists">
-        <li class="list">
-            <span>
-                <svg
-                    aria-hidden="true"
-                    stroke="#1e293b"
-                    stroke-width="2"
-                    viewbox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                </svg>
-            </span>
-            <p>
-                Unlimited mind maps
-            </p>
-        </li>
-        <li class="list">
-            <span>
-                <svg
-                    aria-hidden="true"
-                    stroke="#1e293b"
-                    stroke-width="2"
-                    viewbox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                </svg>
-            </span>
-            <p>
-                Youtube video mind maps
-            </p>
-        </li>
-        <li class="list">
-            <span>
-                <svg
-                    aria-hidden="true"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewbox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                </svg>
-            </span>
-            <p>
-                No account needed
-            </p>
-        </li>
-        <li class="list">
-            <span>
-                <svg
-                    aria-hidden="true"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewbox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                </svg>
-            </span>
-            <p>
-                Share mind maps
-            </p>
-        </li>
-    </ul>
-</div>
-<div class="button-container">
-    <a href="/new.html">
-        Get Started!
-    </a>
-</div>
-</div>
-<div class="whitespace"></div>
-<div class="whitespace"></div>
-
-</div>
-
-<div class="examples-section">
-<h2 class="section-title">Mind Map Examples</h2>
-<div class="examples-container" id="examplesContainer"></div>
-<div class="whitespace" style="height: 30px;"></div>
-<div class="whitespace" style="height: 30px;"></div>
-</div>
-
-<div class="youtube-feature-section" style="display: none;">
-<div class="youtube-feature-content">
-<div class="youtube-feature-text  fade-in-section">
-
-    <h2>
+<div class="button-container" id="button-container">
+    <button class="edit-mode-button" id="edit-mode-button" title="Edit (E)">
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            x="0px"
-            y="0px"
-            width="45"
-            height="45"
-            viewbox="0 0 48 48"
-            class="title-youtube-icon"
-            style="vertical-align: middle; margin-bottom: 5px;  margin-right: 6px;">
+            viewbox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-color)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="M12 20h9"/><path
+            d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>
+    </button>
+    <button
+        class="download-mindmap-btn"
+        id="download-mindmap-btn"
+        title="Download (D)">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewbox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-color)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+    </button>
+    <button class="regenerate-button" id="regenerate-button" title="Regenerate (R)">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewbox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-color)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    </button>
+    <button class="fit-button" id="mm-fit" title="Fit to Screen (F)">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewbox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-color)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
+    </button>
+</div>
+
+<div class="editor-overlay" id="editor-overlay"></div>
+<div class="markdown-editor" id="markdown-editor">
+    <textarea id="markdown-textarea" spellcheck="false"></textarea>
+    <div class="editor-buttons">
+        <a
+            href="https://mindmapwizard.com/help/mind-map-editing.html"
+            class="help-button"
+            target="_blank"
+            style="position: fixed; left: 24px; width: 20px; height: 20px;; color: var(--text-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold;">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewbox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </a>
+        <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
+        <button class="editor-button save-button" id="save-edit">Save</button>
+    </div>
+</div>
+
+<div class="info-button">
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings2-icon lucide-settings-2"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+</div>
+<div class="info-menu">
+    <a href="#" onclick="showApiKeyManagement(); return false;" class="api-key-manage-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;position: relative;">
+<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>
+        </svg>
+        API Key
+    </a>
+    <a
+        href="#"
+        onclick="clearHistory(); return false;"
+        class="clear-history-button">
+        <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="-5 -5 34 34"
+        fill="none"
+        stroke="crimson"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="delete-icon">
+        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        <path d="M3 6h18"/>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+    </svg>
+        Clear History</a>
+</div>
+
+<!-- Left Sidebar -->
+<div id="leftSidebar" class="left-sidebar">
+    <div class="left-sidebar-header"></div>
+    <div class="left-sidebar-content">
+        <div id="leftSidebarMindmapList" class="sidebar-mindmap-list">
+            <!-- Mind map items will be loaded here -->
+        </div>
+    </div>
+</div>
+
+
+
+<div id="ratingPopup">
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 500;">Rate us!</h3>
+    <form id="ratingForm">
+        <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5">
+            <label for="star5"></label>
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4"></label>
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3"></label>
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2"></label>
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1"></label>
+        </div>
+        <input type="hidden" name="source" value="Mind Map Wizard - Rate us!">
+    </form>
+</div>
+
+<div class="search-mindmaps-popup-overlay" id="searchMindmapsPopupOverlay">
+  <div class="search-mindmaps-popup" id="searchMindmapsPopup">
+    <div class="popup-header">
+      <h3>Search Mind Maps</h3>
+      <button class="popup-close" id="closeSearchPopupBtn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="popup-content">
+      <div class="search-input-container">
+        <input
+          type="text"
+          id="popupMindmapSearchInput"
+          placeholder="Search by topic..."
+          autocomplete="off"
+        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="search-icon"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+      </div>
+      <div class="search-results-list" id="searchResultsList">
+        <!-- Search results will be loaded here -->
+        <div class="no-results-message">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="opacity: 0.5; margin-bottom: 10px"
+          >
             <path
-                fill="#FF3130"
-                d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
-            <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
-        </svg>
-        YouTube Video to Mind Map</h2>
-    <p>Transform any YouTube video into a comprehensive mind map with a single click.</p>
-
-    <p class="youtube-feature-description">Don't want to watch a whole 2-hour video?
-        <br>Simply paste the YouTube link into Mind Map Wizard and get a comprehensive,
-            hierarchically organized mind map in seconds. Extract all key concepts without
-            spending hours watching the entire content - perfect for studying, research, and
-            quick knowledge acquisition.</p>
-
-    <a href="#" class="youtube-feature-button" id="tryYoutubeFeature">
-        Try YouTube Mind Maps
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-    </a>
-</div>
-<div class="youtube-feature-image  fade-in-section">
-    <video
-        class="youtube-demo-video"
-        autoplay="autoplay"
-        loop="loop"
-        muted="muted"
-        playsinline="playsinline"
-        loading="lazy"
-        preload="none">
-        <source src="/img/screenshots/youtube-mind-maps-animation.mp4" type="video/mp4">
-        Error loading video: Your browser does not support the video tag.
-    </video>
-</div>
-</div>
-</div>
-
-<div class="categories-bar">
-<div class="categories-container" id="categoriesContainer">
-<!-- Categories will be inserted here by JavaScript -->
-</div>
-</div>
-<div class="pink-section">
-
-<h2 class="section-title">Why Choose Mind Map Wizard?</h2>
-<div class="features-grid">
-<div class="feature-item fade-in-section">
-    <span class="feature-icon">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-wallet"><path
-            d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
-    </span>
-    <h3>100% Free</h3>
-    <p>No hidden costs or premium features. Everything is completely free.</p>
-</div>
-<div class="feature-item fade-in-section">
-    <span class="feature-icon">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-rocket"><path
-            d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path
-            d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-    </span>
-    <h3>No Sign Up</h3>
-    <p>Begin creating mind maps right away. No account needed.</p>
-</div>
-<div class="feature-item fade-in-section">
-    <span class="feature-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-panel-left-icon lucide-layout-panel-left"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg>
-    </span>
-    <h3>Simple</h3>
-    <p>Enjoy a clean, distraction-free interface.</p>
-</div>
-<div class="whitespace" style="height: 30px;"></div>
-<div class="whitespace" id="whats-a-mind-map" style="height: 30px;"></div>
-</div>
-</div>
-
-<div class="white-section">
-<div class="what-is-mindmap-container">
-<div class="what-is-mindmap-text">
-    <h2 class="section-title">What's a Mind Map?</h2>
-    <p>Mind maps are visual diagrams that help you structure and connect
-        information. They start from a central topic and branch out into related
-        concepts, making it easy to organize your thoughts and research.
-        <br>
-        <br>
-        Mind Map Wizard is a AI mind mapping tool that lets you create mind maps about
-        any topic in seconds and get an overview about really everything.
-    </p>
-    <a href="/new.html" class="make-mindmap-button">Create Mind Map</a>
-</div>
-<div class="what-is-mindmap-image">
-    <img
-        src="/img/screenshots/example-mind-map.svg"
-        alt="A very simple example of a mind map about its inventor, Tony Buzan."
-        class="mindmap-example-img"
-        loading="lazy">
-</div>
-</div>
-</div>
-</div>
-
-</div>
-
-<div class="reviews-section">
-<h2 class="section-title">What Our Users Say</h2>
-
-    <!-- Original static grid for mobile -->
-    <div class="reviews-grid">
-        <div class="review-card fade-in-section">
-            <div class="review-header">
-                <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                <div class="review-meta">
-                    <span class="review-username">alina_3339</span>
-                </div>
-            </div>
-            <p class="review-text">This is awesome! If we ever need to talk about something
-            we're not familiar with, this tool gives us useful pointers and helps steer the
-            conversation in the right direction.</p>
-            <div class="review-platform">
-                <img src="/img/reviews/hacker-news-logo.webp" alt="Hacker News" class="platform-logo">
-            </div>
-        </div>
-        
-        <div class="review-card fade-in-section">
-            <div class="review-header">
-                <img src="/img/reviews/u:ramirous.jpg" alt="User Avatar" class="review-avatar">
-                <div class="review-meta">
-                    <span class="review-username">u/ramirous</span>
-                </div>
-            </div>
-            <p class="review-text">This is fantastic for middle school science classes. I'm
-            a teacher and I just made one for chemistry (stoichiometry) and one for biology
-            (ecology and ecosystems). Great way to summarize key concepts on certain topics.
-            Thank you!</p>
-            <div class="review-platform">
-                <img src="/img/reviews/reddit-logo.jpg" alt="Reddit" class="platform-logo">
-            </div>
-        </div>
-        
-        <div class="review-card fade-in-section review-card-3">
-            <div class="review-header">
-                <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                <div class="review-meta">
-                    <span class="review-username">Anonymous</span>
-                </div>
-            </div>
-            <p class="review-text">I love it. It's free, it helps me as I am unable to pay.
-            I can also edit the map which makes it amazing as it feels like I can make my
-            personal vision board here. Thanks to whoever came up with such ingenious idea.
-            Cherry on top, I don't even need an account</p>
-            <div class="review-platform">
-                <p style="color: #1e293b;">Via Feedback Form</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Carousel for desktop -->
-    <div class="carousel-container">
-        <div class="review-carousel">
-            <!-- Original cards -->
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/nearthound.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">NE Arthound</span>
-                    </div>
-                </div>
-                <p class="review-text">Fabulous!! I tend to have tons of imaginative ideas for all sorts of things but tend to have a hard time organizing, planning, and following through. I think this is a game-changer for me!
-
-                </p>
-                <div class="review-platform">
-                    <img src="/img/reviews/taaft-logo.webp" alt="Taaft Logo" class="platform-logo"><p style="margin-left: 8px; font-size: 22px; font-weight: 800; color: #484848;">TAAFT.com</p>
-                </div>
-            </div>
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/u:ramirous.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">u/ramirous</span>
-                    </div>
-                </div>
-                <p class="review-text">This is fantastic for middle school science classes. I'm
-                a teacher and I just made one for chemistry (stoichiometry) and one for biology
-                (ecology and ecosystems). Great way to summarize key concepts on certain topics.
-                Thank you!</p>
-                <div class="review-platform">
-                    <img src="/img/reviews/reddit-logo.jpg" alt="Reddit" class="platform-logo">
-                </div>
-            </div>
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">Scout Forge</span>
-                    </div>
-                </div>
-                <p class="review-text">Mind Map Wizard is a no-brainer for anyone needing quick, free mind maps without the bloat of premium platforms. If you’re a student drowning in lecture notes or a content creator mapping video scripts, give this tool a spin. Just temper expectations around advanced features, it’s a scalpel, not a Swiss Army knife.
-                </p>
-                <div class="review-platform">
-                    <img src="/img/reviews/scout-forge-logo.png" alt="Scout Forge" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">Anonymous</span>
-                    </div>
-                </div>
-                <p class="review-text">I love it. It's free, it helps me as I am unable to pay.
-                I can also edit the map which makes it amazing as it feels like I can make my
-                personal vision board here. Thanks to whoever came up with such ingenious idea.
-                Cherry on top, I don't even need an account</p>
-                <div class="review-platform">
-                    <p style="color: #1e293b;">Via Feedback Form</p>
-                </div>
-            </div>
-            
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/mdabdulmotin.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">MD ABDUL MOTIN</span>
-                    </div>
-                </div>
-                <p class="review-text">This is the best mind map app in existence, and you cannot argue with me on that.
-                </p>
-                <div class="review-platform">
-                    <img src="/img/reviews/taaft-logo.webp" alt="Taaft Logo" class="platform-logo"><p style="margin-left: 8px; font-size: 22px; font-weight: 800; color: #484848;">TAAFT.com</p>
-                </div>
-            </div>
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">alina_3339</span>
-                    </div>
-                </div>
-                <p class="review-text">This is awesome! If we ever need to talk about something
-                we're not familiar with, this tool gives us useful pointers and helps steer the
-                conversation in the right direction.</p>
-                <div class="review-platform">
-                    <img src="/img/reviews/hacker-news-logo.webp" alt="Hacker News" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">quinnjh</span>
-                    </div>
-                </div>
-                <p class="review-text">This is extremely cool
-
-                </p>
-                <div class="review-platform">
-                    <img src="/img/reviews/reddit-logo.jpg" alt="Reddit" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">Scout Forge</span>
-                    </div>
-                </div>
-                <p class="review-text">the interface is so minimal that even my tech-averse colleague figured it out in minutes.
-                </p>
-                <div class="review-platform">
-                    <img src="/img/reviews/scout-forge-logo.png" alt="Scout Forge" class="platform-logo">
-                </div>
-            </div>
-
-
-            <!-- Clone of the original cards to create the infinite effect -->
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/u:ramirous.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">u/ramirous</span>
-                    </div>
-                </div>
-                <p class="review-text">This is fantastic for middle school science classes. I'm
-                a teacher and I just made one for chemistry (stoichiometry) and one for biology
-                (ecology and ecosystems). Great way to summarize key concepts on certain topics.
-                Thank you!</p>
-                <div class="review-platform">
-                    <img src="/img/reviews/reddit-logo.jpg" alt="Reddit" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">Anonymous</span>
-                    </div>
-                </div>
-                <p class="review-text">I love it. It's free, it helps me as I am unable to pay.
-                I can also edit the map which makes it amazing as it feels like I can make my
-                personal vision board here. Thanks to whoever came up with such ingenious idea.
-                Cherry on top, I don't even need an account</p>
-                <div class="review-platform">
-                    <p style="color: #1e293b;">Via Feedback Form</p>
-                </div>
-            </div>
-            
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">alina_3339</span>
-                    </div>
-                </div>
-                <p class="review-text">This is awesome! If we ever need to talk about something
-                we're not familiar with, this tool gives us useful pointers and helps steer the
-                conversation in the right direction.</p>
-                <div class="review-platform">
-                    <img src="/img/reviews/hacker-news-logo.webp" alt="Hacker News" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">TechExplorer</span>
-                    </div>
-                </div>
-                <p class="review-text">I've tried many mind mapping tools, but this one is truly intuitive! The interface is clean and the features are exactly what I needed for my project planning.</p>
-                <div class="review-platform">
-                    <img src="/img/reviews/hacker-news-logo.webp" alt="Hacker News" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">StudyBuddy</span>
-                    </div>
-                </div>
-                <p class="review-text">Perfect for exam preparation! I created mind maps for all my university subjects and it really helped me understand complex topics better.</p>
-                <div class="review-platform">
-                    <img src="/img/reviews/reddit-logo.jpg" alt="Reddit" class="platform-logo">
-                </div>
-            </div>
-
-            <div class="carousel-card">
-                <div class="review-header">
-                    <img src="/img/reviews/no-picture.jpg" alt="User Avatar" class="review-avatar">
-                    <div class="review-meta">
-                        <span class="review-username">ProjectManager</span>
-                    </div>
-                </div>
-                <p class="review-text">Our team uses this for brainstorming and planning. Being able to collaborate in real-time has improved our workflow so much. A must-have tool!</p>
-                <div class="review-platform">
-                    <p style="color: #1e293b;">Via Feedback Form</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-<div class="reviews-carousel-container fade-in-section">
-        <div class="reviews-carousel"></div>
-            <!-- Review cards will be duplicated here by JS -->
-        </div>
-            <div class="social-proof-container">
-        <div class="ratings-summary fade-in-section">
-            <div class="star-average">
-                <svg class="star" viewbox="0 0 24 24" width="35" height="35">
-                    <path
-                        d="M12 2.5c.3-.6 1.7-.6 2 0l2.2 5c.2.4.6.7 1 .8l5.5.8c.7 0 1 .9.5 1.4l-4.2 3.8c-.3.3-.5.8-.4 1.2l1 5.4c.1.7-.6 1.2-1.2.9l-4.9-2.9c-.4-.2-.9-.2-1.3 0l-4.9 2.9c-.6.3-1.3-.2-1.2-.9l1-5.4c.1-.4-.1-.9-.4-1.2l-4.2-3.8c-.5-.5-.2-1.4.5-1.4l5.5-.8c.4-.1.8-.4 1-.8l2.2-5z"
-                        fill="#ffe65b"
-                        stroke="none"/>
-                </svg>
-                <span class="average-number">4.2</span>
-                <p class="rating-subtext">3.3k Ratings</p>
-            </div>
-        </div>
-        <div class="award-summary fade-in-section">
-            <div class="award-content">
-                <p class="award-text">#3 Trending AI Tool</p>
-                <p class="award-source">TAAFT.com</p>
-            </div>
-        </div>
-    </div>
-    </div>
-
-
-    <div style="height: 40px;"></div>
-
-</div>
-
-<div class="faq-container-centered">
-    <div style="height: 30px;"></div>
-    <h2 class="section-title">Frequently Asked Questions</h2>
-    <div class="accordion">
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">What is Mind Map Wizard?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
+              d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
+            />
+            <path d="M2 10h20" />
           </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Mind Map Wizard is a free, open-source tool that uses AI to generate comprehensive mind maps based on any topic you enter. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">How can Mind Map Wizard be free? There must be a catch.</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Mind Map Wizard is completely free, even though we utilize very powerful AI. We have perfected our process, which allows us to offer our service at no cost. We also do not sell any data! </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">Can I export my mind maps to other apps?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Yes, you can easily export your mind maps in various formats (JPG, PDF, SVG and MD). Just click on the download icon in the top right corner, and you'll be able to select the format you want to export your mind map to. You can then share and use it on other platforms. But you can also send others a link to your mind map, so they can see it. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">Can I share my mind maps?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Yes, you can send others a link to your mind map, so they can see and edit it as they want! </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">What is a mind map used for?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Mind maps visually organize ideas for both personal and professional development. They can be used for setting goals, planning, brainstorming new concepts, or collaborating in teams—making them a versatile tool for home, school, or work. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">Can I put my notes in there and it will organize them?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Yes, you can paste large amounts of text, such as your notes, into the input field, and Mind Map Wizard will organize them into a visual mind map. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">How big is the Context window?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> In summary, you won't hit the limit, as it is sufficiently high for very large essays and documents. </p>
-        </div>
-      </div>
-      <!-- ... existing code ... -->
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">What is the difference between a mind map and an outline?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Both tools organize ideas, but mind maps use visual elements like shapes and colors, while outlines follow a linear text format. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">Do I need to sign up to use Mind Map Wizard?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> No, you do not need to sign up to use Mind Map Wizard. You can start creating mind maps right away. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">How to create a mind map using Mind Map Wizard?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Type in a topic, and the AI will generate a mind map instantly. </p>
-        </div>
-      </div>
-      <div class="accordion-item fade-in-section">
-        <button id="accordion-button-1" aria-expanded="false">
-          <span class="accordion-title">Can I export my mind maps?</span>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="18" viewbox="0 0 6 11">
-            <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
-          </svg>
-        </button>
-        <div class="accordion-content">
-          <p> Yes, you can easily export your mind maps in various formats and share them on other platforms. </p>
+          <h3>Start typing to search</h3>
+          <p>Your mind maps will appear here.</p>
         </div>
       </div>
     </div>
-    <p style="margin-top: 30px;">Still have a question? <a href="mailto:contact@mindmapwizard.com" class="contact-link">Get in touch with us! <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link">
-          <path d="M15 3h6v6" />
-          <path d="M10 14 21 3" />
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-        </svg>
-      </a>
-    </p>
   </div>
 </div>
-<div class="whitespace" style="height: 30px;"></div>
-<div class="whitespace" style="height: 30px;"></div>
-</div>
-<div class="whitespace" style="height: 10px;"></div>
 
-<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is Mind Map Wizard?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Mind Map Wizard is an AI-powered tool that allows you to generate mind maps from text or YouTube videos. It's designed to help you visualize complex information, brainstorm ideas, and organize your thoughts efficiently."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Mind Map Wizard free to use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, Mind Map Wizard is completely free to use. You can generate unlimited mind maps without any cost or subscription."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do I need to sign up to use Mind Map Wizard?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No, you don't need to sign up or create an account. You can start creating mind maps immediately."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I create mind maps from YouTube videos?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, Mind Map Wizard allows you to generate mind maps directly from YouTube video URLs. Simply paste the video link, and the AI will summarize the content into a mind map."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I edit a mind map?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "You can edit your mind maps using the built-in editor. It allows you to add, remove, or modify nodes, change colors, and customize the layout. Check out our editing guide for more details."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I share my mind maps?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, you can easily share your mind maps with others via a unique link or by exporting them in various formats like PNG, SVG, or Markdown."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is there a limit to the number of mind maps I can create?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No, there are no limits. You can create as many mind maps as you need, completely free of charge."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What kind of topics can I use for mind maps?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "You can use any topic you can think of! Whether it's for brainstorming, studying, project planning, or note-taking, Mind Map Wizard can help you visualize it."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does the AI generate mind maps?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Our AI analyzes the topic or content you provide, identifies key concepts and relationships, and then structures this information into a hierarchical mind map format."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is my data safe with Mind Map Wizard?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "We prioritize your privacy. Mind maps are generated and stored securely. For more details, please refer to our Privacy Policy."
-          }
-        }
-      ]
-    }
-    </script> 
-
-    <div class="pink-section">
-        <h2 class="section-title">Try it out!</h2>
-        <p class="white-p">Now you know everything about our service. Give it a try!</p>
-        <!-- From Uiverse.io by SteveBloX -->
-        <a href="/new.html" class="get-started-button">Create Mind Map</a>
-      </div>
-      <div class="roadmap-container">
-        <h2 id="roadmap" style="margin-top: 30px;">Roadmap</h2>
-        <div class="whitespace" style="height: 10px;"></div>
-        <ul class="roadmap-ul fade-in-section">
-          <li class="roadmap-li">
-            <span class="roadmap-item-done">Done</span>Editing Mind Maps
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-done">Done</span>Sharing Mind Maps
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-done">Done</span>Downloading Mind Maps
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-done">Done</span>Renaming Mind Maps
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-done">Done</span>More download options e.g. PNG or PDF
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-done">Done</span>Generate Mind Maps From Youtube Videos
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-soon">Soon</span>Explore further from specific branches
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-soon">Soon</span>Upload files for reference
-          </li>
-          <li class="roadmap-li">
-            <span class="roadmap-item-soon">Soon</span>Multilingual Mind Map Wizard
-          </li>
-        </ul>
-        <div style="height: 15px;"></div>
-        <p class="roadmap-github-link">
-          <a href="https://github.com/linus-sch/Mind-Map-Wizard" style="text-decoration: none; background-color: #F5F5F7; color: var(--primary-color);">Contribute on GitHub <svg xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewbox="0 0 6 11" style="margin-left: 3px;">
-              <polyline points=".675 .925 5.323 5.5 .675 10.075" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1"></polyline>
-            </svg>
-          </a>
-        </p>
-        </ul>
-        <div class="whitespace"></div>
-        <div class="email-updates-container fade-in-section">
-          <form>
-            <div class="email-header">
-              <h2>Updates</h2>
-              <p>Stay up to date. Sign up with your email to receive the latest news and features from us. </p>
-            </div>
-            <div class="email-input-wrapper">
-              <input type="email" name="email" class="email-input" placeholder="Enter your email" required="required">
-              <button type="submit" class="subscribe-button" id="submit">Subscribe</button>
-            </div>
-            <input type="hidden" name="source" value="MMW Updates Email Notification">
-          </form>
+    <div class="keyboard-shortcuts-popup">
+        <h3>Keyboard Shortcuts</h3>
+        
+        <div class="shortcut-item">
+            <span class="key">K</span>
+            <span class="shortcut-description">Search through all generated mind maps</span>
         </div>
-      </div>
-      <div style="display: flex; justify-content: flex-start; align-items: center; gap: 20px; margin: 20px;">
-        <a href="https://theresanaiforthat.com/ai/mind-map-wizard/?ref=featured&v=4662799" target="_blank" rel="nofollow" aria-label="Visit Mind Map Wizard on TAAFT">
-          <img width="300" height="63px" src="/img/featured-on-taaft.webp" class="launch-platform-badge" alt="Featured on TAAFT">
-        </a>
-
-
-        <div class="live-counter fade-in-section">
-          <div class="live-indicator">
-            <div class="live-dot"></div>
-            <span class="label">LIVE</span>
-          </div>
-          <div class="count" id="mindMapCount">0</div>
-          <div class="label">Mind Maps Generated</div>
+        
+        <div class="shortcut-item">
+            <span class="key">E</span>
+            <span class="shortcut-description">Edit the current mind map</span>
         </div>
-      </div>
-
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-top">
-                <div class="footer-logo">
-                    <img src="/img/favicon64.png" alt="Mind Map Wizard Logo">
-                </div>
-                  <div class="footer-icons">
-                      <a href="https://www.youtube.com/@mindmapwizard" target="_blank" class="icon-link" aria-label="Follow us on YouTube">
-                        <svg viewBox="0 0 256 180" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid"><path d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134Z" fill="white"/><path fill="#1E293B" d="m102.421 128.06 66.328-38.418-66.328-38.418z"/></svg>
-                      </a>
-
-                      <a href="https://github.com/linus-sch/Mind-Map-Wizard" target="_blank" class="icon-link" aria-label="Follow us on GitHub">
-                        <svg width="24px" height="24px" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z" transform="scale(64)" fill="#ffff"/></svg>
-                      </a>
-
-                    </div>
-            </div>
-                <div class="footer-links">
-                    <a href="/privacy-policy.html" class="footer-link">Privacy</a>
-                    <a href="/terms-of-use.html" class="footer-link">Terms</a>
-                    <a href="/api/docs.html" class="footer-link">API</a>
-                </div>
-            <div class="footer-middle">
-                <div class="footer-contact">
-                    <p>Linus Schärli</p>
-                    <p class="footer-email"><a href="mailto:linus@mindmapwizard.com">linus@mindmapwizard.com</a></p>
-                </div>
-               
-            </div>
-
-            <div class="footer-bottom">
-                <div class="copyright">© 2025 Mind Map Wizard</div>
-            </div>
+        
+        <div class="shortcut-item">
+            <span class="key">R</span>
+            <span class="shortcut-description">Regenerate the current mind map</span>
         </div>
-    </footer>
+        
+        <div class="shortcut-item">
+            <span class="key">D</span>
+            <span class="shortcut-description">Download the current mind map</span>
+        </div>
+        
+        <div class="shortcut-item">
+            <span class="key">F</span>
+            <span class="shortcut-description">Center the current mind map on screen</span>
+        </div>
+    </div>
+</body>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const youtubeModal = document.getElementById('youtubeModal');
-      const youtubeBtn = document.getElementById('youtube-btn');
-      const closeBtn = document.querySelector('.close');
-      const generateFromYoutubeBtn = document.getElementById('generateFromYoutube');
-      const youtubeUrlInput = document.getElementById('youtubeUrl');
-      const youtubeError = document.getElementById('youtubeError');
-      if (youtubeBtn) {
-        youtubeBtn.addEventListener('click', function() {
-          youtubeModal.style.display = 'block';
-        });
-      }
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-          youtubeModal.style.display = 'none';
-        });
-      }
-      window.addEventListener('click', function(event) {
-        if (event.target === youtubeModal) {
-          youtubeModal.style.display = 'none';
-        }
-      });
-      if (generateFromYoutubeBtn) {
-        generateFromYoutubeBtn.addEventListener('click', function() {
-          const youtubeUrl = youtubeUrlInput.value.trim();
-          if (!youtubeUrl) {
-            youtubeError.textContent = 'Please enter a YouTube URL';
-            youtubeError.style.display = 'block';
-            return;
-          }
-          const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
-          if (!youtubeRegex.test(youtubeUrl)) {
-            youtubeError.textContent = 'Please enter a valid YouTube URL';
-            youtubeError.style.display = 'block';
-            return;
-          }
-          window.location.href = `/new.html?yt-link=${encodeURIComponent(youtubeUrl)}`;
-        });
-      }
-      const tryYoutubeFeatureBtn = document.getElementById('tryYoutubeFeature');
-      if (tryYoutubeFeatureBtn) {
-        tryYoutubeFeatureBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          const youtubeModal = document.getElementById('youtubeModal');
-          if (youtubeModal) {
-            youtubeModal.style.display = 'block';
-          }
-        });
-      }
-    });
-  
-    function generateMindmap() {
-      console.log("generateMindmap called");
-      const query = document.getElementById('prompt').value;
-      console.log("Query value:", query);
-      if (query) {
-        window.location.href = `/new.html?q=${encodeURIComponent(query)}`;
-      } else {
-        console.log("Query is empty or undefined");
-      }
-    }
-    $(document).on('keypress', function(event) {
-      if (event.key === 'Enter') {
-        generateMindmap();
-      }
-    });
-    const items = document.querySelectorAll('.accordion button');
-  
-    function toggleAccordion() {
-      const itemToggle = this.getAttribute('aria-expanded');
-      for (i = 0; i < items.length; i++) {
-        items[i].setAttribute('aria-expanded', 'false');
-      }
-      if (itemToggle == 'false') {
-        this.setAttribute('aria-expanded', 'true');
-      }
-    }
-    items.forEach((item) => item.addEventListener('click', toggleAccordion));
-    window.addEventListener('scroll', function() {
-    
-      const navbar = document.querySelector('.navbar');
-      const logoBadge = document.getElementById('logo.badge');
-      if (window.scrollY > 30) {
-        navbar.classList.add('scrolled');
-        logoBadge.style.display = 'block';
-      } else {
-        navbar.classList.remove('scrolled');
-        logoBadge.style.display = 'none';
-      }
-    });
-    const topics = [{
-      "text": "Solar System and Planets",
-      "color": "#1e293b"
-    }, {
-      "text": "Digital Marketing 101",
-      "color": "#1e293b"
-    }, {
-      "text": "Ancient Egyptian Civilization",
-      "color": "#1e293b"
-    }, {
-      "text": "Artificial Intelligence Basics",
-      "color": "#1e293b"
-    }, {
-      "text": "Nutrition and Wellness",
-      "color": "#1e293b"
-    }, {
-      "text": "What is a GPT?",
-      "color": "#1e293b"
-    }, {
-      "text": "Who was Toni Morrison?",
-      "color": "#1e293b"
-    }, {
-      "text": "The Impact of Climate Change",
-      "color": "#1e293b"
-    }, {
-      "text": "The Art of Storytelling",
-      "color": "#1e293b"
-    }, {
-      "text": "Mindfulness and Meditation",
-      "color": "#1e293b"
-    }, {
-      "text": "The Evolution of Technology",
-      "color": "#1e293b"
-    }, {
-      "text": "Cultural Diversity and Inclusion",
-      "color": "#1e293b"
-    }, {
-      "text": "The Science of Happiness",
-      "color": "#1e293b"
-    }, {
-      "text": "How to learn a new language",
-      "color": "#1e293b"
-    }, {
-      "text": "Time Management Tips",
-      "color": "#1e293b"
-    }, {
-      "text": "Who was Tony Buzan?",
-      "color": "#1e293b"
-    }];
-    const input = document.getElementById('prompt');
-    let currentText = '';
-    let isTyping = true;
-    let lastTopicIndex = -1;
-  
-    function getRandomTopic() {
-      let newIndex;
-      do {
-        newIndex = Math.floor(Math.random() * topics.length);
-      } while (newIndex === lastTopicIndex && topics.length > 1);
-      lastTopicIndex = newIndex;
-      return topics[newIndex];
-    }
-    async function typeText(text) {
-      for (let i = 0; i <= text.length; i++) {
-        currentText = text.slice(0, i);
-        input.placeholder = currentText;
-        await new Promise(resolve => setTimeout(resolve, 50));
-      }
-    }
-    async function eraseText(text) {
-      for (let i = text.length; i >= 0; i--) {
-        currentText = text.slice(0, i);
-        input.placeholder = currentText;
-        await new Promise(resolve => setTimeout(resolve, 30));
-      }
-    }
-    async function animatePlaceholder() {
-      while (true) {
-        const currentTopic = getRandomTopic();
-        input.style.setProperty('--placeholder-color', currentTopic.color);
-        await typeText(currentTopic.text);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await eraseText(currentTopic.text);
-      }
-    }
-    const style = document.createElement('style');
-    style.textContent = `
-      .input::placeholder {
-          color: var(--placeholder-color);
-      }
-  `;
-    document.head.appendChild(style);
-    animatePlaceholder();
-  </script>
-  <script>
-    const form = document.forms[0];
-    const submitButton = document.getElementById('submit');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      submitButton.textContent = 'Sending...';
-      submitButton.disabled = true;
-      const scriptURL = "https://post.mindmapwizard.com";
-      const formData = new FormData(form);
-      fetch(scriptURL, {
-        method: 'POST',
-        body: formData
-      }).then(response => {
-        form.reset();
-        submitButton.textContent = 'Subscribe';
-        submitButton.disabled = false;
-      }).catch(error => {
-        console.error('Error!', error.message);
-        alert("An error occurred. Please try again.");
-        submitButton.textContent = 'Subscribe';
-        submitButton.disabled = false;
-      });
-    });
-    const categories = [{
-      name: 'Science',
-      color: '#2980b9',
-      path: 'M22 9l-10 -4l-10 4l10 4l10 -4v6 M6 10.6v5.4a6 3 0 0 0 12 0v-5.4'
-    }, {
-      name: 'Health',
-      color: '#f24398',
-      path: 'M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572'
-    }, {
-      name: 'Physics',
-      color: '#1abc9c',
-      path: 'M13 10V3L4 14h7v7l9-11h-7z'
-    }, {
-      name: 'Math',
-      color: '#2980b9',
-      path: 'M13 12h1c1 0 1 1 2.016 3.527c.984 2.473 .984 3.473 1.984 3.473h1 M12 19c1.5 0 ' + '3 -2 4 -3.5s2.5 -3.5 4 -3.5 M3 12h1l3 8l3 -16h10'
-    }, {
-      name: 'Music',
-      color: '#e74c3c',
-      path: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm1' + '2-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3'
-    }, {
-      name: 'Economics',
-      color: '#2c3e50',
-      path: 'M4 19l16 0 M4 15l4 -6l4 2l4 -5l4 4'
-    }, {
-      name: 'Psychology',
-      color: '#d35400',
-      path: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707' + '-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 1' + '1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'
-    }, {
-      name: 'Chemistry',
-      color: '#f1c40f',
-      path: 'M20 8.04l-12.122 12.124a2.857 2.857 0 1 1 -4.041 -4.04l12.122 -12.124 M7 13h8 ' + 'M19 15l1.5 1.6a2 2 0 1 1 -3 0l1.5 -1.6z M15 3l6 6'
-    }, {
-      name: 'Literature',
-      color: '#9b59b6',
-      path: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.4' + '77 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747' + ' 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4' + '.5 1.253'
-    }, {
-      name: 'Biology',
-      color: '#2ecc71',
-      path: 'M12 10a6 6 0 0 0 -6 -6h-3v2a6 6 0 0 0 6 6h3 M12 14a6 6 0 0 1 6 -6h3v1a6 6 0 0 ' + '1 -6 6h-3 M12 20l0 -10'
-    }, {
-      name: 'History',
-      color: '#c0392b',
-      path: 'M12 8l0 4l2 2 M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5'
-    }, {
-      name: 'Geography',
-      color: '#16a085',
-      path: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 ' + '0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2' + 'h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-    }, {
-      name: 'Philosophy',
-      color: '#8e44ad',
-      path: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z M9 10h.01M15 10h.01M9.75 15h4.5'
-    }, {
-      name: 'Technology',
-      color: '#2980b9',
-      path: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2' + ' 2 0 00-2 2v10a2 2 0 002 2z'
-    }, {
-      name: 'Sports',
-      color: '#27ae60',
-      path: 'M15 9l-6 6 M10 12l2 2 M12 10l2 2 M8 21a5 5 0 0 0 -5 -5 M16 3c-7.18 0 -13 5.82 ' + '-13 13a5 5 0 0 0 5 5c7.18 0 13 -5.82 13 -13a5 5 0 0 0 -5 -5 M16 3a5 5 0 0 0 5 ' + '5'
-    }, {
-      name: 'Art',
-      color: '#f39c12',
-      path: 'M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4' + '-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34c-.39-.39-1.02-.39-1.41 0L9 12.25 1' + '1.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z'
-    }];
-  
-    function createCategoryBadges() {
-      const container = document.getElementById('categoriesContainer');
-      for (let i = 0; i < 3; i++) {
-        categories.forEach(category => {
-          const badge = document.createElement('div');
-          badge.className = 'category-badge';
-          const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-          icon.setAttribute('viewBox', '0 0 24 24');
-          icon.setAttribute('width', '18');
-          icon.setAttribute('height', '18');
-          icon.style.fill = 'none';
-          icon.style.stroke = category.color;
-          icon.style.strokeWidth = '2';
-          icon.style.strokeLinecap = 'round';
-          icon.style.strokeLinejoin = 'round';
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', category.path);
-          icon.appendChild(path);
-          const iconContainer = document.createElement('div');
-          iconContainer.className = 'category-icon';
-          iconContainer.appendChild(icon);
-          const text = document.createElement('span');
-          text.textContent = category.name;
-          badge.appendChild(iconContainer);
-          badge.appendChild(text);
-          badge.style.borderColor = category.color;
-          const color = category.color;
-          const r = parseInt(color.slice(1, 3), 16);
-          const g = parseInt(color.slice(3, 5), 16);
-          const b = parseInt(color.slice(5, 7), 16);
-          badge.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
-          container.appendChild(badge);
-        });
-      }
-      const containerWidth = container.scrollWidth;
-      const duration = containerWidth / 80;
-      container.style.animation = `scroll ${duration}s linear infinite`;
-    }
-    createCategoryBadges();
-    const apiUrl = "https://stats.mindmapwizard.com/get/mmw/mind-map-generated";
-    let currentValue = 0;
-  
-    function animateValue(element, start, end, duration) {
-      const range = end - start;
-      const increment = range / (duration / 16);
-      let current = start;
-      const animate = () => {
-        current += increment;
-        if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-          element.textContent = Math.round(end).toLocaleString();
-        } else {
-          element.textContent = Math.round(current).toLocaleString();
-          requestAnimationFrame(animate);
-        }
-      };
-      animate();
-    }
-    async function fetchMindMapValue() {
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error("Network response was not ok: " + response.status);
-        }
-        const data = await response.json();
-        const valueElement = document.getElementById("mindMapCount");
-        const newValue = parseInt(data.value);
-        if (currentValue !== newValue) {
-          animateValue(valueElement, currentValue, newValue, 1000);
-          currentValue = newValue;
-        }
-      } catch (error) {
-        console.error("Error fetching the mind map value:", error);
-        document.getElementById("mindMapCount").textContent = "40k";
-      }
-    }
-    fetchMindMapValue();
-    setInterval(fetchMindMapValue, 10000);
-    const examplesData = {
-      "examples": [{
-        "image": "/img/screenshots/travel-planning-checklist.webp",
-        "text": "Travel Planning Checklist",
-        "link": "/view.html?id=1741384121437"
-      }, {
-        "image": "/img/screenshots/time-management-tips.webp",
-        "text": "Time Management Tips",
-        "link": "/view.html?id=1741385937468"
-      }, {
-        "image": "/img/screenshots/sustainable-living-practices.webp",
-        "text": "Sustainable Living Practices",
-        "link": "/view.html?id=1741386386865"
-      }, {
-        "image": "/img/screenshots/learning-a-new-language.webp",
-        "text": "Learning a New Language",
-        "link": "/view.html?id=1741386581337"
-      }]
-    };
-  
-    function createExampleCards() {
-      const container = document.getElementById('examplesContainer');
-      const examples = examplesData.examples;
-      for (let i = 0; i < 3; i++) {
-        examples.forEach(example => {
-          const card = document.createElement('div');
-          card.className = 'example-card';
-          const link = document.createElement('a');
-          link.href = example.link;
-          const img = document.createElement('img');
-          img.src = example.image;
-          img.alt = " A mind map about " + example.text;
-          img.className = 'example-image';
-          const text = document.createElement('div');
-          text.className = 'example-text';
-          text.textContent = example.text;
-          const viewText = document.createElement('div');
-          viewText.className = 'view-text';
-          viewText.textContent = 'View Mind Map';
-          link.appendChild(img);
-          link.appendChild(text);
-          card.appendChild(link);
-          card.appendChild(viewText);
-          container.appendChild(card);
-        });
-      }
-      const containerWidth = container.scrollWidth;
-      const duration = containerWidth / 50;
-      container.style.animation = `scroll ${duration}s linear infinite`;
-    }
-    createExampleCards();
-  </script>
-  <script>
-    const fadeInSections = document.querySelectorAll('.fade-in-section');
-    const fadeInObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    });
-    fadeInSections.forEach(section => {
-      fadeInObserver.observe(section);
-    });
-    window.onload = function() {
-      if (window.location.hostname === 'mind-map-wizard.pages.dev') {
-        window.location.href = 'https://mindmapwizard.com' + window.location.pathname + window.location.search;
-      }
-    };
-    const reviews = [{
-      username: "alina_3339",
-      text: "This is awesome! If we ever need to talk about something we're not familiar with, this tool gives us useful pointers and helps steer the conversation in the right direction."
-    }, {
-      username: "u/ramirous",
-      text: "This is fantastic for middle school science classes. I'm a teacher and I just made one for chemistry (stoichiometry) and one for biology (ecology and ecosystems). Great way to summarize key concepts on certain topics. Thank you!"
-    }, {
-      username: "Anonymous",
-      text: "I love it. It's free, it helps me as I am unable to pay. I can also edit the map which makes it amazing as it feels like I can make my personal vision board here. Thanks to whoever came up with such ingenious idea. Cherry on top, I don't even need an account"
-    }, {
-      username: "TechExplorer42",
-      text: "I've tried many mind mapping tools before, but this one stands out for its intuitive interface and powerful features. It has revolutionized how I organize my thoughts and project plans."
-    }, {
-      username: "StudyBuddy2023",
-      text: "Perfect for exam preparation! I created comprehensive mind maps for all my university subjects and it helped me visualize connections between different concepts. Highly recommend for students."
-    }, {
-      username: "CreativeWriter88",
-      text: "As a novelist, I use this to map out character relationships and plot points. The ability to add links between related ideas has been invaluable for my creative process. Can't imagine writing without it now!"
-    }, {
-      username: "ProjectManager_Pro",
-      text: "Our team uses this for brainstorming sessions and project planning. Being able to collaborate in real-time has improved our workflow efficiency by at least 30%. A must-have tool for remote teams."
-    }, {
-      username: "LifeCoach_Emily",
-      text: "I recommend this tool to all my coaching clients. It's fantastic for setting goals and creating vision boards. The visual nature helps people connect with their aspirations on a deeper level."
-    }, {
-      username: "ResearchDoc",
-      text: "As a researcher, I use this to organize literature reviews and connect related studies. The export options are especially useful when I need to include visualizations in my publications."
-    }];
-    const reviewTrack = document.getElementById('reviewTrack');
-    const cardWidth = 320;
-    const animationSpeed = 2;
-    let position = 0;
-  
-    function createReviewCard(review) {
-      const card = document.createElement('div');
-      card.className = 'review-card';
-      card.innerHTML = `
-                  
-      <div class="review-header">
-          <div class="review-avatar"></div>
-          <div class="review-meta">
-              <span class="review-username">${review.username}</span>
-          </div>
-      </div>
-      <p class="review-text">${review.text}</p>
-      <div class="review-platform">
-          <div class="platform-logo"></div>
-      </div>
-              `;
-      return card;
-    }
-  
-    function initCarousel() {
-      for (let i = 0; i < reviews.length * 2; i++) {
-        reviewTrack.appendChild(createReviewCard(reviews[i % reviews.length]));
-      }
-    }
-  
-    function animateCarousel() {
-      position -= animationSpeed;
-      reviewTrack.style.transform = `translateX(${position}px)`;
-      const firstCard = reviewTrack.firstElementChild;
-      if (firstCard && Math.abs(position) > firstCard.offsetWidth) {
-        reviewTrack.removeChild(firstCard);
-        position += firstCard.offsetWidth;
-        reviewTrack.style.transform = `translateX(${position}px)`;
-        const nextReviewIndex = Math.floor(Math.random() * reviews.length);
-        reviewTrack.appendChild(createReviewCard(reviews[nextReviewIndex]));
-      }
-      requestAnimationFrame(animateCarousel);
-    }
-    initCarousel();
-    requestAnimationFrame(animateCarousel);
-  </script>
-<!-- 100% privacy-first analytics -->
-<script async="async" src="https://scripts.simpleanalyticscdn.com/latest.js"></script></body> </html>
+</body>
+</html>

@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Mind Map Editor - Mind Map Wizard</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+        <title>Mind Map Wizard</title>
         <meta
             name="description"
             content="Mind Map Editor: Create and edit mind maps with our free editor. Free, no sign-up, no ads.">
         <meta
             name="keywords"
             content="mind map editor, mind map editor, edit mind map, free mind map, free mind map editor, no sign up, no ads, make mind map">
+        <meta name="language" content="en">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
         <meta property="og:title" content="Mind Map Wizard | Free Mind Map Editor">
         <meta
             property="og:description"
             content="Create and edit mind maps with our free editor. Free, no sign-up, no ads.">
         <meta property="og:image" content="/img/meta-img.jpg">
-
+        <meta property="og:site_name" content="Mind Map Wizard" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Mind Map Wizard Logo" />
         <meta property="og:type" content="website">
 
         <meta name="twitter:card" content="/img/meta-img.jpg">
@@ -25,19 +30,24 @@
             name="twitter:description"
             content="Create and edit mind maps with our interactive editor. Free, no sign-up, no ads.">
         <meta name="twitter:image" content="/img/meta-img.jpg">
-
-        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
-        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
-        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        
         <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+        <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
         <link rel="apple-touch-icon" href="/img/logo.png">
-        <link href="/OpenSans-ExtraBold.ttf" rel="stylesheet">
 
-        <meta name="theme-color" content="#C667FF">
-        <meta name="language" content="en">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="Mind Map Wizard">
+
+        <link rel="canonical" href="https://mindmapwizard.com/edit" />
+
         <link rel="stylesheet" href="/styles/edit.css">
-        <script src="/sidebar.js" defer></script>
+
+        <link rel="prefetch" href="/history.html">
+
         <style>
             #markdown-editor {
               width: 100%;
@@ -86,51 +96,28 @@
         </style>
     </head>
     <body>
-        <svg fill="none" height="30" viewbox="0 0 208 128" width="30" xmlns="http://www.w3.org/2000/svg" 
-        class="markdown-badge">
-        <g fill="#777777"><path clip-rule="evenodd" d="m15 10c-2.7614 0-5 2.2386-5 5v98c0 2.761 2.2386 5 5 5h178c2.761 0 5-2.239 5-5v-98c0-2.7614-2.239-5-5-5zm-15 5c0-8.28427 6.71573-15 15-15h178c8.284 0 15 6.71573 15 15v98c0 8.284-6.716 15-15 15h-178c-8.28427 0-15-6.716-15-15z" fill-rule="evenodd"/><path d="m30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zm125 0-30-33h20v-35h20v35h20z"/></g>
-    </svg>
-        <div class="info-button">
-            <img src="/img/icons/info-icon.svg" alt="Info" width="22" height="22">
-        </div>
-        <div class="info-menu">
-            <a href="/feedback.html">Feedback</a>
-            <a href="/terms-of-use.html">Terms of Use</a>
-            <a href="/privacy-policy.html">Privacy Policy</a>
-        </div>
-      <div class="share-dialog" style="display: none;">
-        <h3>Share Mind Map</h3>
-        <input type="text" class="share-link" readonly="readonly">
-            <div class="dialog-buttons">
-                <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
-                <button class="dialog-button confirm" onclick="copyShareLink()">Copy link</button>
-            </div>
-        </div>
-        <div class="overlay" onclick="closeShareDialog()"></div>
         <div class="header">
             <div class="header-left">
-                <a href="/" style="text-decoration: none;">
+                <a onclick="openLink('/')" style="text-decoration: none;">
                     <h1>
-                        <img src="/img/favicon96.png" height="40" width="40" class="logo">
+                        <img src="/img/logo.svg" height="35" width="35" class="logo">
                             <span class="logo-text">Mind Map Wizard</span>
                         </h1>
                     </a>
                 </div>
                 <div class="nav-links">
-                    <a href="/history.html">
-                        <img src="/img/icons/history-icon.svg" height="22" width="22">
+                    <a onclick="openLink('/history.html')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
                             History</a>
                     </div>
-                    <a class="navbutton" href="/new.html">Create with AI</a>
+                    <a class="navbutton" onclick="openLink('/')" id="create-with-ai-button">
+                        Create with AI</a>
                 </div>
                 <div class="container">
                 
                     <div class="input-section">
                         <div class="toolbar">
-                            <button onclick="shareMindmap()" class="share-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg></button>
-                            
-                            <button onclick="clearPlayground()" class="new-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                            <button onclick="createNewMindMap()" class="new-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
                             <button onclick="saveToHistory()" class="save-button">Save</button>
                         </div>
                 <textarea id="markdown-input" placeholder="Enter your markdown here...">
@@ -140,29 +127,35 @@
 ## Branch
                 </textarea>
             </div>
-            <a class="help-button" href="/help/mind-map-editing.html" style="text-decoration: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>            </a>
+            <a class="help-button" onclick="openLink('https://mindmapwizard.com/help/mind-map-editing.html')" style="text-decoration: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>            </a>
 
             <div class="mindmap-section">
                 <div class="markmap" id="markmap-container"></div>
+            </div>
+            
+            <div id="floating-ad-container">
+                <button id="ad-close-btn" aria-label="Close Ad"></button>
+
+                <div id="ad-content-area">
+                </div>
             </div>
             </div>
 
             <div class="notification" id="saveNotification">
                 <span class="success-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                 </span>
                 Successfully saved to history!
             </div>
 
             <div class="notification" id="newMapNotification">
                 <span class="success-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                 </span>
                 New Mind Map Created
             </div>
 
-        <!-- Add new save dialog -->
         <div class="share-dialog" id="saveDialog" style="display: none;">
             <h3>Save Current Mind Map</h3>
             <p>Enter a name for your mind map:</p>
@@ -173,370 +166,262 @@
             </div>
         </div>
 
-        <!-- Add confirmation dialog for new mind map -->
         <div class="share-dialog" id="newConfirmDialog" style="display: none;">
             <h3>Create New Mind Map</h3>
-            <p>Do you really want to create a new mind map? If you didnt save your current mind map ip might be lost.</p>
+            <p>Do you really want to create a new mind map?<br>You can still access your old mind map in the mind map history.</p>
             <div class="dialog-buttons">
-                <button class="dialog-button cancel" onclick="closeNewConfirmDialog()">Keep old</button>
+                <button class="dialog-button cancel" onclick="closeNewConfirmDialog()">Cancel</button>
                 <button class="dialog-button confirm" onclick="createNewMindMap();">Create New</button>
             </div>
         </div>
-
+        
         <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@latest"></script>
+        
         <script>
-            window.onload = function() {
-                if (typeof showPopup === 'function') {
-                    showPopup();
-                }
-                
-                let retryCount = 0;
-                const maxRetries = 5;
-                
-                function tryRenderMindMap() {
-                    if (window.markmap && window.markmap.Markmap && window.markmap.Transformer) {
-                        initializeMindMap();
-                    } else if (retryCount < maxRetries) {
-                        retryCount++;
-                        setTimeout(tryRenderMindMap, 300);
-                    }
-                }
-                
-                tryRenderMindMap();
-            };
+                let currentMindMapId = null;
 
-            const textarea = document.getElementById('markdown-input');
-            const container = document.getElementById('markmap-container');
+                const textarea = document.getElementById('markdown-input');
+                const container = document.getElementById('markmap-container');
 
-            const sessionId = Date.now();
+                window.addEventListener('load', initializeMindMap);
+                textarea.addEventListener('input', handleInputChange);
 
-            function toggleHelp() {
-                const helpContent = document.querySelector('.markdown-help');
-                helpContent.classList.toggle('visible');
-            }
-            
-            function initializeMindMap() {
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('id') === 'new') {
-                    resetPlayground(); 
-                } else {
-                    const savedMindmap = localStorage.getItem('mindmap-playground');
-                    if (savedMindmap) {
-                        const mindmapData = JSON.parse(savedMindmap);
-                        textarea.value = mindmapData.markdown;
+                function initializeMindMap() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const idParam = urlParams.get('id');
+
+                    if (idParam === 'new') {
+                        createNewMindMap();
+                    } else if (idParam === 'guide') {
+                        currentMindMapId = 'guide';
+                        loadGuideContent();
+                    } else if (idParam) {
+                        loadMindMapFromId(idParam);
                     } else {
+                        loadFromLocalStorage();
+                    }
+
+                    renderMindmap();
+                }
+
+                function renderMindmap() {
+                        if (!window.markmap || !window.markmap.Markmap) {
+                            setTimeout(renderMindmap, 300); return;
+                        }
+                        try {
+                            container.innerHTML = '';
+                            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                            container.appendChild(svg);
+                            const { Markmap, Transformer } = window.markmap;
+                            const transformer = new Transformer();
+                            const { root } = transformer.transform(textarea.value);
+                            Markmap.create(svg, { autoFit: true, duration: 0 }, root);
+                        } catch (error) { console.error("Error rendering mind map:", error); }
+                    }
+
+                    function loadGuideContent() {
                         textarea.value = `# Playground 
 
 ## Links
-                    
+                            
 ### [New Mind Map](https://mindmapwizard.com/new) 
-### [Mind Map History](https://mindmapwizard.com/history) 
-                    
+### [Pricing (Only $1!)](https://mindmapwizard.com/pricing) 
+                            
 ## Features
-                    
+                            
 Note that if blocks and lists appear at the same level, the lists will be ignored. 
-                    
+                            
 ### Lists 
-                    
-#### **strong** 
-#### ~~del~~ 
-####  *italic* 
-#### \`inline code\`
-                     
+                            
+#### **strong** #### ~~del~~ 
+####  *italic* #### \`inline code\`
+                            
 ### Ordered list 
-  1. item 1
-  2. item 2 
-                    
+1. item 1
+2. item 2 
+                            
 ### Blocks
-                    
+                            
 \`\`\`js
 console.log('hello, JavaScript')
 \`\`\`
-                      
+                            
 ![](https://mindmapwizard.com/img/favicon64.png)`;
+                        renderMindmap();
+                    }
+
+                function loadFromLocalStorage() {
+                    const savedMindmap = localStorage.getItem('mindmap-playground');
+                    if (savedMindmap) {
+                        console.log('Found old mind map in "mindmap-playground". Migrating to "mindmap-history".');
+                        const mindmapData = JSON.parse(savedMindmap);
+                        
+                        currentMindMapId = mindmapData.id || Date.now().toString();
+                        textarea.value = mindmapData.markdown;
+                        
+                        const topic = mindmapData.topic || mindmapData.markdown.split('\n')[0].replace('# ', '').trim();
+                        saveToLocalStorage(topic, mindmapData.markdown);
+                        localStorage.removeItem('mindmap-playground');
+                        
+                        const newUrl = new URL(window.location);
+                        newUrl.searchParams.set('id', currentMindMapId);
+                        window.history.replaceState({}, '', newUrl);
+
+                    } else {
+                        createNewMindMap();
                     }
                 }
-                
-                setTimeout(updateMindmap, 300);
 
-                urlParams.delete('id');
-                const newUrl = window.location.origin + window.location.pathname + '?' + urlParams.toString();
-                window.history.replaceState({}, document.title, newUrl);
-            }
 
-            function updateMindmap() {
-                if (!window.markmap || !window.markmap.Markmap || !window.markmap.Transformer) {
-                    console.log("Markmap library not fully loaded yet, retrying in 300ms");
-                    setTimeout(updateMindmap, 300);
-                    return;
-                }
-                
-                try {
-                    container.innerHTML = '';
-                
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    container.appendChild(svg);
-                
-                    const {Markmap, Transformer} = window.markmap;
-                    const transformer = new Transformer();
-                    
-                    let markdownWithConfig = textarea.value;
-                    if (!markdownWithConfig.startsWith('---\nmarkmap:')) {
-                        markdownWithConfig = '---\nmarkmap:\n  maxWidth: 100\n---\n\n' + markdownWithConfig;
+                function createNewMindMap() {
+                    const defaultTitle = "Mind Map";
+                    const defaultMarkdown = "# Mind Map\n\n## Branch\n## Branch";
+
+                    textarea.value = defaultMarkdown;
+                    renderMindmap();
+
+                    createMindMapLocally(defaultTitle, defaultMarkdown);
+
+                    const notification = document.getElementById('newMapNotification');
+                    if (notification) {
+                        notification.classList.add('show');
+                        setTimeout(() => notification.classList.remove('show'), 2000);
                     }
-                    
-                    const {root} = transformer.transform(markdownWithConfig);
-                
+                }
+
+                function loadMindMapFromId(id) {
+                    const foundMindMap = JSON.parse(localStorage.getItem('mindmap-history') || '[]').find(item => item.id.toString() === id);
+
+                    if (foundMindMap) {
+                        textarea.value = foundMindMap.markdown;
+                        currentMindMapId = foundMindMap.id;
+                    } else {
+                        createNewMindMap();
+                    }
+                }
+
+                function createMindMapLocally(title, markdown) {
+                    currentMindMapId = Date.now().toString();
+                    saveToLocalStorage(title, markdown);
+
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('id', currentMindMapId);
+                    window.history.replaceState({}, '', newUrl);
+                }
+            
+
+                    function handleInputChange() {
+                        renderMindmap();
+
+                        const markdown = textarea.value;
+                        const topic = markdown.split('\n')[0].replace('# ', '').trim() || 'Untitled';
+
+                        saveToLocalStorage(topic, markdown);
+                    }
+
+
+
+                function saveToHistory() {
+                    const saveDialog = document.getElementById('saveDialog');
+                    const overlay = document.querySelector('.overlay');
+
+                    const firstLine = textarea.value.split('\n')[0];
+                    const defaultName = firstLine.replace(/^#+ /, '').trim();
+                    document.getElementById('mindmapName').value = defaultName;
+
+                    saveDialog.style.display = 'block';
+                    overlay.style.display = 'block';
+                    document.getElementById('mindmapName').focus();
+                }
+
+                    function saveToLocalStorage(topic, markdown) {
+                        const mindmapData = {
+                            id: currentMindMapId,
+                            markdown,
+                            timestamp: new Date().toISOString(),
+                            topic
+                        };
+
+                        const history = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
+                        const index = history.findIndex(item => item.id.toString() === currentMindMapId.toString());
+
+                        if (index !== -1) {
+                            history[index] = mindmapData;
+                        } else {
+                            history.unshift(mindmapData);
+                            if (history.length > 500) history.pop();
+                        }
+
+                        localStorage.setItem('mindmap-history', JSON.stringify(history));
+                    }
+
+                function saveWithName() {
+                    const mindmapName = document.getElementById('mindmapName').value.trim();
+                    if (!mindmapName) {
+                        alert("Please enter a name for your mind map");
+                        return;
+                    }
+
                     const mindmapData = {
-                        id: sessionId,
+                        id: currentMindMapId,
                         markdown: textarea.value,
                         timestamp: new Date().toISOString(),
-                        topic: textarea.value.split('\n')[0].replace('# ', '')
+                        topic: mindmapName
                     };
-                    localStorage.setItem('mindmap-playground', JSON.stringify(mindmapData));
-                    
-                    const mm = Markmap.create(svg, {
-                        autoFit: true,
-                        duration: 0, 
-                        maxWidth: 300,
-                        zoom: true,
-                        pan: true
-                    }, root);
-                
-                    mm.fit();
-                } catch (error) {
-                    console.error("Error rendering mind map:", error);
-                    setTimeout(updateMindmap, 300);
-                }
-            }
-            
-            textarea.addEventListener('input', updateMindmap);
 
-            function generateUUID() {
-                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                    var r = Math.random() * 16 | 0,
-                        v = c == 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-            }
+                    const existingHistory = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
 
-            async function shareMindmap() {
-                const mindmapData = {
-                    id: sessionId,
-                    markdown: textarea.value,
-                    timestamp: new Date().toISOString(),
-                    topic: textarea.value.split('\n')[0].replace('# ', '')
-                };
+                    const existingIndex = existingHistory.findIndex(item => item.id === currentMindMapId);
 
-                const shareDialog = document.querySelector('.share-dialog');
-                const overlay = document.querySelector('.overlay');
-                
-                shareDialog.innerHTML = `
-                    <h3>Share Mind Map</h3>
-                    <p>Generating share link...</p>
-                    <div class="loading-spinner"></div>
-                `;
-                shareDialog.style.display = 'block';
-                overlay.style.display = 'block';
-
-                try {
-                    const response = await fetch('https://share.mindmapwizard.com/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            topic: mindmapData.topic,
-                            markdown: mindmapData.markdown,
-                            timestamp: mindmapData.timestamp
-                        })
-                    });
-
-                    const data = await response.json();
-                    const shareUrl = `${window.location.origin}/view.html?id=${data.id || sessionId}`;
-                    
-                    shareDialog.innerHTML = `
-                        <h3>Share Mind Map</h3>
-                        <input type="text" class="share-link" readonly="readonly" value="${shareUrl}">
-                        <div class="dialog-buttons">
-                            <button class="dialog-button cancel" onclick="closeShareDialog()">Close</button>
-                            <button class="dialog-button confirm" onclick="copyShareLink()">Copy link</button>
-                        </div>
-                    `;
-                } catch (error) {
-                    console.error('Error sharing mindmap:', error);
-                    alert('Failed to share mindmap. Please try again.');
-                }
-            }
-
-            function copyShareLink() {
-                const shareLink = document.querySelector('.share-link');
-                shareLink.select();
-                document.execCommand('copy');
-
-                if (window.dataLayer) {
-                    window.dataLayer.push({
-                        'event': 'mindmap_share_link_copy',
-                        'mindmap_category': 'User Interaction',
-                        'mindmap_action': 'Copy Share Link'
-                    });
-                }
-            }
-
-            function closeShareDialog() {
-                const shareDialog = document.querySelector('.share-dialog');
-                const overlay = document.querySelector('.overlay');
-                
-                shareDialog.style.display = 'none';
-                overlay.style.display = 'none';
-            }
-
-            function clearPlayground() {
-                const newConfirmDialog = document.getElementById('newConfirmDialog');
-                const overlay = document.querySelector('.overlay');
-                
-                newConfirmDialog.style.display = 'block';
-                overlay.style.display = 'block';
-            }
-            
-            function closeNewConfirmDialog() {
-                const newConfirmDialog = document.getElementById('newConfirmDialog');
-                const overlay = document.querySelector('.overlay');
-                
-                newConfirmDialog.style.display = 'none';
-                overlay.style.display = 'none';
-                }
-            
-            function saveBeforeNew() {
-                const newConfirmDialog = document.getElementById('newConfirmDialog');
-                const saveDialog = document.getElementById('saveDialog');
-                const overlay = document.querySelector('.overlay');
-                
-                newConfirmDialog.style.display = 'none';
-                
-                saveDialog.dataset.afterSave = 'clear';
-                
-                const firstLine = textarea.value.split('\n')[0];
-                const defaultName = firstLine.replace(/^#+ /, '').trim();
-                document.getElementById('mindmapName').value = defaultName;
-                
-                saveDialog.style.display = 'block';
-                overlay.style.display = 'block';
-                document.getElementById('mindmapName').focus();
-            }
-            
-            function createNewMindMap() {
-                const newConfirmDialog = document.getElementById('newConfirmDialog');
-                const overlay = document.querySelector('.overlay');
-                
-                newConfirmDialog.style.display = 'none';
-                overlay.style.display = 'none';
-                
-                resetPlayground();
-            }
-                        
-            function resetPlayground() {
-                textarea.value = "# Mind Map\n\n## Branch\n## Branch";
-                
-                updateMindmap();
-                
-                const notification = document.getElementById('newMapNotification');
-                if (notification) {
-                    notification.classList.add('show');
-                    
-                    setTimeout(() => {
-                        notification.classList.remove('show');
-                    }, 2000);
-                }
-                
-                const mindmapData = {
-                    id: sessionId,
-                    markdown: textarea.value,
-                    timestamp: new Date().toISOString(),
-                    topic: 'Mind Map'
-                };
-                localStorage.setItem('mindmap-playground', JSON.stringify(mindmapData));
-            }
-
-            function saveToHistory() {
-                const saveDialog = document.getElementById('saveDialog');
-                const overlay = document.querySelector('.overlay');
-                
-                const firstLine = textarea.value.split('\n')[0];
-                const defaultName = firstLine.replace(/^#+ /, '').trim();
-                document.getElementById('mindmapName').value = defaultName;
-                
-                saveDialog.style.display = 'block';
-                overlay.style.display = 'block';
-                document.getElementById('mindmapName').focus();
-            }
-            
-            function saveWithName() {
-                const mindmapName = document.getElementById('mindmapName').value.trim();
-                if (!mindmapName) {
-                    alert("Please enter a name for your mind map");
-                    return;
-                }
-                
-                const mindmapData = {
-                    id: sessionId,
-                    markdown: textarea.value,
-                    timestamp: new Date().toISOString(),
-                    topic: mindmapName
-                };
-                
-                const existingHistory = JSON.parse(localStorage.getItem('mindmap-history') || '[]');
-                existingHistory.unshift(mindmapData);
-                if (existingHistory.length > 100) {
-                    existingHistory.pop();
-                }
-                localStorage.setItem('mindmap-history', JSON.stringify(existingHistory));
-                
-                closeSaveDialog();
-                
-                const saveDialog = document.getElementById('saveDialog');
-                if (saveDialog.dataset.afterSave === 'clear') {
-                    resetPlayground();
-                    saveDialog.dataset.afterSave = '';
-                } else {
-                    const notification = document.getElementById('saveNotification');
-                    notification.classList.add('show');
-                    
-                    setTimeout(() => {
-                        notification.classList.remove('show');
-                    }, 2000);
-                }
-            }
-
-            function closeSaveDialog() {
-                const saveDialog = document.getElementById('saveDialog');
-                const overlay = document.querySelector('.overlay');
-                
-                saveDialog.style.display = 'none';
-                overlay.style.display = 'none';
-                
-                saveDialog.dataset.afterSave = '';
-            }
-            
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const infoButton = document.querySelector('.info-button');
-                const infoMenu = document.querySelector('.info-menu');
-
-                infoButton.addEventListener('click', function() {
-                    infoMenu.classList.toggle('show');
-                });
-
-                document.addEventListener('click', function(event) {
-                    if (!infoButton.contains(event.target) && !infoMenu.contains(event.target)) {
-                        infoMenu.classList.remove('show');
+                    if (existingIndex !== -1) {
+                        existingHistory[existingIndex] = mindmapData;
+                    } else {
+                        existingHistory.unshift(mindmapData);
+                        if (existingHistory.length > 100) {
+                            existingHistory.pop();
+                        }
                     }
-                });
-            });
-        </script>
-            <!-- 100% privacy-first analytics -->
-    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 
-    </body>
+                    localStorage.setItem('mindmap-history', JSON.stringify(existingHistory));
+
+                    closeSaveDialog();
+
+                    const saveDialog = document.getElementById('saveDialog');
+                    if (saveDialog.dataset.afterSave === 'clear') {
+                        currentMindMapId = Date.now();
+                        resetPlayground();
+                        saveDialog.dataset.afterSave = '';
+                    } else {
+                        const notification = document.getElementById('saveNotification');
+                        notification.classList.add('show');
+
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 2000);
+                    }
+                }
+
+                function closeSaveDialog() {
+                    const saveDialog = document.getElementById('saveDialog');
+                    const overlay = document.querySelector('.overlay');
+
+                    saveDialog.style.display = 'none';
+                    overlay.style.display = 'none';
+
+                    saveDialog.dataset.afterSave = '';
+                }
+
+
+                function shareMindmap() {
+                    alert('Sharing functionality is not available in the local version.');
+                }
+
+                function openLink(url) {
+                    window.location.href = url;
+                }
+</script>
+              
+<!--100 % privacy - first analytics-->
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script> 
+</body>
 </html>
