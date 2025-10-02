@@ -37,11 +37,12 @@
 
 ## Features
 
-- ✨ AI mind map generation
-- 🖼️ Downloading mind map (JPG, PDF, SVG, Text, Link)
-- ✍️ Editing mind map
-- 📋 Generation history
+- 🤖 AI Mind Map Generation
+- 💾 Multiple Export Formats
+- ✏️ Editing mind map
+- 📚 Generation history
 - 🔍 Zoom and panning
+- ⌨️ Keyboard Shortcuts 
 
 
 ## Why use Mind Map Wizard?
@@ -51,36 +52,27 @@
 - **✅ BYOK:** Use your own API key for enhanced privacy and control over your mind map generation. Supports both OpenAI and local AI providers.
 
 ## How It Works
-1. **Enter Your Topic:** Just type any topic you'd like to explore in the input field.
-2. **AI Processing:** Our AI will examine your topic and create a comprehensive mind map.
-3. **View Your Mind Map:** Quickly view, edit, and download your beautifully crafted mind map in just seconds.
 
-## Roadmap
+1. **Enter Your Topic**  
+   Type any subject you want to explore in the input field
 
-- [x] Done - Editing Mind Maps
+2. **AI Processing**  
+   Our AI analyzes your topic and generates a comprehensive mind map structure
 
-- [x] Done - Downloading Mind Maps
-- [x] Done - Renaming Mind Maps
-- [x] Done - Inline code support for Mind Maps
-- [x] Done - More export options e.g. PNG or PDF
-- [ ] Soon - Exploring further from specific branches
-- [ ] Soon - Multilinguality
+3. **View & Edit**  
+   Instantly view, customize, and download your beautifully crafted mind map
 
 ## Mind Map Generation Process
 Creating a mind map involves a few simple steps. Here’s how it works:
 
-1. **User Submits Topic:**  
-   You start by entering a topic or subject that you want to explore in your mind map.
+1. **User Submits Topic** - Enter your desired subject
+2. **API Processing** - Topic sent to AI provider
+3. **LLM Analysis** - AI generates structured outline with key concepts
+4. **SVG Rendering** - Markdown transformed into interactive SVG using [markmap.js](https://github.com/markmap/markmap)
 
-2. **Sending to AI Provider:**  
-   Once you submit your topic, it gets sent off to the  AI API.
-
-3. **LLM Processes Request:**  
-   The AI takes a moment to analyze your topic and comes up with a structured outline that captures the key ideas.
-4. **Render as SVG:**
-   Finally, the Markdown is transformed into an SVG (Scalable Vector Graphics) format using [markmap.js](https://github.com/markmap/markmap), giving you a visually appealing mind map.
 
 ## System Prompt
+The AI uses this prompt to generate well-structured mind maps:
 ```
 You are a helpful assistant that generates well-structured mind maps. Please generate a Mind Map as Markdown text. It could look like this:
     
@@ -102,9 +94,10 @@ Complete with facts, not just the basic starting point. If there’s too much co
 ```
 <br>
 
-## How to Edit Mind Maps
+## Editing Mind Maps
 
-Markmap mind maps are created and edited using Markdown syntax. The branch level is determined by the count of `#` symbols before the text:
+Mind maps use Markdown syntax where branch levels are determined by # symbols:
+
 
 <table style="width:100%; border-collapse: collapse;">
   <thead>
@@ -137,12 +130,7 @@ Markmap mind maps are created and edited using Markdown syntax. The branch level
           width: 50%;
         "
       >
-        <pre><code># my mind map
-    ## branch 1
-    ## branch 2
-        ### text
-        ### text
-</code></pre>
+      <pre># my mind map<br>## branch 1<br>## branch 2<br>### text<br>### text</pre>
       </td>
       <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
         <img
@@ -159,239 +147,41 @@ Markmap mind maps are created and edited using Markdown syntax. The branch level
 There are also formatting options available for the texts in mind map branches.
 
 
-<table style="width:100%; border-collapse: collapse;">
-  <thead>
-    <tr>
-      <th
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          text-align: left;
-          background-color: #f2f2f2;"
-      >
-        Markdown Code Example
-      </th>
-      <th
-        style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;"
-      >
-        How it Renders (within a branch)
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 600px;
-        "
-      >
-        **example branch**
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        <strong>example branch</strong>
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 600px;
-        "
-      >
-        ~~example branch~~
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        <del>example branch</del>
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 600px;
-        "
-      >
-        *example branch*
-      </td>
-      <td style="padding: 4px; border: 1px solid #ddd; vertical-align: top;">
-        <em>example branch</em>
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 600px;
-        "
-      >
-        `example branch`
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        <code
-          style="
-            background-color: #eee;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-size: 85%;
-            font-family: monospace;
-          "
-          >example branch</code
-        >
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 600px;
-        "
-      >
-        [Example Link](https://example.com)
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        <a href="https://example.com" target="_blank" rel="noopener noreferrer"
-          >Example Link</a
-        >
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 600px;
-        "
-      >
-        ![](IMAGE_URL)
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        This renders an image.
-      </td>
-    </tr>
-  </tbody>
-</table>
+| Markdown Syntax | Rendered Result | Effect |
+|----------------|-----------------|--------|
+| `**example branch**` | **example branch** | Bold text |
+| `*example branch*` | *example branch* | Italic text |
+| `~~example branch~~` | ~~example branch~~ | Strikethrough |
+| `` `example branch` `` | `example branch` | Code/monospace |
+| `[Example Link](https://example.com)` | [Example Link](https://example.com) | Clickable link |
+| `![](IMAGE_URL)` | *Image* | Embedded image |
+
 
 ## Keyboard Shortcuts
 
-<table style="width:100%; border-collapse: collapse;">
-  <thead>
-    <tr>
-      <th
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          text-align: left;
-          background-color: #f2f2f2;
-          width: 300px;
-        "
-      >
-        Shortcut
-      </th>
-      <th
-        style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;"
-      >
-        Action
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          font-family: monospace;
-          background-color: #f9f9f9;
-        "
-      >
-        <kbd>K</kbd>
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        Search through all generated mind maps
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          font-family: monospace;
-          background-color: #f9f9f9;
-        "
-      >
-        <kbd>E</kbd>
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        Toggle edit mode for the current mind map
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          font-family: monospace;
-          background-color: #f9f9f9;
-        "
-      >
-        <kbd>D</kbd>
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        Download the current mind map
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          font-family: monospace;
-          background-color: #f9f9f9;
-        "
-      >
-        <kbd>G</kbd>
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        Regenerate the current mind map with AI
-      </td>
-    </tr>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          font-family: monospace;
-          background-color: #f9f9f9;
-        "
-      >
-        <kbd>F</kbd>
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        Fit mind map to screen
-      </td>
-    </tr>
-  </tbody>
-</table>
+| Shortcut | Action |
+|----------|--------|
+| <kbd>K</kbd> | Search through all mind maps |
+| <kbd>E</kbd> | Toggle edit mode |
+| <kbd>D</kbd> | Download current mind map |
+| <kbd>G</kbd> | Regenerate with AI |
+| <kbd>F</kbd> | Fit mind map to screen |
+
 <br>
 <hr>
+## Roadmap
+
+- [x] Done - Editing Mind Maps
+
+- [x] Done - Downloading Mind Maps
+- [x] Done - Renaming Mind Maps
+- [x] Done - Inline code support for Mind Maps
+- [x] Done - More export options e.g. PNG or PDF
+- [ ] Soon - Exploring further from specific branches
+- [ ] Soon - Multilinguality
+
 <br>
+
 
   <picture>
     <source media="(prefers-color-scheme: dark)" alt="GitHub Repo Stars history" srcset="https://app.repohistory.com/api/svg?repo=linus-sch/mind-map-wizard&type=Date&background=0D1117&color=6278f8)](https://app.repohistory.com/star-history" />
@@ -401,10 +191,10 @@ There are also formatting options available for the texts in mind map branches.
 
 ## Contact
 
-If you have any questions or feedback, please get in touch with us.
-<br>
+Have questions or feedback? We'd love to hear from you!
 
-<a href="mailto:contact@mindmapwizard.com">contact@mindmapwizard.com</a>
+**Email:** [contact@mindmapwizard.com](mailto:contact@mindmapwizard.com)
+
 <br>
 <p align="right" style="font-size: 14px; color: #555; margin-top: 20px;">
     <a href="#readme-top" style="text-decoration: none; color: #007bff; font-weight: bold;">
