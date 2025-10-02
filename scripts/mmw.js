@@ -88,27 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		removeUrlParameter('id');
 	}
-
-	const hotkeysButton = document.querySelector('.hotkeys-button');
-	const popup = document.querySelector('.keyboard-shortcuts-popup');
-
-	hotkeysButton.addEventListener('mouseenter', () => {
-		popup.style.display = 'block';
-	});
-
-	hotkeysButton.addEventListener('mouseleave', () => {
-		if (!popup.matches(':hover')) {
-			popup.style.display = 'none';
-		}
-	});
-
-	popup.addEventListener('mouseenter', () => {
-		popup.style.display = 'block';
-	});
-
-	popup.addEventListener('mouseleave', () => {
-		popup.style.display = 'none';
-	});
 });
 
 function initializeKeyboardShortcuts() {
@@ -757,3 +736,47 @@ function removeQueryParam(param) {
 
   history.replaceState(null, document.title, newUrl);
 }
+
+function showLicensePopup() {
+  const licensePopup = document.getElementById('licensePopup');
+  const infoMenu = document.querySelector('.info-menu');
+  
+  if (licensePopup) {
+    licensePopup.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  if (infoMenu) {
+    infoMenu.classList.remove('show');
+  }
+}
+
+function closeLicensePopup() {
+  const licensePopup = document.getElementById('licensePopup');
+  
+  if (licensePopup) {
+    licensePopup.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const closeLicenseBtn = document.getElementById('closeLicensePopup');
+  const licensePopup = document.getElementById('licensePopup');
+  
+  if (closeLicenseBtn) {
+    closeLicenseBtn.addEventListener('click', closeLicensePopup);
+  }
+  
+  if (licensePopup) {
+    licensePopup.addEventListener('click', function(e) {
+      if (e.target === licensePopup) {
+        closeLicensePopup();
+      }
+    });
+  }
+});
+
+window.showLicensePopup = showLicensePopup;
+window.closeLicensePopup = closeLicensePopup;
+
