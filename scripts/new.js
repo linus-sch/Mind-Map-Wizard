@@ -35,26 +35,45 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 				{
 					role: "user",
 					content: `Create a comprehensive mind map about: ${mindmapTopic.trim()}
+Generate the mind map as Markdown text using the following structure:
 
-Please provide the response in the following JSON format:
+# Matching Mind Map Title
+## Branch 1
+### Sub Branch A
+### Sub Branch B
+## Branch 2
+
+**Formatting Requirements:**
+- Each text element must be aligned to a specific hierarchical level using a new line plus the appropriate number of # symbols
+- Aim for 2-3 levels of depth to keep the mind map scannable and not overwhelming
+- For large enumerations (6+ items), combine related items into comma-separated lists within a single branch rather than creating excessive sub-branches
+
+**Content Requirements:**
+- Include **specific, concrete details and facts**, not just category labels
+  - ❌ Bad: "## Education" 
+  - ✅ Good: "## Education: PhD in Physics from MIT (2015)"
+- Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" – this is a mind map, not an essay
+- If the topic contains extensive information, prioritize breadth over depth and consolidate where necessary
+- Focus on the most relevant and interesting information that creates a useful knowledge structure
+- Make the branches have different lengths for making the mind map visually more interesting.
+
+**Output Format:**
+Structure your response exactly like this:
 {
-	"topic": "Main Topic",
 	"markdown": "# Main Topic\\n\\n## Subtopic 1\\n- Point A\\n- Point B\\n\\n## Subtopic 2\\n- Point C\\n- Point D"
-}
-
-The markdown should be a valid mind map structure with:
-- A main # heading for the topic
-- ## subheadings for main branches
-- - bullet points for sub-branches
-- Rich, informative content that covers the topic comprehensively
-- Natural hierarchy and flow
-
-Focus on creating a well-structured, informative mind map that captures the key aspects of the topic.`
+}  
+`    
+    
 				}
 			],
 			max_tokens: 2000,
 			temperature: 0.7
 		};
+
+		// Add reasoning parameter if toggle is enabled
+		if (getReasoningEnabled()) {
+			requestPayload.reasoning = { exclude: true };
+		}
 
 		const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 			method: 'POST',
@@ -92,24 +111,43 @@ Focus on creating a well-structured, informative mind map that captures the key 
 			const content = data.choices[0].message.content.trim();
 
 			// Extract JSON from content that may have additional text
-			let jsonContent = content;
-
-			// Look for JSON object within the content
-			const jsonMatch = content.match(/\{[\s\S]*\}/);
+			// Look for JSON object starting with { and ending with }
+			const jsonMatch = content.match(/\{[^]*"markdown"[^]*\}/);
+			
 			if (jsonMatch) {
-				jsonContent = jsonMatch[0];
+				let jsonContent = jsonMatch[0];
+				
+				// Parse the JSON - the markdown field should already have proper escaping
+				try {
+					parsedContent = JSON.parse(jsonContent);
+				} catch (jsonError) {
+					// If parsing fails, try to extract just the markdown value
+					const markdownMatch = jsonContent.match(/"markdown"\s*:\s*"([^]*?)"\s*\}/);
+					if (markdownMatch) {
+						// Extract the markdown content and unescape it
+						let markdownContent = markdownMatch[1]
+							.replace(/\\n/g, '\n')
+							.replace(/\\r/g, '\r')
+							.replace(/\\t/g, '\t')
+							.replace(/\\"/g, '"')
+							.replace(/\\\\/g, '\\');
+						parsedContent = { markdown: markdownContent };
+					} else {
+						throw jsonError;
+					}
+				}
+			} else {
+				// No JSON found, assume content is markdown
+				parsedContent = { markdown: content };
 			}
-
-			// Try to parse the extracted JSON
-			parsedContent = JSON.parse(jsonContent);
 		} catch (parseError) {
 			console.error('Failed to parse API response as JSON:', parseError);
 			console.error('Raw content:', data.choices[0].message.content);
 			throw new Error('Invalid response format from API');
 		}
 
-		if (!parsedContent.topic || !parsedContent.markdown) {
-			throw new Error('Invalid response from API: missing required fields');
+		if (!parsedContent.markdown) {
+			throw new Error('Invalid response from API: missing required markdown field');
 		}
 
 		const topic = parsedContent.topic || mindmapTopic;
@@ -178,13 +216,6 @@ Focus on creating a well-structured, informative mind map that captures the key 
 			}
 
 			window.history.replaceState({}, '', url.toString());
-
-			if (window.dataLayer) {
-				window.dataLayer.push({
-					event: 'mindmap_generated',
-					mindmap_type: isRegenerate ? 'regenerated' : 'new',
-				});
-			}
 		} else {
 			throw new Error('Generated markdown content is empty or invalid after processing.');
 		}
@@ -214,7 +245,7 @@ Focus on creating a well-structured, informative mind map that captures the key 
 	}
 
 	if (shouldShowError) {
-		showErrorPopup(userMessage);
+		showErrorPopup(userMessage, mindmapTopic);
 	}
 
 	document.getElementById('loading-animation').style.display = 'none';
@@ -334,6 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	initializeEditMode();
 	initializePopupElements();
 	addMindmapActionStyles();
+	loadReasoningPreference();
 
 
 	const randomTextElement = document.getElementById('randomText');
@@ -490,11 +522,6 @@ function toggleEditMode(show) {
 		editorOverlay.classList.add('show');
 		textarea.value = window.currentMarkdown || '';
 		textarea.focus();
-		if (window.dataLayer) {
-			window.dataLayer.push({
-				event: 'edit_mode_opened',
-			});
-		}
 	} else {
 		editorElement.classList.remove('show');
 		editorOverlay.classList.remove('show');
@@ -518,11 +545,6 @@ function handleUrlParameters() {
   } else if (q) {
     generateMindmap(q);
     removeQueryParam('q');
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			event: 'mind_map_generated_from_url_param',
-		});
-	}
   }
 }
 
@@ -578,11 +600,6 @@ function updateMindmapFromEdit() {
 	}
 
 	toggleEditMode(false);
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			event: 'mm_edited',
-		});
-	}
 }
 
 
@@ -608,11 +625,6 @@ function confirmClear() {
 	window.history.replaceState({}, document.title, url);
 
 	window.location.reload();
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			event: 'mm_history_cleared',
-		});
-	}
 }
 
 function initializePopupElements() {
@@ -1310,6 +1322,25 @@ function getSelectedModel() {
 	return selectedModel;
 }
 
+function getReasoningEnabled() {
+	const toggle = document.getElementById('reasoning-toggle');
+	return toggle ? toggle.checked : false;
+}
+
+function saveReasoningPreference() {
+	const enabled = getReasoningEnabled();
+	localStorage.setItem('reasoning-disabled', enabled.toString());
+}
+
+function loadReasoningPreference() {
+	const toggle = document.getElementById('reasoning-toggle');
+	if (toggle) {
+		const saved = localStorage.getItem('reasoning-disabled');
+		toggle.checked = saved === 'true';
+		toggle.addEventListener('change', saveReasoningPreference);
+	}
+}
+
 function updateUrlWithId(id) {
 	const currentUrl = new URL(window.location.href);
 	const urlParams = new URLSearchParams(currentUrl.search);
@@ -1475,12 +1506,6 @@ function renameMindmap(id) {
             newNameCallback(id, newName.trim());
         }
     }
-
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			event: 'mm_renamed',
-		});
-	}
 }
 
 
@@ -1523,12 +1548,6 @@ function deleteMindmap(id) {
             deleteCallback(id);
         }
     }
-
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			event: 'mm_deleted',
-		});
-	}
 }
 
 function updateMindmapInStorage(id, updates) {
@@ -1827,11 +1846,6 @@ function filterAndDisplayMindmapsInPopup(searchTerm) {
 function openMindmapFromSearchPopup(id) {
 	closeSearchMindmapsPopup();
 	openMindmapLeftSidebar(id);
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			event: 'mm_opened_from_search_popup',
-		});
-	}
 }
 
 function saveMindmapToHistory(topic, markdown) {
