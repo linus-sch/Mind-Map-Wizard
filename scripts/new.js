@@ -70,10 +70,8 @@ Structure your response exactly like this:
 			temperature: 0.7
 		};
 
-		// Add reasoning parameter if toggle is enabled
-		if (getReasoningEnabled()) {
-			requestPayload.reasoning = { exclude: true };
-		}
+		// Always exclude reasoning for all requests
+		requestPayload.reasoning = { exclude: true };
 
 		const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 			method: 'POST',
@@ -365,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	initializeEditMode();
 	initializePopupElements();
 	addMindmapActionStyles();
-	loadReasoningPreference();
 
 
 	const randomTextElement = document.getElementById('randomText');
@@ -1322,24 +1319,6 @@ function getSelectedModel() {
 	return selectedModel;
 }
 
-function getReasoningEnabled() {
-	const toggle = document.getElementById('reasoning-toggle');
-	return toggle ? toggle.checked : false;
-}
-
-function saveReasoningPreference() {
-	const enabled = getReasoningEnabled();
-	localStorage.setItem('reasoning-disabled', enabled.toString());
-}
-
-function loadReasoningPreference() {
-	const toggle = document.getElementById('reasoning-toggle');
-	if (toggle) {
-		const saved = localStorage.getItem('reasoning-disabled');
-		toggle.checked = saved === 'true';
-		toggle.addEventListener('change', saveReasoningPreference);
-	}
-}
 
 function updateUrlWithId(id) {
 	const currentUrl = new URL(window.location.href);
