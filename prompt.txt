@@ -15,8 +15,8 @@ Generate the mind map as Markdown text using the following structure:
 
 **Content Requirements:**
 - Include **specific, concrete details and facts**, not just category labels
-  - ❌ Bad: "## Education" 
-  - ✅ Good: "## Education: PhD in Physics from MIT (2015)"
+  - Bad: "## Education" 
+  - Good: "## Education: PhD in Physics from MIT (2015)"
 - Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" – this is a mind map, not an essay
 - If the topic contains extensive information, prioritize breadth over depth and consolidate where necessary
 - Focus on the most relevant and interesting information that creates a useful knowledge structure
