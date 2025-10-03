@@ -39,7 +39,7 @@
 
 - 🤖 AI Mind Map Generation
 - 💾 Multiple Export Formats
-- ✏️ Editing mind map
+- ✏️ Editing mind maps
 - 📚 Generation history
 - 🔍 Zoom and panning
 - ⌨️ Keyboard Shortcuts 
