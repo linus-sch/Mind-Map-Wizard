@@ -57,7 +57,7 @@
    Type any subject you want to explore in the input field
 
 2. **AI Processing**  
-   Our AI analyzes your topic and generates a comprehensive mind map structure
+   The AI analyzes your topic and generates a comprehensive mind map structure
 
 3. **View & Edit**  
    Instantly view, customize, and download your beautifully crafted mind map
