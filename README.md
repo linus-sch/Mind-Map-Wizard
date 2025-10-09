@@ -49,7 +49,7 @@
 
 - **✅ Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
 - **✅ Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
-- **✅ BYOK:** Use your own API key for enhanced privacy and control over your mind map generation. Supports both OpenAI and local AI providers.
+- **✅ BYOK:** Use your own Openrouter API key for enhanced privacy and control over your mind map generation. 
 
 ## How It Works
 
@@ -57,7 +57,7 @@
    Type any subject you want to explore in the input field
 
 2. **AI Processing**  
-   Our AI analyzes your topic and generates a comprehensive mind map structure
+   The AI analyzes your topic and generates a comprehensive mind map structure
 
 3. **View & Edit**  
    Instantly view, customize, and download your beautifully crafted mind map
