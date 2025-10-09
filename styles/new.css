@@ -24,15 +24,29 @@
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 10px;
-  display: none;
+  display: flex;
   flex-direction: column;
   z-index: 1800;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transform: translate(40px, 40px) scale(0.85) rotate(8deg);
+  filter: blur(4px);
+  transition: 
+    opacity 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 400ms;
+  pointer-events: none;
 }
 
 .info-menu.show {
-  display: flex;
+  visibility: visible;
+  opacity: 1;
+  transform: translate(0, 0) scale(1) rotate(0deg);
+  filter: blur(0px);
+  pointer-events: auto;
 }
 
 .info-menu a {
@@ -148,7 +162,7 @@
     
     .api-key-popup-content {
         background: var(--card-background);
-        border-radius: 16px;
+        border-radius: 25px;
         padding: 0;
         max-width: 480px;
         width: 90%;
@@ -171,7 +185,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 32px 32px 0 32px;
+        padding: 20px 20px 0 20px;
         margin-bottom: 28px;
     }
     
@@ -197,7 +211,7 @@
     }
     
     .popup-body {
-        padding: 0 32px 32px 32px;
+        padding: 0 20px 20px 20px;
     }
     
     .popup-body > div {

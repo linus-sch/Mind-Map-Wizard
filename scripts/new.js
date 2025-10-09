@@ -963,7 +963,7 @@ function showApiKeyManagement() {
 					<label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-color);">OpenRouter API Key</label>
 					<input type="password" id="manage-api-key-input" placeholder="Enter your OpenRouter API key" class="popup-input" style="width: 100%; margin-bottom: 12px;" value="${currentApiKey || ''}">
 					<div style="font-size: 0.85em; color: var(--text-color); opacity: 0.7; margin-bottom: 15px;">
-						Get your free API key at: <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--primary-color);">openrouter.ai/keys</a>
+						Get your API key at: <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--primary-color);">openrouter.ai/keys</a>
 					</div>
 					<div style="display: flex; gap: 10px; margin-top: 40px;">
 						${currentApiKey ? `<button id="remove-api-key-btn" class="remove-btn" style="flex: 1; margin: 0;">Remove API Key</button>` : ''}
