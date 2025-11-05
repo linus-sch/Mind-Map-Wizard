@@ -181,6 +181,7 @@ There are also formatting options available for the texts in mind map branches.
 
 <br>
 <hr>
+
 ## Roadmap
 
 - [x] Done - Editing Mind Maps
