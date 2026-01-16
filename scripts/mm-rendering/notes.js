@@ -173,9 +173,8 @@ async function generateNotesWithAI(nodeId, editorDiv) {
         const apiKey = typeof getStoredApiKey === 'function' ? getStoredApiKey() : '';
         if (!apiKey) {
             if (typeof showApiKeyPopup === 'function') {
-                showApiKeyPopup();
+                showApiKeyPopup(() => generateNotesWithAI(nodeId, editorDiv));
             }
-            editorDiv.innerHTML = '';
             return;
         }
 

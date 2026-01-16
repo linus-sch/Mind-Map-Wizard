@@ -2,6 +2,7 @@ const API_KEY_ENCRYPTION_KEY = 'mmw_encryption_key_2024';
 
 let currentMindmapTopic = '';
 let generationInProgress = false;
+let pendingApiKeyAction = null;
 
 function encryptApiKey(apiKey) {
 	if (!apiKey) return '';
@@ -70,10 +71,22 @@ function getStoredApiKey() {
 	return decryptApiKey(encryptedApiKey);
 }
 
-function showApiKeyPopup() {
+function showApiKeyPopup(onSavedAction = null, showLoading = false) {
 	const existingPopup = document.getElementById('api-key-popup');
 	if (existingPopup) {
 		existingPopup.remove();
+	}
+
+	const loadingAnimation = document.getElementById('loading-animation');
+	if (loadingAnimation && showLoading) {
+		if (loadingAnimation.parentElement !== document.body) {
+			document.body.appendChild(loadingAnimation);
+		}
+		loadingAnimation.style.display = 'flex';
+	}
+
+	if (typeof onSavedAction === 'function') {
+		pendingApiKeyAction = onSavedAction;
 	}
 
 	const popup = document.createElement('div');
@@ -116,6 +129,7 @@ function showApiKeyPopup() {
 
 	closeBtn.addEventListener('click', () => {
 		popup.remove();
+		pendingApiKeyAction = null;
 		document.getElementById('loading-animation').style.display = 'none';
 		showHeader();
 	});
@@ -126,6 +140,15 @@ function showApiKeyPopup() {
 			const encryptedApiKey = encryptApiKey(apiKey);
 			localStorage.setItem('openrouter-api-key-encrypted', encryptedApiKey);
 			popup.remove();
+			const loadingAnim = document.getElementById('loading-animation');
+			if (loadingAnim && showLoading) loadingAnim.style.display = 'flex';
+
+			const action = pendingApiKeyAction;
+			pendingApiKeyAction = null;
+			if (typeof action === 'function') {
+				action();
+				return;
+			}
 
 			const promptInput = document.getElementById('prompt');
 			if (promptInput && promptInput.value.trim()) {
@@ -738,7 +761,19 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 		}
 
 		if (!apiKey) {
-			showApiKeyPopup();
+			const fallbackPrompt = mindmapTopic;
+			generationInProgress = false;
+			const loadingAnimEl = document.getElementById('loading-animation');
+			if (loadingAnimEl) loadingAnimEl.style.display = 'none';
+			if (isRegenerate) {
+				const regenerateBtn = document.getElementById('regenerate-button');
+				regenerateBtn?.classList.remove('rotating');
+			}
+			showApiKeyPopup(() => {
+				const resumeLoading = document.getElementById('loading-animation');
+				if (resumeLoading) resumeLoading.style.display = 'flex';
+				generateMindmap(fallbackPrompt, isRegenerate);
+			}, true);
 			return;
 		}
 
@@ -1005,7 +1040,7 @@ async function expandMindMapNodeCore() {
 		const apiKey = getStoredApiKey();
 		if (!apiKey) {
 			console.error('OpenRouter API key required to expand a node');
-			showApiKeyPopup();
+			showApiKeyPopup(() => expandMindMapNodeCore());
 			return;
 		}
 
@@ -1987,7 +2022,11 @@ async function handlePdfUpload(file) {
 			apiKey = apiKeyInput?.value?.trim();
 		}
 		if (!apiKey) {
-			showApiKeyPopup();
+			const pendingFile = file;
+			generationInProgress = false;
+			const loadingAnimEl = document.getElementById('loading-animation');
+			if (loadingAnimEl) loadingAnimEl.style.display = 'none';
+			showApiKeyPopup(() => handlePdfUpload(pendingFile), true);
 			return;
 		}
 
