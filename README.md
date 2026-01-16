@@ -148,6 +148,28 @@ Structure your response exactly like this:
 
 <br>
 
+## Getting Started
+
+To get started with Mind Map Wizard locally:
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/linus-sch/Mind-Map-Wizard.git
+   ```
+
+2. Navigate to the project directory:
+   ```
+   cd Mind-Map-Wizard
+   ```
+
+3. Start a local server. For example, using Python:
+   ```
+   python -m http.server 8000
+   ```
+
+4. Open your browser and go to `http://localhost:8000/index.html`
+
+That's it! The application should work locally.
 
 ## Mind Map Generation Process
 Creating a mind map involves a few simple steps. Here’s how it works:
