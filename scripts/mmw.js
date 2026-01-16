@@ -1,49 +1,27 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 	const headerElement = document.getElementById('header');
 	if (headerElement) {
 		headerElement.classList.add('active');
 	};
 	document.getElementById('prompt')?.focus();
 
-	initializeDownloadFeatures();
+	if (typeof initializeDownloadFeatures === 'function') initializeDownloadFeatures();
+	if (typeof initializeRatingSystem === 'function') initializeRatingSystem();
+	if (typeof initializeMainButtons === 'function') initializeMainButtons();
+	if (typeof handleUrlParameters === 'function') handleUrlParameters();
+	initSidebar();
 	initializeKeyboardShortcuts();
-	initLeftSidebar();
-	initializeMainButtons();
-	handleUrlParameters();
-	initSidebar()
 
-
-	const leftSidebarToggle = document.getElementById('leftSidebarToggle');
-	const leftSidebar = document.getElementById('leftSidebar');
-	const app = document.getElementById('app');
-	const mindmap = document.getElementById('mindmap');
-	const menubar = document.getElementById('menubar');
-	
-	if (leftSidebarToggle && leftSidebar) {
-		leftSidebarToggle.addEventListener('click', function() {
-			leftSidebar.classList.toggle('open');
-			if (app) app.classList.toggle('left-sidebar-open');
-			if (mindmap) mindmap.classList.toggle('left-sidebar-open');
-	
-			const isOpen = leftSidebar.classList.contains('open');
-			if (menubar) {
-				if (isOpen) {
-					menubar.classList.add('sidebar-open');
-				} else {
-					menubar.classList.remove('sidebar-open');
-				}
+	const newMindMapBtn = document.getElementById('new-mind-map-button');
+	if (newMindMapBtn) {
+		newMindMapBtn.addEventListener('click', function () {
+			if (window.MMW_DISABLE_AI_FEATURES && typeof createManualMindMap === 'function') {
+				createManualMindMap();
+				return;
 			}
-	
-			localStorage.setItem('left-sidebar-state', isOpen ? 'open' : 'closed');
+			showHeader();
 		});
-	} else {
-		console.error('Left sidebar toggle or sidebar element not found for listener attachment in DOMContentLoaded.');
 	}
-	
-
-	document.getElementById('new-mind-map-button').addEventListener('click', function() {
-		showHeader()
-	});
 
 	function showHeader() {
 		const buttonContainer = document.getElementById('button-container');
@@ -54,6 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		const mindmapElement = document.getElementById('mindmap');
 		if (mindmapElement) {
 			mindmapElement.style.display = 'none';
+		}
+
+		const app = document.getElementById('app');
+		if (app) {
+			app.style.display = 'block';
 		}
 
 		const headerElement = document.getElementById('header');
@@ -78,53 +61,84 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (navLinks) {
 			navLinks.classList.remove('padding-right');
 		}
-		document.getElementById('prompt')?.focus();
 
-		const handwrittenUpgradeTip = document.getElementById('handwrittenUpgradeTip');
+		if (window.innerWidth > 770) {
+			document.getElementById('prompt')?.focus();
+		}
 
-		if (handwrittenUpgradeTip) {
-		handwrittenUpgradeTip.style.display = 'block';
+		if (window.innerWidth < 770) {
+			closeLeftSidebar();
+		}
+
+		const zoomControls = document.getElementById('zoom-controls');
+		if (zoomControls) {
+			zoomControls.classList.remove('show');
+		}
+
+		const undoRedoContainer = document.getElementById('undo-redo-container');
+		if (undoRedoContainer) {
+			undoRedoContainer.style.display = 'none';
 		}
 
 		removeUrlParameter('id');
+		closeNotesDrawer();
+
+		document.querySelectorAll('.mindmap-item').forEach((item) => {
+			item.classList.remove('active');
+		});
+	}
+
+	const hotkeysButton = document.querySelector('.hotkeys-button');
+	const popup = document.querySelector('.keyboard-shortcuts-popup');
+
+	if (hotkeysButton && popup) {
+		hotkeysButton.addEventListener('mouseenter', () => {
+			popup.style.display = 'block';
+		});
+
+		hotkeysButton.addEventListener('mouseleave', () => {
+			if (!popup.matches(':hover')) {
+				popup.style.display = 'none';
+			}
+		});
+
+		popup.addEventListener('mouseenter', () => {
+			popup.style.display = 'block';
+		});
+
+		popup.addEventListener('mouseleave', () => {
+			popup.style.display = 'none';
+		});
+	}
+
+	const printButton = document.getElementById('print-btn');
+	if (printButton) {
+		const isChrome = navigator.userAgent.indexOf("Chrome") > -1 && navigator.userAgent.indexOf("Edge") === -1;
+		if (isChrome) {
+			printButton.style.display = 'flex';
+
+			const downloadButton = document.querySelector('.download-button');
+			if (downloadButton) {
+				downloadButton.style.width = 'calc(100% - 54px)';
+			}
+		} else {
+			printButton.style.display = 'none';
+
+			const downloadButton = document.querySelector('.download-button');
+			if (downloadButton) {
+				downloadButton.style.width = '100%';
+			}
+		}
 	}
 });
 
-function initializeKeyboardShortcuts() {
-	document.addEventListener('keydown', function(e) {
-		const mindmapVisible =
-			document.getElementById('mindmap')?.style.display === 'block';
-		const isTyping = ['input', 'textarea'].includes(
-			document.activeElement?.tagName?.toLowerCase(),
-		);
-
-		if (e.key === 'k' && !isTyping) {
-			e.preventDefault();
-			openSearchMindmapsPopup();
-			return;
-		}
-
-		if (mindmapVisible && !isTyping) {
-			switch (e.key) {
-				case 'e':
-					e.preventDefault();
-					document.getElementById('edit-mode-button')?.click();
-					break;
-				case 'd':
-					e.preventDefault();
-					document.getElementById('download-mindmap-btn')?.click();
-					break;
-				case 'g':
-					e.preventDefault();
-					document.getElementById('regenerate-button')?.click();
-					break;
-				case 'f':
-					e.preventDefault();
-					document.getElementById('mm-fit')?.click();
-					break;
-			}
-		}
-	});
+function removeUrlParameter(param) {
+	if (!param) return;
+	const url = new URL(window.location.href);
+	if (!url.searchParams.has(param)) return;
+	url.searchParams.delete(param);
+	const newUrl = url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '') + (url.hash || '');
+	history.replaceState(null, document.title, newUrl);
 }
 
 function clearHistory() {
@@ -145,16 +159,13 @@ function clearHistory() {
     `;
 
 	document.body.appendChild(clearPopup);
-
 	clearPopup.style.display = 'flex';
 }
 
 let isGeneratingMindmap = false;
 
-
-
 function generateUUID() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 		var r = (Math.random() * 16) | 0,
 			v = c == 'x' ? r : (r & 0x3) | 0x8;
 		return v.toString(16);
@@ -162,7 +173,6 @@ function generateUUID() {
 }
 
 function formatMarkdown(text) {
-
 	if (!text) {
 		console.error('Received empty response from API');
 		return {
@@ -239,18 +249,45 @@ function formatMarkdown(text) {
 	}
 
 	markdown = markdown.replace(/(\S)\s*(#+\s)/g, '$1\n$2');
-
 	markdown = cleanAndNormalizeMarkdown(markdown);
 
 	if (!markdown.trim().startsWith('#')) {
 		markdown = `# ${topic}\n\n${markdown}`;
 	}
 
-
 	return {
 		topic: topic.trim(),
 		markdown: markdown.trim()
 	};
+}
+
+function mmJsonToMarkdown(src) {
+	try {
+		const obj = typeof src === 'string' ? JSON.parse(src) : (src || {});
+		const root = obj['mindmap']?.['mm-node'] || obj['mm-node'] || obj.mmNode || obj;
+		const lines = [];
+		const maxHeading = 6;
+
+		function walk(node, level) {
+			if (!node || typeof node !== 'object') return;
+			const text = String(node.content ?? '').trim();
+			if (level <= maxHeading) {
+				lines.push(`${'#'.repeat(level)} ${text}`.trim());
+			} else {
+				lines.push(`- ${text}`.trim());
+			}
+			if (Array.isArray(node.children)) {
+				for (const child of node.children) {
+					walk(child, level + 1);
+				}
+			}
+		}
+		walk(root, 1);
+		return lines.join('\n');
+	} catch (e) {
+		console.warn('mmJsonToMarkdown failed, returning original content', e);
+		return typeof src === 'string' ? src : JSON.stringify(src ?? {}, null, 2);
+	}
 }
 
 function cleanAndNormalizeMarkdown(markdown) {
@@ -311,9 +348,7 @@ function cleanAndNormalizeMarkdown(markdown) {
 	let result = processedLines.join('\n');
 
 	result = result.replace(/(\S)\s*(#+\s)/g, '$1\n$2');
-
 	result = result.replace(/\n{3,}/g, '\n\n');
-
 	result = result.replace(/^(#+[^\n]+)\n([^#\n-])/gm, '$1\n\n$2');
 
 	return result.trim();
@@ -328,156 +363,304 @@ function findPreviousNonEmptyLine(lines) {
 	return null;
 }
 
-function waitForMarkmap() {
-	return new Promise((resolve, reject) => {
-		if (window.markmap &&
-			window.markmap.Markmap &&
-			window.markmap.Transformer &&
-			window.markmap.Toolbar) {
-			resolve(window.markmap);
-			return;
-		}
+function showError(errorMessage, hideRetry, input) {
+	let errorPopup = document.createElement('div');
+	errorPopup.id = 'error-popup';
+	errorPopup.className = 'error-popup';
+	document.body.appendChild(errorPopup);
 
-		const checkMarkmap = () => {
-			if (window.markmap &&
-				window.markmap.Markmap &&
-				window.markmap.Transformer &&
-				window.markmap.Toolbar) {
-				resolve(window.markmap);
-			} else {
-				setTimeout(checkMarkmap, 100);
-			}
-		};
+	const retryButtonHtml = hideRetry ? '' : '<button id="retryBtn">Retry</button>';
 
-		checkMarkmap();
+	errorPopup.innerHTML = `
+            <h2 style="color: #1e293b; margin-top: 20px; margin-bottom: 10px;">Something went wrong.<br>Please try again.</h2>
+                    <br>
+                    <br>
+                    <div style="width: 100%; border-radius: 16px; text-align: left; background-color: #F9FAFC; padding: 15px;">
+                        <p style="font-size: 0.9em; color: var(--text-color);">${errorMessage || 'Unknown Error'}</p>
+                    </div>
+            ${retryButtonHtml}
+			<button id="closeErrorPopupBtn">Close</button>
+        `;
 
-		setTimeout(() => {
-			reject(new Error('Markmap failed to load within 20 seconds'));
-		}, 20000);
-	});
-}
+	errorPopup.style.display = 'block';
 
-function renderMindmap(markdown) {
-	if (!markdown) {
-		console.error('Received empty markdown');
-		markdown = '# Empty Mind Map';
-	}
-
-	if (typeof markdown !== 'string') {
-		console.error('Markdown is not a string, converting:', markdown);
-		markdown = String(markdown);
-	}
-
-	currentMarkdown = markdown;
-
-	// Wait for markmap to be loaded before proceeding
-	waitForMarkmap()
-		.then((markmap) => {
-			renderMindmapInternal(markdown, markmap);
-		})
-		.catch((error) => {
-			console.error('Failed to load markmap:', error);
-			showErrorPopup('Failed to load mind map library. Please refresh the page and try again.', '');
+	if (!hideRetry && document.getElementById('retryBtn')) {
+		document.getElementById('retryBtn').addEventListener('click', function () {
+			const newUrl = window.location.pathname + '?q=' + encodeURIComponent(input || '');
+			window.location.href = newUrl;
 		});
 	}
 
-function renderMindmapInternal(markdown, markmap) {
-	const mindmapContainer = document.getElementById('mindmap');
-	if (!mindmapContainer) {
-		console.error('Mindmap container not found!');
+	document.getElementById('closeErrorPopupBtn').addEventListener('click', function () {
+		errorPopup.style.display = 'none';
+		if (typeof showHeader === 'function') showHeader();
+	});
+
+	const loadingAnim = document.getElementById('loading-animation');
+	if (loadingAnim) loadingAnim.style.display = 'none';
+
+	if (document.getElementById('regenerate-button')) {
+		document.getElementById('regenerate-button').classList.remove('rotating');
+	}
+
+	trackErrorEvent(errorMessage);
+}
+
+function trackErrorEvent(errorMessage) {
+}
+
+function getTimeAgo(date) {
+	const seconds = Math.floor((new Date() - date) / 1000);
+
+	const intervals = {
+		year: 31536000,
+		month: 2592000,
+		week: 604800,
+		day: 86400,
+		hour: 3600,
+		minute: 60,
+	};
+
+	for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+		const interval = Math.floor(seconds / secondsInUnit);
+
+		if (interval >= 1) {
+			return interval === 1 ? `1 ${unit} ago` : `${interval} ${unit}s ago`;
+		}
+	}
+	return 'Just now';
+}
+
+function closeShareDialog() {
+	const shareOverlay = document.querySelector('.share-overlay');
+	const dialog = document.querySelector('.share-dialog');
+
+	if (shareOverlay) shareOverlay.classList.remove('show');
+	if (dialog) dialog.classList.remove('show');
+
+	setTimeout(() => {
+		if (shareOverlay) document.body.removeChild(shareOverlay);
+		if (dialog) document.body.removeChild(dialog);
+		const shareButton = document.getElementById('share-btn') || document.querySelector('.share-button');
+		if (shareButton) {
+			shareButton.disabled = false;
+			shareButton.style.opacity = '1';
+		}
+	}, 300);
+}
+
+function copyShareLink() {
+	const shareLink = document.querySelector('.share-link');
+	if (shareLink) {
+		shareLink.select();
+		document.execCommand('copy');
+	}
+}
+
+function hideInitialElements() {
+	const elementsToHide = ['header', 'recent-mindmaps', 'legals-disclaimer'];
+
+	elementsToHide.forEach((id) => {
+		const element = document.getElementById(id);
+		if (element) element.style.display = 'none';
+	});
+}
+
+function showMindmapElements() {
+	const elementsToShow = [{
+		id: 'button-container',
+		display: 'flex'
+	},
+	{
+		id: 'mindmap',
+		display: 'block'
+	},
+	{
+		id: 'undo-redo-container',
+		display: 'flex'
+	}
+	];
+
+	elementsToShow.forEach(element => {
+		const el = document.getElementById(element.id);
+		if (el) {
+			el.style.display = element.display;
+		}
+	});
+
+	const navLinks = document.querySelector('.nav-links');
+	if (navLinks) {
+		navLinks.classList.add('padding-right');
+	}
+}
+
+function formatDateLeftSidebar(timestamp) {
+	const date = new Date(timestamp);
+	const now = new Date();
+	const diffMs = now - date;
+	const diffSec = Math.floor(diffMs / 1000);
+	const diffMin = Math.floor(diffSec / 60);
+	const diffHour = Math.floor(diffMin / 60);
+	const diffDay = Math.floor(diffHour / 24);
+
+	if (diffDay > 0) {
+		return diffDay === 1 ? 'Yesterday' : `${diffDay} days ago`;
+	} else if (diffHour > 0) {
+		return `${diffHour} hour${diffHour === 1 ? '' : 's'} ago`;
+	} else if (diffMin > 0) {
+		return `${diffMin} minute${diffMin === 1 ? '' : 's'} ago`;
+	} else {
+		return 'Just now';
+	}
+}
+
+function escapeHtmlLeftSidebar(unsafe) {
+	if (!unsafe) return "";
+	return unsafe
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+}
+
+
+function initSidebar() {
+	const sidebar = document.getElementById('sidebar');
+	const toggle = document.getElementById('sidebarToggle');
+	const overlay = document.getElementById('sidebarOverlay');
+
+	if (!sidebar || !toggle || !overlay) {
 		return;
 	}
-	mindmapContainer.setAttribute('data-markdown', markdown);
-	mindmapContainer.innerHTML = '';
 
-	try {
-		if (!markdown.trim().startsWith('#')) {
-			markdown = '# ' + (currentMindmapTitle || 'Mind Map') + '\n\n' + markdown;
+	toggle.addEventListener('click', toggleSidebar);
+
+	const sidebarState = localStorage.getItem('sidebar-state');
+	if (sidebarState === 'open') {
+		sidebar.classList.add('open');
+		toggle.classList.add('open');
+		overlay.classList.add('open');
+		updateToggleIcon(true);
+	}
+}
+
+function toggleSidebar() {
+	const sidebar = document.getElementById('sidebar');
+	const toggle = document.getElementById('sidebarToggle');
+	const overlay = document.getElementById('sidebarOverlay');
+
+	if (!sidebar || !toggle || !overlay) return;
+
+	const isOpen = sidebar.classList.contains('open');
+
+	sidebar.classList.toggle('open');
+	toggle.classList.toggle('open');
+	overlay.classList.toggle('open');
+
+	localStorage.setItem('sidebar-state', isOpen ? 'closed' : 'open');
+
+	updateToggleIcon(!isOpen);
+}
+
+function closeSidebar() {
+	const sidebar = document.getElementById('sidebar');
+	const toggle = document.getElementById('sidebarToggle');
+	const overlay = document.getElementById('sidebarOverlay');
+
+	if (!sidebar || !toggle || !overlay) return;
+
+	sidebar.classList.remove('open');
+	toggle.classList.remove('open');
+	overlay.classList.remove('open');
+
+	localStorage.setItem('sidebar-state', 'closed');
+
+	updateToggleIcon(false);
+}
+
+function closeLeftSidebar() {
+	const leftSidebar = document.getElementById('leftSidebar');
+	const app = document.getElementById('app');
+	const mindmap = document.getElementById('mindmap');
+	const menubar = document.getElementById('menubar');
+	const undoRedoContainer = document.getElementById('undo-redo-container');
+
+	if (leftSidebar) leftSidebar.classList.remove('open');
+	if (app) app.classList.remove('left-sidebar-open');
+	if (mindmap) mindmap.classList.remove('left-sidebar-open');
+	if (menubar) menubar.classList.remove('sidebar-open');
+	document.documentElement.classList.remove('left-sidebar-open');
+	if (undoRedoContainer) undoRedoContainer.classList.remove('left-sidebar-open');
+
+	localStorage.setItem('left-sidebar-state', 'closed');
+}
+
+function updateToggleIcon(isOpen) {
+	const toggle = document.getElementById('sidebarToggle');
+	const toggleIcon = toggle?.querySelector('svg');
+
+	if (toggleIcon) {
+		if (isOpen) {
+			toggleIcon.innerHTML = '<polyline points="9 18 15 12 9 6"></polyline>';
+		} else {
+			toggleIcon.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>';
 		}
+	}
+}
 
-		mindmapContainer.style.position = 'fixed';
-		mindmapContainer.style.top = '0';
-		mindmapContainer.style.left = '0';
-		mindmapContainer.style.width = '100vw';
-		mindmapContainer.style.height = '100vh';
-		mindmapContainer.style.display = 'block';
+window.toggleSidebar = toggleSidebar;
+window.closeSidebar = closeSidebar;
 
-		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-		svg.setAttribute('width', '100%');
-		svg.setAttribute('height', '100%');
-		mindmapContainer.appendChild(svg);
+window.onload = function () {
+	if (window.location.hostname === 'mind-map-wizard.pages.dev') {
+		window.location.href =
+			'https://mindmapwizard.com' +
+			window.location.pathname +
+			window.location.search;
+	}
 
-		const {
-			Markmap,
-			Transformer,
-			Toolbar
-		} = markmap;
-		const transformer = new Transformer();
+	const pattern = `
+            
+                      [                  
+                     ///                 
+                    ////                 
+                    /////                
+                   //////                
+                   ///////               
+                  ////////               
+                 /////////               
+                 /////////               
+                ///////////              
+                ///////////              
+               /////////////             
+               /////////////             
+              ///////////////            
+               ////////////////////      
+                    ////////////////     
+      ////////////////////////////////   
+  ///////////////////////////////////////  
+/////////////////////////////////////////// 
+`;
 
-		if (!markdown.startsWith('---\nmarkmap:')) {
-			markdown = '---\nmarkmap:\n  maxWidth: 500\n---\n\n' + markdown;
-		}
+	console.log(
+		"%c" + pattern,
+		"color:rgb(210, 133, 255); font-family: monospace; white-space: pre;"
+	);
+};
 
-		const {
-			root
-		} = transformer.transform(markdown);
+function removeQueryParam(param) {
+	if (!param) return;
 
-		const mm = Markmap.create(
-			svg, {
-				autoFit: true,
-				duration: 500,
-				maxWidth: 550,
-				zoom: true,
-				pan: true,
-			},
-			root,
-		);
+	const url = new URL(window.location.href);
+	if (!url.searchParams.has(param)) return;
 
-		mm.fit();
-		window.markmapInstance = mm;
+	url.searchParams.delete(param);
 
-		const toolbar = Toolbar.create(mm);
-		const toolbarElement = toolbar.render();
+	const newUrl =
+		url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '') + (url.hash || '');
 
-		toolbar.setItems([
-			"zoomIn",
-			"zoomOut",
-		]);
-
-		document.body.appendChild(toolbarElement);
-
-		   		const zoomInButton = document.querySelector('.mm-toolbar-item[title="Zoom in"]');
-		   		if (zoomInButton) {
-		   			zoomInButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zoom-in-icon lucide-zoom-in"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>';
-		   		}
-		   		const zoomOutButton = document.querySelector('.mm-toolbar-item[title="Zoom out"]');
-		   		if (zoomOutButton) {
-		   			zoomOutButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zoom-out-icon lucide-zoom-out"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="8" x2="14" y1="11" y2="11"/></svg>';
-		   		}
-
-		} catch (error) {
-			console.error('Mindmap Error:', error);
-			const errorMessage = document.createElement('div');
-			errorMessage.textContent = 'Error rendering the mindmap: ' + error.message;
-			errorMessage.style.color = 'red';
-			errorMessage.style.padding = '20px';
-			errorMessage.style.textAlign = 'center';
-			errorMessage.style.marginTop = '50px';
-			mindmapContainer.appendChild(errorMessage);
-
-			const errorDetails = document.createElement('pre');
-			errorDetails.textContent =
-				'Markdown content (first 100 chars): ' +
-				(markdown ? markdown.substring(0, 100) + '...' : 'undefined');
-			errorDetails.style.fontSize = '12px';
-			errorDetails.style.margin = '20px';
-			errorDetails.style.padding = '10px';
-			errorDetails.style.background = 'var(--white)';
-			errorDetails.style.border = '1px solid var(--light-grey)';
-			errorDetails.style.borderRadius = '4px';
-			errorDetails.style.overflow = 'auto';
-			mindmapContainer.appendChild(errorDetails);
-		}
+	history.replaceState(null, document.title, newUrl);
 }
 
 function showErrorPopup(errorMessage, input) {
@@ -523,260 +706,243 @@ function showErrorPopup(errorMessage, input) {
 	trackErrorEvent(errorMessage);
 }
 
-function trackErrorEvent(errorMessage) {
-	if (window.dataLayer) {
-		window.dataLayer.push({
-			'event': 'error_occurred',
-			'error_message': errorMessage
-		});
-	} else {
-		console.warn('dataLayer not found.  Google Analytics event not sent.');
+function showInfoSnackbar(message) {
+	const existingSnackbar = document.querySelector('.snackbar');
+	if (existingSnackbar) {
+		existingSnackbar.remove();
 	}
-}
 
-function getTimeAgo(date) {
-	const seconds = Math.floor((new Date() - date) / 1000);
+	const snackbar = document.createElement('div');
+	snackbar.className = 'snackbar';
 
-	const intervals = {
-		year: 31536000,
-		month: 2592000,
-		week: 604800,
-		day: 86400,
-		hour: 3600,
-		minute: 60,
-	};
+	const icon = document.createElement('div');
+	icon.className = 'snackbar-icon';
 
-	for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-		const interval = Math.floor(seconds / secondsInUnit);
+	const messageEl = document.createElement('div');
+	messageEl.className = 'snackbar-message';
+	messageEl.textContent = message;
 
-		if (interval >= 1) {
-			return interval === 1 ? `1 ${unit} ago` : `${interval} ${unit}s ago`;
-		}
-	}
-	return 'Just now';
-}
+	const closeBtn = document.createElement('button');
+	closeBtn.className = 'snackbar-close';
+	closeBtn.setAttribute('aria-label', 'Close notification');
 
+	closeBtn.innerHTML = `
+	<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+  `;
 
+	snackbar.appendChild(icon);
+	snackbar.appendChild(messageEl);
+	snackbar.appendChild(closeBtn);
 
-function hideInitialElements() {
-	const elementsToHide = ['header', 'recent-mindmaps', 'legals-disclaimer'];
+	document.body.appendChild(snackbar);
 
-	elementsToHide.forEach((id) => {
-		const element = document.getElementById(id);
-		if (element) element.style.display = 'none';
-	});
-}
-
-function showMindmapElements() {
-	const elementsToShow = [{
-			id: 'button-container',
-			display: 'flex'
-		},
-		{
-			id: 'mindmap',
-			display: 'block'
-		}
-	];
-
-	elementsToShow.forEach(element => {
-		const el = document.getElementById(element.id);
-		if (el) {
-			el.style.display = element.display;
-		}
+	requestAnimationFrame(() => {
+		snackbar.classList.add('show');
 	});
 
-	const navLinks = document.querySelector('.nav-links');
-	if (navLinks) {
-		navLinks.classList.add('padding-right');
+	const autoHideTimer = setTimeout(() => {
+		hideSnackbar(snackbar);
+	}, 30000);
+
+	closeBtn.addEventListener('click', () => {
+		clearTimeout(autoHideTimer);
+		hideSnackbar(snackbar);
+	});
+
+	function hideSnackbar(element) {
+		element.classList.remove('show');
+		element.classList.add('hide');
+
+		setTimeout(() => {
+			if (element.parentNode) {
+				element.parentNode.removeChild(element);
+			}
+		}, 400);
 	}
 }
 
-function formatDateLeftSidebar(timestamp) {
-	const date = new Date(timestamp);
-	const now = new Date();
-	const diffMs = now - date;
-	const diffSec = Math.floor(diffMs / 1000);
-	const diffMin = Math.floor(diffSec / 60);
-	const diffHour = Math.floor(diffMin / 60);
-	const diffDay = Math.floor(diffHour / 24);
+window.renderMindmap = async function (markdown, options = {}) {
+	try {
+		const json = window.markdownToMmJson(markdown);
 
-	if (diffDay > 0) {
-		return diffDay === 1 ? 'Yesterday' : `${diffDay} days ago`;
-	} else if (diffHour > 0) {
-		return `${diffHour} hour${diffHour === 1 ? '' : 's'} ago`;
-	} else if (diffMin > 0) {
-		return `${diffMin} minute${diffMin === 1 ? '' : 's'} ago`;
-	} else {
-		return 'Just now';
-	}
-}
-
-function escapeHtmlLeftSidebar(unsafe) {
-	return unsafe
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;');
-}
-
-function initSidebar() {
-	const toggle = document.getElementById('leftSidebarToggle');
-
-	toggle.addEventListener('click', toggleSidebar);
-
-	const sidebarState = localStorage.getItem('sidebar-state');
-	if (sidebarState === 'open') {
-		sidebar.classList.add('open');
-		toggle.classList.add('open');
-		updateToggleIcon(true);
-	}
-}
-
-function toggleSidebar() {
-	const sidebar = document.getElementById('sidebar');
-	const toggle = document.getElementById('sidebarToggle');
-	const overlay = document.getElementById('sidebarOverlay');
-
-	if (!sidebar || !toggle || !overlay) return;
-
-	const isOpen = sidebar.classList.contains('open');
-
-	sidebar.classList.toggle('open');
-	toggle.classList.toggle('open');
-	overlay.classList.toggle('open');
-
-	localStorage.setItem('sidebar-state', isOpen ? 'closed' : 'open');
-
-	updateToggleIcon(!isOpen);
-}
-
-function closeSidebar() {
-	const sidebar = document.getElementById('sidebar');
-	const toggle = document.getElementById('sidebarToggle');
-	const overlay = document.getElementById('sidebarOverlay');
-
-	if (!sidebar || !toggle || !overlay) return;
-
-	sidebar.classList.remove('open');
-	toggle.classList.remove('open');
-	overlay.classList.remove('open');
-
-	localStorage.setItem('sidebar-state', 'closed');
-
-	updateToggleIcon(false);
-}
-
-function updateToggleIcon(isOpen) {
-	const toggle = document.getElementById('sidebarToggle');
-	const toggleIcon = toggle.querySelector('svg');
-
-	if (toggleIcon) {
-		if (isOpen) {
-			toggleIcon.innerHTML = '<polyline points="9 18 15 12 9 6"></polyline>';
-		} else {
-			toggleIcon.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>';
+		const hasOptContext =
+			options && (Object.prototype.hasOwnProperty.call(options, 'contextUrls') || Object.prototype.hasOwnProperty.call(options, 'contexturls'));
+		if (hasOptContext) {
+			const optContext = Object.prototype.hasOwnProperty.call(options, 'contextUrls')
+				? options.contextUrls
+				: options.contexturls;
+			const arr = Array.isArray(optContext) ? optContext : (optContext ? [optContext] : []);
+			json['mm-settings'] = json['mm-settings'] || (typeof defaultMmSettings === 'function' ? defaultMmSettings() : {});
+			json['mm-settings'].contextUrls = Array.from(
+				new Set(arr.map(u => (typeof u === 'string' ? u.trim() : '')).filter(Boolean))
+			);
 		}
-	}
-}
 
-window.toggleSidebar = toggleSidebar;
-window.closeSidebar = closeSidebar;
+		const jsonString = JSON.stringify(json, null, 2);
 
-window.onload = function() {
-	if (window.location.hostname === 'mind-map-wizard.pages.dev') {
-		window.location.href =
-			'https://mindmapwizard.com' +
-			window.location.pathname +
-			window.location.search;
+		localStorage.setItem('json-mindmap-content', jsonString);
+
+		const editor = document.getElementById('json-editor');
+		if (editor) {
+			editor.value = jsonString;
+		}
+
+		const mindmapContainer = document.getElementById('mindmap');
+		if (mindmapContainer) {
+			mindmapContainer.style.display = 'block';
+			let svgOutput = document.getElementById('svg-output');
+
+			if (!svgOutput) {
+				svgOutput = document.createElement('div');
+				svgOutput.id = 'svg-output';
+				svgOutput.style.width = '100%';
+				svgOutput.style.height = '100%';
+				mindmapContainer.appendChild(svgOutput);
+			} else {
+				svgOutput.innerHTML = '';
+			}
+
+			if (window.updateMindMap) {
+				window.updateMindMap();
+			}
+			const zoomControls = document.getElementById('zoom-controls');
+			if (zoomControls) {
+				zoomControls.classList.add('show');
+			}
+		}
+	} catch (e) {
+		console.error('Error rendering mindmap:', e);
 	}
 };
 
-
-window.onload = function() {
-	const pattern = `
-            
-                      [                  
-                     ///                 
-                    ////                 
-                    /////                
-                   //////                
-                   ///////               
-                  ////////               
-                 /////////               
-                 /////////               
-                ///////////              
-                ///////////              
-               /////////////             
-               /////////////             
-              ///////////////            
-               ////////////////////      
-                    ////////////////     
-      ////////////////////////////////   
-  ///////////////////////////////////////  
-/////////////////////////////////////////// 
-`;
-
-	console.log(
-		"%c" + pattern,
-		"color:rgb(210, 133, 255); font-family: monospace; white-space: pre;"
-	);
+function removeMarkdown(text) {
+	if (!text) return '';
+	return text
+		.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+		.replace(/[*_~`]/g, '')
+		.replace(/#+\s/g, '')
+		.replace(/>\s/g, '')
+		.replace(/-\s/g, '')
+		.replace(/\d+\.\s/g, '');
 }
 
-function removeQueryParam(param) {
-  if (!param) return;
+window.removeMarkdown = removeMarkdown;
+window.escapeHtmlLeftSidebar = escapeHtmlLeftSidebar;
+window.mmJsonToMarkdown = mmJsonToMarkdown;
 
-  const url = new URL(window.location.href);
-  if (!url.searchParams.has(param)) return; 
+function initializeKeyboardShortcuts() {
+	document.addEventListener('keydown', function (e) {
+		const mindmapVisible =
+			document.getElementById('mindmap')?.style.display === 'block';
+		const activeElement = document.activeElement;
+		const isTyping =
+			['input', 'textarea'].includes(activeElement?.tagName?.toLowerCase()) ||
+			activeElement?.isContentEditable;
 
-  url.searchParams.delete(param);
+		if (e.key === 'k' && !isTyping) {
+			e.preventDefault();
+			openSearchMindmapsPopup();
+			return;
+		}
 
-  const newUrl =
-    url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '') + (url.hash || '');
-
-  history.replaceState(null, document.title, newUrl);
+		if (mindmapVisible && !isTyping) {
+			switch (e.key) {
+				case 'e':
+					e.preventDefault();
+					document.getElementById('customize-mode-button')?.click();
+					break;
+				case 'd':
+					e.preventDefault();
+					document.getElementById('download-mindmap-btn')?.click();
+					break;
+				case 'g':
+					e.preventDefault();
+					document.getElementById('regenerate-button')?.click();
+					break;
+				case 's':
+					e.preventDefault();
+					document.getElementById('share-btn')?.click();
+					break;
+				case 'f':
+					e.preventDefault();
+					document.getElementById('mm-fit')?.click();
+					break;
+			}
+		}
+	});
 }
 
-function showLicensePopup() {
-  const licensePopup = document.getElementById('licensePopup');
-  const infoMenu = document.querySelector('.info-menu');
-  
-  if (licensePopup) {
-    licensePopup.classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-  
-  if (infoMenu) {
-    infoMenu.classList.remove('show');
-  }
+
+function markdownToMmJson(md) {
+	const lines = String(md || '').split(/\r?\n/);
+
+	let rootContent = 'Mind Map Wizard';
+	let firstHeadingLevel = null;
+	let firstHeadingIndex = -1;
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i].trim();
+		if (!line) continue;
+
+		const m = line.match(/^(#{1,6})\s+(.*)$/);
+		if (m) {
+			rootContent = m[2].trim();
+			firstHeadingLevel = m[1].length;
+			firstHeadingIndex = i;
+			break;
+		}
+	}
+
+	const root = { content: rootContent, children: [] };
+	const stack = [{ level: 1, node: root }];
+
+	lines.forEach((raw, index) => {
+		const line = raw.trim();
+		if (!line) return;
+
+		if (index === firstHeadingIndex) return;
+
+		const m = line.match(/^(#{1,6})\s+(.*)$/);
+		if (m) {
+			const lvl = m[1].length;
+			const text = m[2].trim();
+			const node = { content: text, children: [] };
+			while (stack.length && stack[stack.length - 1].level >= lvl) stack.pop();
+			const parent = stack[stack.length - 1]?.node || root;
+			parent.children.push(node);
+			stack.push({ level: lvl, node });
+			return;
+		}
+
+		const b = line.match(/^([-*+]|\d+\.)\s+(.*)$/);
+		if (b) {
+			const text = b[2].trim();
+			const node = { content: text, children: [] };
+			while (stack.length > 1 && stack[stack.length - 1].isBullet) {
+				stack.pop();
+			}
+			const parent = stack[stack.length - 1]?.node || root;
+			parent.children.push(node);
+			return;
+		}
+
+		const node = { content: line, children: [] };
+		const parent = stack[stack.length - 1]?.node || root;
+		parent.children.push(node);
+	});
+
+	return {
+		"mm-settings": defaultMmSettings(),
+		"mm-node": root
+	};
 }
 
-function closeLicensePopup() {
-  const licensePopup = document.getElementById('licensePopup');
-  
-  if (licensePopup) {
-    licensePopup.classList.remove('show');
-    document.body.style.overflow = '';
-  }
+function defaultMmSettings() {
+	return {
+		"spacing": 30,
+		"border-radius": 4
+	};
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  const closeLicenseBtn = document.getElementById('closeLicensePopup');
-  const licensePopup = document.getElementById('licensePopup');
-  
-  if (closeLicenseBtn) {
-    closeLicenseBtn.addEventListener('click', closeLicensePopup);
-  }
-  
-  if (licensePopup) {
-    licensePopup.addEventListener('click', function(e) {
-      if (e.target === licensePopup) {
-        closeLicensePopup();
-      }
-    });
-  }
-});
-
-window.showLicensePopup = showLicensePopup;
-window.closeLicensePopup = closeLicensePopup;
-
+window.markdownToMmJson = markdownToMmJson;
+window.defaultMmSettings = defaultMmSettings;

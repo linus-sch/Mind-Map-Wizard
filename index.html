@@ -1,187 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mind Map Wizard</title>
 
-        <meta name="language" content="en">
-        <meta name="referrer" content="no-referrer-when-downgrade">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mind Map Wizard</title>
+    <meta name="language" content="en">
 
-        <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
-        <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
-        <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
-        <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
-        <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
-        <link rel="apple-touch-icon" href="/img/logo.png">
 
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-title" content="Mind Map Wizard">
+    <link rel="icon" type="image/png" href="/img/favicon96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/img/favicon64.png" sizes="64x48">
+    <link rel="icon" type="image/png" href="/img/favicon48.png" sizes="48x48">
+    <link rel="icon" type="image/png" href="/img/favicon32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/img/favicon16.png" sizes="16x16">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 
-        <link rel="stylesheet" href="/styles/mmw.css">
-        <link rel="stylesheet" href="/styles/new.css">
-        
-        <script src="/scripts/libraries/jspdf.umd.min.js"></script>
-        <script src="/scripts/libraries/jquery-3.7.1.min.js"></script>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Mind Map Wizard">
+    <link rel="manifest" href="/img/site.webmanifest" />
 
-        <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5"></script>
-        <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.16.1"></script>
-        <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.16.0"></script>
-        <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
-        <script src="/scripts/mmw.js" defer="defer"></script>
-        <script src="/scripts/new.js" defer="defer"></script>
-        <style>
-            @font-face {
-                font-family: "Open Sans";
-                src: url("/OpenSans-ExtraBold.ttf") format("truetype"),
-                    url("/OpenSans-ExtraBold.ttf") format("ttf");
-                font-weight: 800;
-                font-style: normal;
-                font-display: swap;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="banner-outage">
-            <div class="outage-banner-content">
-              <div class="banner-text">
+    <link rel="stylesheet" href="/styles/mmw.css">
+    <link rel="stylesheet" href="/styles/new.css">
+    <link rel="stylesheet" href="/styles/mind-map-elements.css">
+
+
+    <script src="/scripts/mm-rendering/notes.js"></script>
+
+    <script src="/scripts/libraries/jspdf.umd.min.js"></script>
+
+    <link rel="preload" href="/OpenSans-ExtraBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="preload" href="/img/fonts/Bebas_Neue/BebasNeue-Regular.ttf" as="font" type="font/ttf"
+        crossorigin="anonymous">
+    <link rel="preload" href="/img/fonts/PT_Serif/PTSerif-Regular.ttf" as="font" type="font/ttf"
+        crossorigin="anonymous">
+    <link rel="preload" href="/img/fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf" as="font" type="font/ttf"
+        crossorigin="anonymous">
+    <link rel="preload" href="/img/fonts/Montserrat/Montserrat-VariableFont_wght.ttf" as="font" type="font/ttf"
+        crossorigin="anonymous">
+    <link rel="preload" href="/img/fonts/Indie_Flower/IndieFlower-Regular.ttf" as="font" type="font/ttf"
+        crossorigin="anonymous">
+    <link rel="preload" href="/img/fonts/open-runde/OpenRunde-Regular.otf" as="font" type="font/otf"
+        crossorigin="anonymous">
+
+    <script src="/scripts/mmw.js" defer="defer"></script>
+    <script src="/scripts/new.js" defer="defer"></script>
+    <style>
+        @font-face {
+            font-family: "Open Sans";
+            src: url("/OpenSans-ExtraBold.ttf") format("truetype"),
+                url("/OpenSans-ExtraBold.ttf") format("ttf");
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @font-face {
+            font-family: 'Bebas Neue';
+            src: url('/img/fonts/Bebas_Neue/BebasNeue-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'PT Serif';
+            src: url('/img/fonts/PT_Serif/PTSerif-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Roboto Mono';
+            src: url('/img/fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf') format('truetype');
+            font-weight: 100 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('/img/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+            font-weight: 100 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Indie Flower';
+            src: url('/img/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+            font-weight: 100 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Open Runde';
+            src: url('/img/fonts/open-runde/OpenRunde-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="banner-outage">
+        <div class="outage-banner-content">
+            <div class="banner-text">
                 We’re currently facing some technical issues and are working to resolve them.
             </div>
-            </div>
-          </div>
-        <div class="menubar" id="menubar"></div>
-        <button
-            id="leftSidebarToggle"
-            class="left-sidebar-toggle navbar-toggle"
-            aria-label="Toggle Left Sidebar">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewbox="0 0 24 24"
-                fill="none"
-                stroke="var(--text-color)"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2"/>
-                <path d="M9 3v18"/>
-            </svg>
-        </button>
+        </div>
+    </div>
+    <div class="menubar" id="menubar"></div>
+    <button id="leftSidebarToggle" class="left-sidebar-toggle navbar-toggle" aria-label="Toggle Left Sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none"
+            stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="5" />
+            <path d="M9 3v18" />
+        </svg>
+    </button>
 
-        <button id="new-mind-map-button" class="new-mind-map-button" aria-label="Create a New Mind Map">
-            <svg
-                height="18"
-                width="18"
-                viewbox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 0h24v24H0z" fill="none"></path>
-                <path
-                    d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
-                    fill="var(--text-color)"
-                    stroke="var(--text-color)"
-                    stroke-width="0.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-            </svg>
-        </button>
+    <button id="new-mind-map-button" class="new-mind-map-button" aria-label="Create a New Mind Map">
+        <svg height="18" width="18" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0h24v24H0z" fill="none"></path>
+            <path
+                d="M12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3C13 2.44772 12.5523 2 12 2Z"
+                fill="var(--text-color)" stroke="var(--text-color)" stroke-width="0.5" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+    </button>
 
-        <button
-        id="openSearchPopupBtn"
-        class="search-mind-maps-button"
-        title="Search Mind Maps"
-        aria-label="Search for Mind Maps"
-        >
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-color)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
+    <button id="openSearchPopupBtn" class="search-mind-maps-button" title="Search Mind Maps"
+        aria-label="Search for Mind Maps">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m21 21-4.34-4.34" />
             <circle cx="11" cy="11" r="8" />
         </svg>
-        </button>
-
-        <div class="navbar">
-
-            <div class="nav-links" id="nav-links">
-            </div>
-        </div>
+    </button>
     </div>
-</p>
-
-<div id="app">
+    </p>
 
 
+    <div id="app">
 
 
-    <div class="loading-animation" id="loading-animation">
-        <div class="analyze">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewbox="0 0 24 24"
-                height="54"
-                width="54">
-                <rect height="45" width="45"></rect>
-                <path
-                    stroke-linecap="round"
-                    stroke-width="1.5"
-                    stroke="var(--primary-color)"
-                    d="M19.25 9.25V5.25C19.25 4.42157 18.5784 3.75 17.75 3.75H6.25C5.42157 3.75 4.75 4.42157 4.75 5.25V18.75C4.75 19.5784 5.42157 20.25 6.25 20.25H12.25"
-                    class="board"></path>
-                <path
-                    d="M9.18748 11.5066C9.12305 11.3324 8.87677 11.3324 8.81234 11.5066L8.49165 12.3732C8.47139 12.428 8.42823 12.4711 8.37348 12.4914L7.50681 12.8121C7.33269 12.8765 7.33269 13.1228 7.50681 13.1872L8.37348 13.5079C8.42823 13.5282 8.47139 13.5714 8.49165 13.6261L8.81234 14.4928C8.87677 14.6669 9.12305 14.6669 9.18748 14.4928L9.50818 13.6261C9.52844 13.5714 9.5716 13.5282 9.62634 13.5079L10.493 13.1872C10.6671 13.1228 10.6671 12.8765 10.493 12.8121L9.62634 12.4914C9.5716 12.4711 9.52844 12.428 9.50818 12.3732L9.18748 11.5066Z"
-                    class="star-2"></path>
-                <path
-                    d="M11.7345 6.63394C11.654 6.41629 11.3461 6.41629 11.2656 6.63394L10.8647 7.71728C10.8394 7.78571 10.7855 7.83966 10.717 7.86498L9.6337 8.26585C9.41605 8.34639 9.41605 8.65424 9.6337 8.73478L10.717 9.13565C10.7855 9.16097 10.8394 9.21493 10.8647 9.28335L11.2656 10.3667C11.3461 10.5843 11.654 10.5843 11.7345 10.3667L12.1354 9.28335C12.1607 9.21493 12.2147 9.16097 12.2831 9.13565L13.3664 8.73478C13.5841 8.65424 13.5841 8.34639 13.3664 8.26585L12.2831 7.86498C12.2147 7.83966 12.1607 7.78571 12.1354 7.71728L11.7345 6.63394Z"
-                    class="star-1"></path>
-                <path
-                    class="stick"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    stroke="var(--secondary-color)"
-                    d="M17 14L21.2929 18.2929C21.6834 18.6834 21.6834 19.3166 21.2929 19.7071L20.7071 20.2929C20.3166 20.6834 19.6834 20.6834 19.2929 20.2929L15 16M17 14L15.7071 12.7071C15.3166 12.3166 14.6834 12.3166 14.2929 12.7071L13.7071 13.2929C13.3166 13.6834 13.3166 14.3166 13.7071 14.7071L15 16M17 14L15 16"></path>
-            </svg>
+
+        <div class="loading-animation" id="loading-animation">
+                <div class="loader-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+                        <defs>
+                            <style>
+                                .loader-container {
+                                    width: 100px;
+                                    height: 100px;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                }
+        
+                                .wand {
+                                    fill: var(--text-color);
+                                    stroke: var(--text-color);
+                                    stroke-width: 4px;
+                                    stroke-linejoin: round;
+                                    vector-effect: non-scaling-stroke;
+                                    transform-origin: 45px 125px;
+                                    animation: magic-stretch-release 2.5s infinite;
+                                }
+        
+                                /* NEW RULE ADDED HERE TO MOVE STARS */
+                                .stars {
+                                    transform: translate(15px, -15px);
+                                }
+        
+                                @keyframes magic-stretch-release {
+                                    0% {
+                                        transform: rotate(43deg) scale3d(1, 1, 1) rotate(-43deg);
+                                        animation-timing-function: ease-in;
+                                    }
+        
+                                    40% {
+                                        transform: rotate(43deg) scale3d(1.25, 0.75, 1) rotate(-43deg);
+                                        animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                                    }
+        
+                                    45% {
+                                        transform: rotate(43deg) scale3d(0.9, 1.15, 1) rotate(-43deg);
+                                        animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+                                    }
+        
+                                    50% {
+                                        transform: rotate(43deg) scale3d(1.05, 0.98, 1) rotate(-43deg);
+                                    }
+        
+                                    55% {
+                                        transform: rotate(43deg) scale3d(1, 1, 1) rotate(-43deg);
+                                    }
+        
+                                    100% {
+                                        transform: rotate(43deg) scale3d(1, 1, 1) rotate(-43deg);
+                                    }
+                                }
+        
+                                .star {
+                                    transform-box: fill-box;
+                                    transform-origin: center;
+                                    animation:
+                                        star-color-cycle 2.5s linear infinite,
+                                        star-react 2.5s ease-out infinite;
+                                }
+        
+                                .star-2 {
+                                    animation-delay: 0.1s;
+                                }
+        
+                                .star-3 {
+                                    animation-delay: 0.05s;
+                                }
+        
+                                @keyframes star-color-cycle {
+        
+                                    0%,
+                                    100% {
+                                        fill: #ffd700;
+                                    }
+        
+                                    25% {
+                                        fill: #00ff00;
+                                    }
+        
+                                    50% {
+                                        fill: #1e90ff;
+                                    }
+        
+                                    75% {
+                                        fill: #ff4500;
+                                    }
+                                }
+        
+                                @keyframes star-react {
+        
+                                    0%,
+                                    40% {
+                                        transform: scale(1) rotate(0deg);
+                                        opacity: 0.7;
+                                    }
+        
+                                    45% {
+                                        transform: scale(1.3) rotate(45deg);
+                                        opacity: 1;
+                                    }
+        
+                                    50% {
+                                        transform: scale(1) rotate(90deg);
+                                        opacity: 1;
+                                    }
+        
+                                    100% {
+                                        transform: scale(1) rotate(90deg);
+                                        opacity: 0.7;
+                                    }
+                                }
+                            </style>
+                        </defs>
+        
+                        <path class="wand"
+                            d="M92.98 79.91l-9.98-6.64c-1.31-.87-2.99-.65-4.07.54l-8.53 9.43-35.51 39.25c-1.18 1.3-1.17 3.4.01 4.69 5.19 4.71 5.87 3.9 10.04.54l48.33-43.4c1.32-1.18 1.17-3.44-.28-4.41ZM92.9 84l-10.58 9.51-11.26-10.28 8.13-9c.74-.97 2.4-1.47 3.86-.37l9.76 6.52c1.2.83 1.26 2.6.09 3.62Z" />
+        
+                        <g class="stars">
+                            <path class="star star-1"
+                                d="M103.18 30.65c.52-1.51 2.53-1.51 3.05 0l2.61 7.51c.16.47.51.85.96 1.02l7.04 2.78c1.42.56 1.42 2.69 0 3.25l-7.04 2.78c-.45.18-.8.55-.96 1.02l-2.61 7.51c-.52 1.51-2.53 1.51-3.05 0l-2.61-7.51c-.16-.47-.52-.85-.96-1.02l-7.04-2.78c-1.42-.56-1.42-2.69 0-3.25l7.04-2.78c.44-.18.8-.55.96-1.02l2.61-7.51Z" />
+                            <path class="star star-2"
+                                d="M114.84 58.47c.4-1.07 1.91-1.07 2.31 0l1.98 5.34c.12.34.39.6.73.73l5.34 1.98c1.07.4 1.07 1.91 0 2.31l-5.34 1.98c-.34.13-.6.39-.73.73l-1.98 5.34c-.4 1.07-1.91 1.07-2.31 0l-1.98-5.34c-.12-.34-.39-.6-.73-.73l-5.34-1.98c-1.07-.4-1.07-1.91 0-2.31l5.34-1.98c.34-.13.6-.39.73-.73l1.98-5.34Z" />
+                            <path class="star star-3"
+                                d="M76.13 42.95c.4-1.07 1.91-1.07 2.31 0l1.98 5.34c.12.34.39.6.73.73l5.34 1.98c1.07.4 1.07 1.91 0 2.31l-5.34 1.98c-.34.13-.6.39-.73.73l-1.98 5.34c-.4 1.07-1.91 1.07-2.31 0l-1.98-5.34c-.12-.34-.39-.6-.73-.73l-5.34-1.98c-1.07-.4-1.07-1.91 0-2.31l5.34-1.98c.34-.13.6-.39.73-.73l1.98-5.34Z" />
+                        </g>
+                    </svg>
+                </div>
+            <br>
+            <small style="font-weight: 500;">Generating Mind Map...</small>
         </div>
-        <br>
-        <small>Generating Mind Map...</small>
-    </div>
 
-    <div class="centered-div">
+        <div class="centered-div">
 
-        <div class="header" id="header">
-            <div class="whitespace" style="height: 100px;"></div>
-            <h1 id="randomText"></h1>
-            <div class="input-wrapper">
-                <input
-                    type="text"
-                    name="text"
-                    class="input"
-                    id="prompt"
-                    placeholder="Visualize anything..."/>
-                <button id="generate-mindmap-btn" class="send-prompt-btn" aria-label="Generate Mind Map">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#FFFFFF"><path d="M166.67-179.67Q150-173 135-182.5T120-210v-193.33L428-480l-308-78v-192q0-18 15-27.5t31.67-2.83l640 269.33Q827-502 827-480t-20.33 31l-640 269.33Z"/></svg>
-                </button>
-            </div>
+            <div class="header" id="header">
+                <div class="whitespace" style="height: 60px;"></div>
+                <h1 id="randomText"></h1>
+                <div class="input-wrapper">
+                    <textarea name="text" class="input" id="prompt" placeholder="Enter your text or URL..."
+                        rows="1"></textarea>
+                    <button id="generate-mindmap-btn" class="send-prompt-btn" aria-label="Generate Mind Map">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px"
+                            fill="#FFFFFF">
+                            <path
+                                d="M166.67-179.67Q150-173 135-182.5T120-210v-193.33L428-480l-308-78v-192q0-18 15-27.5t31.67-2.83l640 269.33Q827-502 827-480t-20.33 31l-640 269.33Z" />
+                        </svg>
+                    </button>
+                </div>
 
             <div class="model-selector-container" style="margin-top: 6px;">
                 <div class="model-dropdown-wrapper">
                     <button type="button" id="model-dropdown-btn" class="model-dropdown-btn">
                         <span id="current-model-name"></span>
-                        <svg id="dropdown-arrow" class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg id="dropdown-arrow" class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"/>
                         </svg>
                     </button>
+                    <div class="web-search-toggle" id="web-search-toggle" title="Use web search for current info">
+                        <span class="toggle-label">Web Search</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="web-search-checkbox" checked>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                    </div>
 
                     <div id="model-dropdown" class="model-dropdown">
                         <div class="model-search-container">
@@ -199,262 +334,423 @@
                         </div>
                     </div>
                 </div>
-                
-            </div>
-            
-            <div
-                style="display: flex; justify-content: center; gap: 10px; margin-top: 18px;">
-                <a href="/edit.html?id=new" class="manual-btn">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewbox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="manual-icon">
-                            <path
-                            d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/>
-                            <path d="m8 6 2-2"/>
-                            <path d="m18 16 2-2"/>
-                            <path
-                            d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/>
-                            <g class="rotatable-group" fill="var(--white)">
-                                    <path
-                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
-                                    <path d="m15 5 4 4"/>
-                            </g>
-                  </svg>
-                    Manual
-                </a>
             </div>
 
-
-
-            
-            <div class="outage-notification" style="display: none;">
-                <p style="margin-top: 20px;">The generation of new mind maps with AI is currently not available. However, you can...</p>
-                <div class="page-links">
-                    <a href="/edit.html?id=new">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewbox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="manual-icon"><path
-                        d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2-2"/><path d="m18 16 2-2"/><path
-                        d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/><path
-                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                        Create Manually</a>
-                </div>
-            </div>
-
-        </div>
-
-        <small class="legals-disclaimer" id="legals-disclaimer">Enter your OpenRouter API key above to start generating mind maps.</small>
-
-        <div id="youtube-popup" class="youtube-popup">
-            <div class="youtube-popup-content">
-                <div class="youtube-popup-header">
-                    <h2>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            x="0px"
-                            y="0px"
-                            width="34"
-                            height="34"
-                            viewbox="0 0 48 48"
-                            class="title-youtube-icon"
-                            style="vertical-align: middle; margin-bottom: 5px;  margin-right: 6px;">
-                            <path
-                                fill="#FF3D00"
-                                d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
-                            <path fill="#FFF" d="M20 31L20 17 32 24z"></path>
+                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 18px;">
+                    <a href="/sign-up.html" class="upload-pdf-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="upload-icon">
+                            <path d="M4 12v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" x2="12" y1="2" y2="12"></line>
                         </svg>
-                        YouTube Video URL
-                    </h2>
-                    <button class="youtube-close-button" id="close-youtube-popup">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewbox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    </button>
+                        Upload
+                    </a>
+                    <a href="/?manual=true" class="manual-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewbox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="manual-icon">
+                            <path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13" />
+                            <path d="m8 6 2-2" />
+                            <path d="m18 16 2-2" />
+                            <path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17" />
+                            <g class="rotatable-group" fill="var(--white)">
+                                <path
+                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                                <path d="m15 5 4 4" />
+                            </g>
+                        </svg>
+                        Manual
+                    </a>
                 </div>
-                <p class="youtube-description">Enter a YouTube video URL to generate a mind map from its content.</p>
-                <div class="youtube-input-wrapper">
-                    <input
-                        type="text"
-                        id="youtube-url"
-                        placeholder="https://www.youtube.com/watch..."
-                        class="youtube-input">
-                    <button id="youtube-generate-btn" class="youtube-send-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#FFFFFF"><path d="M166.67-179.67Q150-173 135-182.5T120-210v-193.33L428-480l-308-78v-192q0-18 15-27.5t31.67-2.83l640 269.33Q827-502 827-480t-20.33 31l-640 269.33Z"/></svg>
+            </div>
+        </div>
+
+        <small class="legals-disclaimer" id="legals-disclaimer">Mind Map Wizard runs locally with your own OpenRouter API key.</small>
+    </div>
+    </div>
+
+    <div id="mindmap"></div>
+    <small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive
+        information</small>
+
+    <div id="download-options-popup" class="download-options-popup" style="padding: 0px;">
+        <div class="download-options-popup-content">
+            <div class="popup-header">
+                <h2>Download Mind Map</h2>
+                <button class="close-button" id="close-download-options-popup">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none"
+                        stroke="var(--tex-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="download-options">
+                <div class="format-selector">
+                    <label for="download-format">File format</label>
+                    <select id="download-format" class="material-dropdown">
+                        <option value="jpg">JPG - Image</option>
+                        <option value="svg">SVG - Vector Graphics</option>
+                        <option value="pdf">PDF - Document</option>
+                        <option value="markdown">Markdown - Text</option>
+                    </select>
+                </div>
+                <div class="popup-buttons">
+                    <button class="print-button secondary" id="print-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9" />
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                            <rect x="6" y="14" width="12" height="8" />
+                        </svg>
                     </button>
+                    <button class="download-button primary" id="download-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" x2="12" y1="15" y2="3" />
+                        </svg>
+                        Download
+                    </button>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="mindmap"></div>
-<small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive information</small>
-
-<div
-    id="download-options-popup"
-    class="download-options-popup"
-    style="padding: 0px;">
-    <div class="download-options-popup-content">
-        <div class="popup-header">
-            <h2>Download Mind Map</h2>
-            <button class="close-button" id="close-download-options-popup">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewbox="0 0 24 24"
-                    fill="none"
-                    stroke="var(--tex-color)"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-        </div>
-        <div class="download-options">
-            <div class="format-selector">
-                <label for="download-format">File format</label>
-                <select id="download-format" class="material-dropdown">
-                    <option value="jpg">JPG - Image</option>
-                    <option value="svg">SVG - Vector Graphics</option>
-                    <option value="pdf">PDF - Document</option>
-                    <option value="markdown">Markdown - Text</option>
-                </select>
+    <div id="help-popup" class="help-popup">
+        <div class="help-popup-content">
+            <div class="popup-header" style="padding: 10px 0px !important;">
+                <h2>Mind Map Editing</h2>
+                <button class="close-button" id="close-help-popup">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none"
+                        stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
             </div>
-            <button class="download-button primary" id="download-btn">
-                Download
-            </button>
+            <div class="help-content-grid">
+                <div class="help-item">
+                    <div class="help-image-container">
+                        <img src="/img/instructions/edit-node.webp" alt="Double click to edit">
+                    </div>
+                    <h3>Double-Click to Edit Text</h3>
+                    <p>Double-click on any node to edit its text. Start typing once the cursor appears.</p>
+                </div>
+                <div class="help-item">
+                    <div class="help-image-container">
+                        <img src="/img/instructions/context-menu.webp" alt="Right click for options">
+                    </div>
+                    <h3>Right-Click for Options</h3>
+                    <p>Right-click on a node to access options such as adding or deleting branches.</p>
+                </div>
+            </div>
+            <div class="popup-buttons" style="justify-content: flex-end; margin-top: 20px;">
+                <button class="download-button primary" id="close-help-btn-action">
+                    Done
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="button-container" id="button-container">
-    <button class="edit-mode-button" id="edit-mode-button" title="Edit (E)">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-color)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="M12 20h9"/><path
-            d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>
-    </button>
-    <button
-        class="download-mindmap-btn"
-        id="download-mindmap-btn"
-        title="Download (D)">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-color)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-    </button>
-    <button class="regenerate-button" id="regenerate-button" title="Regenerate (R)">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-color)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-    </button>
-    <button class="fit-button" id="mm-fit" title="Fit to Screen (F)">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewbox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-color)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
-    </button>
-</div>
-
-<div class="editor-overlay" id="editor-overlay"></div>
-<div class="markdown-editor" id="markdown-editor">
-    <textarea id="markdown-textarea" spellcheck="false"></textarea>
-    <div class="editor-buttons">
-        <a
-            href="https://mindmapwizard.com/help/mind-map-editing.html"
-            class="help-button"
-            target="_blank"
-            style="position: fixed; left: 24px; width: 20px; height: 20px;; color: var(--text-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold;">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewbox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-        </a>
-        <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
-        <button class="editor-button save-button" id="save-edit">Save</button>
+    <div class="button-container" id="button-container">
+        <button class="share-mm-button" id="share-btn" onclick="shareMindmap()" title="Share (S)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="var(--text-color)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <polyline points="16 6 12 2 8 6" />
+                <line x1="12" x2="12" y1="2" y2="15" />
+            </svg>
+        </button>
+        <button class="help-mm-button" id="help-btn" title="How to Edit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+        </button>
+        <button class="edit-mode-button" id="customize-mode-button" title="Edit (E)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15" />
+                <path fill="var(--white)"
+                    d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z" />
+            </svg> </button>
+        <button class="download-mindmap-btn" id="download-mindmap-btn" title="Download (D)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="var(--text-color)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+        </button>
+        <button class="regenerate-button" id="regenerate-button" title="Regenerate (R)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="var(--text-color)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+            </svg>
+        </button>
+        <button class="fit-button" id="mm-fit" title="Fit to Screen (F)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="var(--text-color)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+                <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+                <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+                <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+            </svg>
+        </button>
     </div>
-</div>
 
-<div class="info-button">
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings2-icon lucide-settings-2"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
-</div>
-<div class="info-menu">
-    <a href="#" onclick="showApiKeyManagement(); return false;" class="api-key-manage-button">
+    <!-- Zoom Controls -->
+    <div class="zoom-controls" id="zoom-controls">
+        <button class="zoom-button" id="zoom-in-btn" title="Zoom In (+)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+                <line x1="11" y1="8" x2="11" y2="14" />
+                <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+        </button>
+        <button class="zoom-button" id="zoom-out-btn" title="Zoom Out (-)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+                <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="editor-overlay" id="editor-overlay">
+        <div class="mm-customization-panel" id="mmCustomizationPanel">
+            <div class="customization-content-wrapper" style="display: flex; gap: 20px;">
+                <div class="customization-controls" style="flex: 1;">
+                    <h3 style="margin: 0 0 14px; font-weight: 600;">Customization Options</h3>
+
+                    <div class="field-group">
+                        <label>Branch Positioning</label>
+                        <div class="segmented" style="display:flex;">
+                            <button id="align-balanced" class="seg-btn" style="flex:1;">Balanced</button>
+                            <button id="align-right" class="seg-btn" style="flex:1;">Right side</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div>
+                            <label for="spacingRange">Level Spacing</label>
+                            <input type="range" id="spacingRange" min="10" max="100" step="2" style="width:100%;">
+                        </div>
+
+                        <div>
+                            <label for="roundingRange">Node Rounding</label>
+                            <input type="range" id="roundingRange" min="0" max="24" step="1" style="width:100%;">
+                        </div>
+
+                        <div>
+                            <label for="branchWidthRange">Link Width</label>
+                            <input type="range" id="branchWidthRange" min="1" max="8" step="0.1" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div class="field-group"
+                        style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px; margin-bottom: 0;">
+                        <label for="nodeBackgroundsToggle" style="margin: 0; font-weight: 500;">Node Backgrounds</label>
+                        <label class="switch">
+                            <input type="checkbox" id="nodeBackgroundsToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="fontSelect">Font</label>
+                        <select id="fontSelect" class="material-dropdown" style="width:100%;">
+                            <option value="standard">Basic</option>
+                            <option value="PT Serif">Elegant</option>
+                            <option value="Roboto Mono">Monospace</option>
+                            <option value="Bebas Neue">Modern</option>
+                            <option value="Montserrat">Montserrat</option>
+                            <option value="Indie Flower">Hand</option>
+                            <option value="Open Runde">Rounded</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="customization-preview">
+                    <div id="svg-preview-container">
+                        <svg id="preview-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="1300" height="200"
+                            viewBox="0 -24.5 1200 155">
+                            <defs>
+                                <style id="preview-style">
+                                    .mm--preview-node text {
+                                        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                                    }
+                                </style>
+                            </defs>
+                            <g class="mm-stage">
+                                <!-- Root node -->
+                                <g class="mm-preview-node" transform="translate(60,29)"
+                                    style="transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms;">
+                                    <rect id="preview-root-rect" x="0" y="0" width="179" height="48" rx="4" ry="4"
+                                        fill="var(--white)" stroke="none"
+                                        style="transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms;">
+                                    </rect>
+                                    <rect id="preview-root-rect" x="0" y="0" width="179" height="48" rx="4" ry="4"
+                                        fill-opacity="0.18" fill="#03a9f4" stroke="none"
+                                        style="transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms;">
+                                    </rect>
+
+                                    <text x="89.5" y="26" font-family="system-ui" font-size="26px" font-weight="700"
+                                        fill="var(--text-color)" text-anchor="middle" dominant-baseline="middle"
+                                        style="opacity: 1;">
+                                        Mind Map
+                                    </text>
+                                </g>
+
+                                <!-- Branch node 1 -->
+                                <g class="mm-preview-node" id="preview-node-0" transform="translate(339, -29)"
+                                    style="transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms;">
+                                    <rect class="preview-rect" x="0" y="0" width="102" height="38" rx="4" ry="4"
+                                        fill="var(--white)" stroke="none"
+                                        style="transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms;">
+                                    </rect>
+                                    <rect class="preview-rect" x="0" y="0" width="102" height="38" rx="4" ry="4"
+                                        fill-opacity="0.18" fill="rgb(255, 127, 15)" stroke="none"
+                                        style="transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms;">
+                                    </rect>
+                                    <text x="51" y="21" font-family="system-ui" font-size="16px" font-weight="400"
+                                        fill="var(--text-color)" text-anchor="middle" dominant-baseline="middle"
+                                        style="opacity: 1;">
+                                        Branch
+                                    </text>
+                                </g>
+
+                                <!-- Branch node 2 -->
+                                <g class="mm-preview-node" id="preview-node-1" transform="translate(339, 97)"
+                                    style="transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms;">
+                                    <rect class="preview-rect" x="0" y="0" width="102" height="38" rx="4" ry="4"
+                                        fill="var(--white)" stroke="none"
+                                        style="transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms;">
+                                    </rect>
+                                    <rect class="preview-rect" x="0" y="0" width="102" height="38" rx="4" ry="4"
+                                        fill-opacity="0.18" fill="rgb(0, 191, 191)" stroke="none"
+                                        style="transition: height 500ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms;">
+                                    </rect>
+                                    <text x="51" y="21" font-family="system-ui" font-size="16px" font-weight="400"
+                                        fill="var(--text-color)" text-anchor="middle" dominant-baseline="middle"
+                                        style="opacity: 1;">
+                                        Branch
+                                    </text>
+                                </g>
+
+                                <path class="mm-link" id="preview-link-0" d="M 239,53 C 299,53 279,-10 339,-10"
+                                    stroke="rgb(255, 127, 15)" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" fill="none" pointer-events="none"
+                                    style="transition: d 500ms cubic-bezier(0.4, 0, 0.2, 1), stroke 300ms, opacity 400ms; z-index: 1;">
+                                </path>
+                                <path class="mm-link" id="preview-link-1" d="M 239,53 C 299,53 279,116 339,116"
+                                    stroke="rgb(0, 191, 191)" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" fill="none" pointer-events="none"
+                                    style="transition: d 500ms cubic-bezier(0.4, 0, 0.2, 1), stroke 300ms, opacity 400ms; z-index: 1;">
+                                </path>
+
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-buttons">
+                <button class="editor-button cancel-button" id="cancel-edit">Cancel</button>
+                <button class="editor-button save-button" id="save-edit">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="undo-redo-container">
+        <button id="mm-undo-btn" class="undo-redo-btn" title="Undo" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-undo-2">
+                <path d="M9 14 4 9l5-5" />
+                <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+            </svg>
+        </button>
+        <button id="mm-redo-btn" class="undo-redo-btn" title="Redo" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-redo-2">
+                <path d="m15 14 5-5-5-5" />
+                <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+            </svg>
+        </button>
+    </div>
+
+    <div id="notes-drawer" class="notes-drawer">
+        <div class="notes-drawer-header">
+            <span id="notes-drawer-title">Node Notes</span>
+            <button id="notes-drawer-close" class="notes-drawer-close-btn" title="Close Notes">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div id="notes-drawer-editor" contenteditable="true" placeholder="Enter your notes here..."></div>
+    </div>
+
+    <div id="node-expand-loader" class="node-expand-loader">
+    <div class="expand-spinner"></div>
+    <span>Diving deeper...</span>
+    </div>
+    <div id="revert-changes-container" class="node-expand-loader revert-changes-container"
+        style="background: var(--background-color, #F4D0D6); border: none; cursor: pointer; padding: 8px 16px; gap: 8px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+        </svg>
+        <span>Revert Changes</span>
+    </div>
+
+    <div class="info-button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings2-icon lucide-settings-2"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+    </div>
+    <div class="info-menu">
+        <a class="hotkeys-button" style="display: none;">Hotkeys</a>
+        <a href="#" onclick="showApiKeyManagement(); return false;" class="api-key-manage-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;position: relative;">
-<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>
+            <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>
         </svg>
         API Key
-    </a>
-    <a href="#" onclick="showLicensePopup(); return false;" class="license-button">
+        </a>
+        <a href="#" onclick="showLicensePopup(); return false;" class="license-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scale-icon lucide-scale" style="margin-right: 8px; flex-shrink: 0;"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
         License
     </a>
-    <a
-        href="#"
-        onclick="clearHistory(); return false;"
-        class="clear-history-button">
-        <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="-5 -5 34 34"
-        fill="none"
-        stroke="crimson"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="delete-icon">
-        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-        <path d="M3 6h18"/>
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-    </svg>
-        Clear History</a>
-</div>
+        <a href="#" class="disable-ai-button" id="disable-ai-button">
+        <label class="toggle-switch" style="margin-right: 10px;">
+            <input type="checkbox" id="disable-ai-toggle" aria-label="AI features">
+            <span class="toggle-slider" aria-hidden="true"></span>
+        </label>
+        <span class="disable-ai-label">AI Features</span>
+        </a>
+        <a href="#" onclick="clearHistory(); return false;" class="clear-history-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-5 -5 34 34" fill="none"
+                stroke="crimson" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="delete-icon">
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                <path d="M3 6h18" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+            </svg>
+            Clear History</a>
+    </div>
+
 
 <!-- License Popup -->
 <div id="licensePopup" class="license-popup">
@@ -468,7 +764,7 @@
                     height="24"
                     viewbox="0 0 24 24"
                     fill="none"
-                    stroke="currentColor"
+                    stroke="var(--text-color)"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -495,139 +791,88 @@
     </div>
 </div>
 
-<!-- Left Sidebar -->
-<div id="leftSidebar" class="left-sidebar">
-    <div class="left-sidebar-header"></div>
-    <div class="left-sidebar-content">
-        <div id="leftSidebarMindmapList" class="sidebar-mindmap-list">
-            <!-- Mind map items will be loaded here -->
+    <!-- Left Sidebar -->
+    <div id="leftSidebar" class="left-sidebar">
+        <div class="left-sidebar-header"></div>
+        <div class="left-sidebar-content">
+            <div id="leftSidebarMindmapList" class="sidebar-mindmap-list">
+                <!-- Mind map items will be loaded here -->
+            </div>
+            <div class="sidebar-boxlet">
+            </div>
         </div>
     </div>
-</div>
 
-
-
-<div id="ratingPopup">
-    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 500;">Rate us!</h3>
-    <form id="ratingForm">
-        <div class="rating">
-            <input type="radio" id="star5" name="rating" value="5">
-            <label for="star5"></label>
-            <input type="radio" id="star4" name="rating" value="4">
-            <label for="star4"></label>
-            <input type="radio" id="star3" name="rating" value="3">
-            <label for="star3"></label>
-            <input type="radio" id="star2" name="rating" value="2">
-            <label for="star2"></label>
-            <input type="radio" id="star1" name="rating" value="1">
-            <label for="star1"></label>
+    <div class="search-mindmaps-popup-overlay" id="searchMindmapsPopupOverlay">
+        <div class="search-mindmaps-popup" id="searchMindmapsPopup">
+            <div class="popup-header">
+                <h3>Search Mind Maps</h3>
+                <button class="popup-close" id="closeSearchPopupBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="popup-content">
+                <div class="search-input-container">
+                    <input type="text" id="popupMindmapSearchInput" placeholder="Search by topic..."
+                        autocomplete="off" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="search-icon">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </div>
+                <div class="search-results-list" id="searchResultsList">
+                    <!-- Search results will be loaded here -->
+                    <div class="no-results-message">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="opacity: 0.5; margin-bottom: 10px">
+                            <path
+                                d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+                            <path d="M2 10h20" />
+                        </svg>
+                        <h3>Start typing to search</h3>
+                        <p>Your mind maps will appear here.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <input type="hidden" name="source" value="Mind Map Wizard - Rate us!">
-    </form>
-</div>
-
-<div class="search-mindmaps-popup-overlay" id="searchMindmapsPopupOverlay">
-  <div class="search-mindmaps-popup" id="searchMindmapsPopup">
-    <div class="popup-header">
-      <h3>Search Mind Maps</h3>
-      <button class="popup-close" id="closeSearchPopupBtn">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M18 6 6 18"></path>
-          <path d="m6 6 12 12"></path>
-        </svg>
-      </button>
     </div>
-    <div class="popup-content">
-      <div class="search-input-container">
-        <input
-          type="text"
-          id="popupMindmapSearchInput"
-          placeholder="Search by topic..."
-          autocomplete="off"
-        />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="search-icon"
-        >
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.3-4.3"></path>
-        </svg>
-      </div>
-      <div class="search-results-list" id="searchResultsList">
-        <!-- Search results will be loaded here -->
-        <div class="no-results-message">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            style="opacity: 0.5; margin-bottom: 10px"
-          >
-            <path
-              d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
-            />
-            <path d="M2 10h20" />
-          </svg>
-          <h3>Start typing to search</h3>
-          <p>Your mind maps will appear here.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
     <div class="keyboard-shortcuts-popup">
         <h3>Keyboard Shortcuts</h3>
-        
+
         <div class="shortcut-item">
             <span class="key">K</span>
             <span class="shortcut-description">Search through all generated mind maps</span>
         </div>
-        
+
         <div class="shortcut-item">
             <span class="key">E</span>
             <span class="shortcut-description">Edit the current mind map</span>
         </div>
-        
+
         <div class="shortcut-item">
             <span class="key">R</span>
             <span class="shortcut-description">Regenerate the current mind map</span>
         </div>
-        
+
         <div class="shortcut-item">
             <span class="key">D</span>
             <span class="shortcut-description">Download the current mind map</span>
         </div>
-        
+
         <div class="shortcut-item">
             <span class="key">F</span>
             <span class="shortcut-description">Center the current mind map on screen</span>
         </div>
     </div>
+    <div id="snackbar" style="display: none;"></div>
 </body>
 
-</body>
 </html>
