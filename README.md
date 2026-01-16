@@ -50,12 +50,6 @@
 - 🔍 Zoom & pan
 - ⌨️ Keyboard shortcuts
 
-## Why use Mind Map Wizard?
-
-- **✅ Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
-- **✅ Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
-- **✅ BYOK:** Use your own Openrouter API key for enhanced privacy and control over your mind map generation. 
-
 ## How It Works
 
 1. **Generate your mind map**  
@@ -67,14 +61,45 @@
 3. **Learn further**  
    Let AI to search the web and write summaries with relevant resources and links for deeper study.
 
-## Mind Map Generation Process
-Creating a mind map involves a few simple steps. Here’s how it works:
 
-1. **User Submits Topic** - Enter your desired subject
-2. **API Processing** - Topic sent to AI provider
-3. **LLM Analysis** - AI generates structured outline with key concepts
-4. **SVG Rendering** - Markdown transformed into interactive SVG using our mind map rendering engine.
+## Editing Mind Maps
+  <figure>
+  <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/context-menu.jpg" alt="A screenshot of the context menu" />
+    <figcaption>
+      <p align="center">
+          A screenshot of the context menu and all its options.
+      </p>
+    </figcaption>
+  </figure>
+  <br>
+Edit any node by double-clicking its text. Right-click a node to open the context menu for more actions: delete nodes, change node color, or add sub-nodes.
 
+The context menu also lets you expand the map by generating new branches from a node. Press and hold a node to have the AI produce a web-search-based summary with in-text references and links for further reading.
+
+Choose "Collapse children" to hide a node’s sub-branches and focus on a specific area; click the arrow beside a collapsed node to expand it again.
+<br><br>
+  <figure>
+  <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/customization%20-options.jpg
+  " alt="A screenshot of the context menu" />
+    <figcaption>
+      <p align="center">
+        A screenshot of the customization options menu with styling controls for adjusting node roundings, link widths, layout, and font.
+      </p>
+    </figcaption>
+  </figure>
+
+<br>
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| <kbd>K</kbd> | Search through all mind maps |
+| <kbd>E</kbd> | Toggle edit mode |
+| <kbd>D</kbd> | Download current mind map |
+| <kbd>F</kbd> | Fit mind map to screen |
+
+<br>
 
 ## System Prompt
 The AI uses this prompt to generate well-structured mind maps:
@@ -108,26 +133,28 @@ Structure your response exactly like this:
 	"markdown": "# Main Topic\\n\\n## Subtopic 1\\n- Point A\\n- Point B\\n\\n## Subtopic 2\\n- Point C\\n- Point D"
 } 
 ```
-<br>
-
-## Editing Mind Maps
-
-Edit any node by double-clicking its text. Right-click a node to open the context menu for more actions: delete nodes, change node color, or add sub-nodes.
-
-The context menu also lets you expand the map by generating new branches from a node. Press and hold a node to have the AI produce a web-search-based summary with in-text references and links for further reading.
-
-Choose "Collapse children" to hide a node’s sub-branches and focus on a specific area; click the arrow beside a collapsed node to expand it again.
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| <kbd>K</kbd> | Search through all mind maps |
-| <kbd>E</kbd> | Toggle edit mode |
-| <kbd>D</kbd> | Download current mind map |
-| <kbd>F</kbd> | Fit mind map to screen |
 
 <br>
-<hr>
+
+## Why use Mind Map Wizard?
+
+- **✅ Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
+- **✅ Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
+- **✅ BYOK:** Use your own Openrouter API key for enhanced privacy and control over your mind map generation. 
+
+
+<br>
+
+
+## Mind Map Generation Process
+Creating a mind map involves a few simple steps. Here’s how it works:
+
+1. **User Submits Topic** - Enter your desired subject
+2. **API Processing** - Topic sent to AI provider
+3. **LLM Analysis** - AI generates structured outline with key concepts
+4. **SVG Rendering** - Markdown transformed into interactive SVG using our mind map rendering engine.
+
+<br>
 
 ## Roadmap
 
@@ -142,7 +169,6 @@ Choose "Collapse children" to hide a node’s sub-branches and focus on a specif
 - [ ] Soon - Multilinguality
 
 <br>
-
 
   <picture>
     <source media="(prefers-color-scheme: dark)" alt="GitHub Repo Stars history" srcset="https://app.repohistory.com/api/svg?repo=linus-sch/mind-map-wizard&type=Date&background=0D1117&color=6278f8)](https://app.repohistory.com/star-history" />
