@@ -752,8 +752,7 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 			messages: [
 				{
 					role: 'user',
-					content: `Create a comprehensive mind map about: ${mindmapTopic.trim()}
-Generate the mind map as Markdown text using the following structure:
+					content: `Create a comprehensive, fact-rich mind map about ${mindmapTopic.trim()} using the following structure:
 
 # Matching Mind Map Title
 ## Branch 1
@@ -761,19 +760,20 @@ Generate the mind map as Markdown text using the following structure:
 ### Sub Branch B
 ## Branch 2
 
-**Formatting Requirements:**
 - Each text element must be aligned to a specific hierarchical level using a new line plus the appropriate number of # symbols
-- Aim for 2-3 levels of depth to keep the mind map scannable and not overwhelming
+- Aim for 2-3 levels of depth to keep the mind map scannable and not overwhelming but keep lenght relative to input depth.
 - For large enumerations (6+ items), combine related items into comma-separated lists within a single branch rather than creating excessive sub-branches
 
-**Content Requirements:**
 - Include **specific, concrete details and facts**, not just category labels
-  - ❌ Bad: "## Education" 
-  - ✅ Good: "## Education: PhD in Physics from MIT (2015)"
-- Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" – this is a mind map, not an essay
+  - Bad: "## Education" 
+  - Good: "## Education: PhD in Physics from MIT (2015)"
+- Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" this is a mind map, not an essay
 - If the topic contains extensive information, prioritize breadth over depth and consolidate where necessary
 - Focus on the most relevant and interesting information that creates a useful knowledge structure
 - Make the branches have different lengths for making the mind map visually more interesting.
+- The mind map should be in the language of the user input.
+- The title should be as short as possible.
+- The mind map should have at least 3 branches going out of the title node.
 - Research Instruction: ${searchInstruction}
 
 **Output Format:**

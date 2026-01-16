@@ -38,12 +38,17 @@
 ## Features
 
 - 🤖 AI Mind Map Generation
-- 💾 Multiple Export Formats
-- ✏️ Editing mind maps
+- 🌐 Web Search
+- ➕ Mind map expansion
+- 📝 AI summaries
+- ✏️ Direct editing of mind maps
+- 🎨 Style customization
+- ↩️ Redo & Undo
+- 💾 Multiple export formats
 - 📚 Generation history
-- 🔍 Zoom and panning
-- ⌨️ Keyboard Shortcuts 
-
+- 🌈 Branch coloring
+- 🔍 Zoom & pan
+- ⌨️ Keyboard shortcuts
 
 ## Why use Mind Map Wizard?
 
@@ -53,14 +58,14 @@
 
 ## How It Works
 
-1. **Enter Your Topic**  
-   Type any subject you want to explore in the input field
+1. **Generate your mind map**  
+   Start by entering a topic or uploading a file—AI will create an initial mind map for you.
 
-2. **AI Processing**  
-   The AI analyzes your topic and generates a comprehensive mind map structure
+2. **Expand branches**  
+   Generate new sub-branches from any node to explore topics in more depth.
 
-3. **View & Edit**  
-   Instantly view, customize, and download your beautifully crafted mind map
+3. **Learn further**  
+   Let AI to search the web and write summaries with relevant resources and links for deeper study.
 
 ## Mind Map Generation Process
 Creating a mind map involves a few simple steps. Here’s how it works:
@@ -68,15 +73,13 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 1. **User Submits Topic** - Enter your desired subject
 2. **API Processing** - Topic sent to AI provider
 3. **LLM Analysis** - AI generates structured outline with key concepts
-4. **SVG Rendering** - Markdown transformed into interactive SVG using [markmap.js](https://github.com/markmap/markmap)
+4. **SVG Rendering** - Markdown transformed into interactive SVG using our mind map rendering engine.
 
 
 ## System Prompt
 The AI uses this prompt to generate well-structured mind maps:
 ```
-Create a comprehensive, fact-rich mind map about: ${input}
-
-Generate the mind map as Markdown text using the following structure:
+Create a comprehensive, fact-rich mind map about {YOUR_TOPIC} using the following structure:
 
 # Matching Mind Map Title
 ## Branch 1
@@ -84,19 +87,20 @@ Generate the mind map as Markdown text using the following structure:
 ### Sub Branch B
 ## Branch 2
 
-**Formatting Requirements:**
 - Each text element must be aligned to a specific hierarchical level using a new line plus the appropriate number of # symbols
-- Aim for 2-3 levels of depth to keep the mind map scannable and not overwhelming
+- Aim for 2-3 levels of depth to keep the mind map scannable and not overwhelming but keep lenght relative to input depth.
 - For large enumerations (6+ items), combine related items into comma-separated lists within a single branch rather than creating excessive sub-branches
 
-**Content Requirements:**
 - Include **specific, concrete details and facts**, not just category labels
   - Bad: "## Education" 
   - Good: "## Education: PhD in Physics from MIT (2015)"
-- Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" – this is a mind map, not an essay
+- Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" this is a mind map, not an essay
 - If the topic contains extensive information, prioritize breadth over depth and consolidate where necessary
 - Focus on the most relevant and interesting information that creates a useful knowledge structure
 - Make the branches have different lengths for making the mind map visually more interesting.
+- The mind map should be in the language of the user input.
+- The title should be as short as possible.
+- The mind map should have at least 3 branches going out of the title node.
 
 **Output Format:**
 Structure your response exactly like this:
@@ -108,67 +112,11 @@ Structure your response exactly like this:
 
 ## Editing Mind Maps
 
-Mind maps use Markdown syntax where branch levels are determined by # symbols:
+Edit any node by double-clicking its text. Right-click a node to open the context menu for more actions: delete nodes, change node color, or add sub-nodes.
 
+The context menu also lets you expand the map by generating new branches from a node. Press and hold a node to have the AI produce a web-search-based summary with in-text references and links for further reading.
 
-<table style="width:100%; border-collapse: collapse;">
-  <thead>
-    <tr>
-      <th
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          text-align: left;
-          background-color: #f2f2f2;
-          width: 600px;
-        "
-      >
-        Code
-      </th>
-      <th
-        style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;"
-      >
-        Rendered Mind Map
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td
-        style="
-          padding: 8px;
-          border: 1px solid #ddd;
-          vertical-align: top;
-          width: 50%;
-        "
-      >
-      <pre># my mind map<br>## branch 1<br>## branch 2<br>### text<br>### text</pre>
-      </td>
-      <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top;">
-        <img
-          src="https://mindmapwizard.com/img/screenshots/basic-mindmap-structure.webp"
-          alt="An example mind map"
-          style="width: 500px; height: auto; display: block;"
-        />
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-There are also formatting options available for the texts in mind map branches.
-
-
-| Markdown Syntax | Rendered Result | Effect |
-|----------------|-----------------|--------|
-| `**example branch**` | **example branch** | Bold text |
-| `*example branch*` | *example branch* | Italic text |
-| `~~example branch~~` | ~~example branch~~ | Strikethrough |
-| `` `example branch` `` | `example branch` | Code/monospace |
-| `[Example Link](https://example.com)` | [Example Link](https://example.com) | Clickable link |
-| `![](IMAGE_URL)` | *Image* | Embedded image |
-
-
+Choose "Collapse children" to hide a node’s sub-branches and focus on a specific area; click the arrow beside a collapsed node to expand it again.
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
@@ -176,7 +124,6 @@ There are also formatting options available for the texts in mind map branches.
 | <kbd>K</kbd> | Search through all mind maps |
 | <kbd>E</kbd> | Toggle edit mode |
 | <kbd>D</kbd> | Download current mind map |
-| <kbd>G</kbd> | Regenerate with AI |
 | <kbd>F</kbd> | Fit mind map to screen |
 
 <br>
@@ -184,13 +131,14 @@ There are also formatting options available for the texts in mind map branches.
 
 ## Roadmap
 
-- [x] Done - Editing Mind Maps
-
-- [x] Done - Downloading Mind Maps
-- [x] Done - Renaming Mind Maps
-- [x] Done - Inline code support for Mind Maps
-- [x] Done - More export options e.g. PNG or PDF
-- [ ] Soon - Exploring further from specific branches
+- [x] Done - Editing Mind Maps  
+- [x] Done - Downloading Mind Maps  
+- [x] Done - Renaming Mind Maps  
+- [x] Done - Sharing Mind Maps  
+- [x] Done - Inline code support for Mind Maps  
+- [x] Done - More export options (PNG, PDF)  
+- [x] Done - Exploring further from specific branches  
+- [x] Done - Web search  
 - [ ] Soon - Multilinguality
 
 <br>
