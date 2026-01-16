@@ -79,7 +79,7 @@ The context menu also lets you expand the map by generating new branches from a 
 Choose "Collapse children" to hide a node’s sub-branches and focus on a specific area; click the arrow beside a collapsed node to expand it again.
 <br><br>
   <figure>
-  <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/customization%20-options.jpg
+  <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/customization-options.jpg
   " alt="A screenshot of the context menu" />
     <figcaption>
       <p align="center">
