@@ -72,7 +72,9 @@
     </figcaption>
   </figure>
   <br>
-Edit any node by double-clicking its text. Right-click a node to open the context menu for more actions: delete nodes, change node color, or add sub-nodes.
+</figure>
+
+**Edit any node by double-clicking its text. Right-click a node to open the context menu for more actions:** delete nodes, change node color, or add sub-nodes.
 
 The context menu also lets you expand the map by generating new branches from a node. Press and hold a node to have the AI produce a web-search-based summary with in-text references and links for further reading.
 
