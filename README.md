@@ -19,7 +19,7 @@
 <div align="center">
   <figure>
     <a href="https://mindmapwizard.com/new" target="_blank" rel="noopener">
-      <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-browser-mockup.jpg" alt="Product showcase" />
+      <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/mmw-main-screenshot.jpg" alt="Product showcase" />
       </a>
     <figcaption>
       <p align="center">
