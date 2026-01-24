@@ -424,7 +424,7 @@
     <div id="help-popup" class="help-popup">
         <div class="help-popup-content">
             <div class="popup-header" style="padding: 10px 0px !important;">
-                <h2>Mind Map Editing</h2>
+                <h2>Getting Started</h2>
                 <button class="close-button" id="close-help-popup">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none"
                         stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -436,17 +436,38 @@
             <div class="help-content-grid">
                 <div class="help-item">
                     <div class="help-image-container">
-                        <img src="/img/instructions/edit-node.webp" alt="Double click to edit">
+                        <img src="/img/screenshots/edit-text.svg" alt="" draggable="false">
                     </div>
                     <h3>Double-Click to Edit Text</h3>
                     <p>Double-click on any node to edit its text. Start typing once the cursor appears.</p>
                 </div>
                 <div class="help-item">
                     <div class="help-image-container">
-                        <img src="/img/instructions/context-menu.webp" alt="Right click for options">
+                        <img src="/img/screenshots/context-menu.svg" alt="" draggable="false">
                     </div>
                     <h3>Right-Click for Options</h3>
                     <p>Right-click on a node to access options such as adding or deleting branches.</p>
+                </div>
+                <div class="help-item">
+                    <div class="help-image-container">
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" width="45" height="45" style="color: #FFBF00;">
+                            <defs>
+                            <path id="sparkle" d="M90.72,35.94c2.26,0,4.2,1.68,4.57,3.97,1.29,7.94,3.77,13.31,7.39,17.02,3.62,3.71,8.86,6.26,16.59,7.59,2.52.44,4.22,2.89,3.79,5.48-.33,1.99-1.85,3.56-3.79,3.89-7.73,1.33-12.97,3.87-16.59,7.59-3.62,3.71-6.1,9.09-7.39,17.02-.43,2.59-2.82,4.33-5.34,3.89-1.94-.34-3.47-1.9-3.79-3.89-1.29-7.94-3.77-13.31-7.39-17.02-3.62-3.71-8.86-6.26-16.59-7.59-2.52-.44-4.22-2.89-3.79-5.48.33-1.99,1.85-3.56,3.79-3.89,7.73-1.33,12.97-3.87,16.59-7.59,3.62-3.71,6.1-9.09,7.39-17.02l.08-.42c.53-2.09,2.38-3.55,4.48-3.55"></path>
+
+                            <mask id="cutout">
+                                <rect width="100%" height="100%" fill="white"></rect>
+                                <use href="#sparkle" stroke="black" stroke-width="19" stroke-linejoin="round" fill="black"></use>
+                            </mask>
+                            </defs>
+
+                            <g transform="translate(0.7 11)">
+                            <path d="M99.68,8.5H8.5 M69.29,47.25H8.5 M79.42,86.01H8.5" stroke="currentColor" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" mask="url(#cutout)"></path>
+                            <use href="#sparkle" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></use>
+                            </g>
+                        </svg>
+                    </div>
+                    <h3>Long press for AI summary</h3>
+                    <p>Long press on a node to generate a short AI summary.</p>
                 </div>
             </div>
             <div class="popup-buttons" style="justify-content: flex-end; margin-top: 20px;">
@@ -464,12 +485,6 @@
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
                 <polyline points="16 6 12 2 8 6" />
                 <line x1="12" x2="12" y1="2" y2="15" />
-            </svg>
-        </button>
-        <button class="help-mm-button" id="help-btn" title="How to Edit">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
             </svg>
         </button>
         <button class="edit-mode-button" id="customize-mode-button" title="Edit (E)">
@@ -502,6 +517,12 @@
                 <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
                 <path d="M3 16h3a2 2 0 0 1 2 2v3" />
                 <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+            </svg>
+        </button>
+        <button class="help-mm-button" id="help-btn" title="How to Edit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
             </svg>
         </button>
     </div>

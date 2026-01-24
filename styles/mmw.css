@@ -3825,7 +3825,7 @@ html.left-sidebar-open #mindmap {
 
 .help-content-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   margin-top: 20px;
 }
@@ -3847,6 +3847,7 @@ html.left-sidebar-open #mindmap {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--background-color);
 }
 
 .help-image-container img {
@@ -3858,6 +3859,13 @@ html.left-sidebar-open #mindmap {
 @media (max-width: 700px) {
   .help-image-container {
     display: none !important;
+  }
+
+  .help-item {
+    padding: 16px;
+    background-color: var(--background-color);
+    border-radius: 12px;
+    margin-bottom: -3px;
   }
 }
 
