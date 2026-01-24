@@ -61,7 +61,6 @@
 3. **Learn further**  
    Let AI to search the web and write summaries with relevant resources and links for deeper study.
 
-
 ## Editing Mind Maps
   <figure>
   <img src="https://raw.githubusercontent.com/linus-sch/Mind-Map-Wizard/refs/heads/main/graphics/context-menu.jpg" alt="A screenshot of the context menu" />
@@ -90,8 +89,12 @@ Choose "Collapse children" to hide a node’s sub-branches and focus on a specif
     </figcaption>
   </figure>
 </div>
-
 <br>
+
+   
+> The mind maps are rendered with our own [mind map 
+renderering engine](https://github.com/linus-sch/mmw-renderer) and not with any third-party service.
+
 
 ## Keyboard Shortcuts
 
