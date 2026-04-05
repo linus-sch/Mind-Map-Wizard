@@ -185,21 +185,6 @@ Creating a mind map involves a few simple steps. Here’s how it works:
 2. **API Processing** - Topic sent to AI provider
 3. **LLM Analysis** - AI generates structured outline with key concepts
 4. **SVG Rendering** - Markdown transformed into interactive SVG using our mind map rendering engine.
-
-<br>
-
-## Roadmap
-
-- [x] Done - Editing Mind Maps  
-- [x] Done - Downloading Mind Maps  
-- [x] Done - Renaming Mind Maps  
-- [x] Done - Sharing Mind Maps  
-- [x] Done - Inline code support for Mind Maps  
-- [x] Done - More export options (PNG, PDF)  
-- [x] Done - Exploring further from specific branches  
-- [x] Done - Web search  
-- [ ] Soon - Multilinguality
-
 <br>
 
   <picture>

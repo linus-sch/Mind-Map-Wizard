@@ -831,7 +831,6 @@ function removeMarkdown(text) {
 window.removeMarkdown = removeMarkdown;
 window.escapeHtmlLeftSidebar = escapeHtmlLeftSidebar;
 window.mmJsonToMarkdown = mmJsonToMarkdown;
-
 function initializeKeyboardShortcuts() {
 	document.addEventListener('keydown', function (e) {
 		const mindmapVisible =
@@ -841,34 +840,44 @@ function initializeKeyboardShortcuts() {
 			['input', 'textarea'].includes(activeElement?.tagName?.toLowerCase()) ||
 			activeElement?.isContentEditable;
 
-		if (e.key === 'k' && !isTyping) {
+		const isModifierPressed = e.metaKey || e.ctrlKey;
+
+		if (e.key === 'k' && isModifierPressed && !isTyping) {
 			e.preventDefault();
 			openSearchMindmapsPopup();
 			return;
 		}
 
 		if (mindmapVisible && !isTyping) {
-			switch (e.key) {
-				case 'e':
-					e.preventDefault();
-					document.getElementById('customize-mode-button')?.click();
-					break;
-				case 'd':
-					e.preventDefault();
-					document.getElementById('download-mindmap-btn')?.click();
-					break;
-				case 'g':
-					e.preventDefault();
-					document.getElementById('regenerate-button')?.click();
-					break;
-				case 's':
-					e.preventDefault();
-					document.getElementById('share-btn')?.click();
-					break;
-				case 'f':
-					e.preventDefault();
-					document.getElementById('mm-fit')?.click();
-					break;
+			if (e.key === 'e' && isModifierPressed) {
+				e.preventDefault();
+				document.getElementById('customize-mode-button')?.click();
+				return;
+			}
+			if (e.key === 'd' && isModifierPressed) {
+				e.preventDefault();
+				document.getElementById('download-mindmap-btn')?.click();
+				return;
+			}
+			if (e.key === 'g' && isModifierPressed) {
+				e.preventDefault();
+				document.getElementById('regenerate-button')?.click();
+				return;
+			}
+			if (e.key === 's' && isModifierPressed) {
+				e.preventDefault();
+				document.getElementById('share-btn')?.click();
+				return;
+			}
+			if (e.key === 'f' && isModifierPressed) {
+				e.preventDefault();
+				document.getElementById('mm-fit')?.click();
+				return;
+			}
+			if (e.key === 'a' && isModifierPressed) {
+				e.preventDefault();
+				document.getElementById('chat-toggle-btn')?.click();
+				return;
 			}
 		}
 	});
