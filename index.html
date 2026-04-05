@@ -25,6 +25,9 @@
 
 
     <script src="/scripts/mm-rendering/notes.js"></script>
+    <script src="/scripts/mm-rendering/image-handler.js"></script>
+    <script src="/scripts/squircles.js"></script>
+    <script src="/scripts/chat.js"></script>
 
     <script src="/scripts/libraries/jspdf.umd.min.js"></script>
 
@@ -116,10 +119,9 @@
     </div>
     <div class="menubar" id="menubar"></div>
     <button id="leftSidebarToggle" class="left-sidebar-toggle navbar-toggle" aria-label="Toggle Left Sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none"
-            stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="18" height="18" x="3" y="3" rx="5" />
-            <path d="M9 3v18" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="var(--text-color)" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 3H13C16.7712 3 18.6569 3 19.8284 4.17157C21 5.34315 21 7.22876 21 11V13C21 16.7712 21 18.6569 19.8284 19.8284C18.6569 21 16.7712 21 13 21H11C7.22876 21 5.34315 21 4.17157 19.8284C3 18.6569 3 16.7712 3 13V11C3 7.22876 3 5.34315 4.17157 4.17157C5.34315 3 7.22876 3 11 3Z"></path>
+                <path d="M8.00488 16.0049L8.00488 8.00488"></path>
         </svg>
     </button>
 
@@ -372,8 +374,6 @@
     </div>
 
     <div id="mindmap"></div>
-    <small class="ai-content-disclaimer" id="ai-content-disclaimer">AI Content may display inaccurate or offensive
-        information</small>
 
     <div id="download-options-popup" class="download-options-popup" style="padding: 0px;">
         <div class="download-options-popup-content">
@@ -510,7 +510,17 @@
                 <path d="M3 3v5h5" />
             </svg>
         </button>
-        <button class="fit-button" id="mm-fit" title="Fit to Screen (F)">
+        <button class="help-mm-button" id="help-btn" title="How to Edit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark-icon lucide-circle-question-mark"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </button>
+        <button class="chat-toggle-button" id="chat-toggle-btn" title="AI Chat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-icon lucide-message-circle"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg>
+        </button>
+    </div>
+
+    <!-- Zoom Controls -->
+    <div class="zoom-controls" id="zoom-controls">
+        <button class="zoom-button" id="mm-fit" title="Fit to Screen (F)">
             <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="var(--text-color)"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M8 3v3a2 2 0 0 1-2 2H3" />
@@ -519,16 +529,6 @@
                 <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
             </svg>
         </button>
-        <button class="help-mm-button" id="help-btn" title="How to Edit">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-            </svg>
-        </button>
-    </div>
-
-    <!-- Zoom Controls -->
-    <div class="zoom-controls" id="zoom-controls">
         <button class="zoom-button" id="zoom-in-btn" title="Zoom In (+)">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -861,6 +861,48 @@
                         <p>Your mind maps will appear here.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- AI Chat Drawer -->
+    <div id="chat-drawer">
+        <div class="chat-header">
+            <h3>
+                AI Assistant
+            </h3>
+            <button class="chat-close-btn" id="close-chat-btn" aria-label="Close Chat">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+            <div class="chat-loading" id="chat-loading">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-suggestions" id="chat-suggestions" style="padding-top: 10px;">
+            <p style="margin-bottom: 0px;">Try these...</p>
+            <button class="chat-suggestion">Export this mind map as a JPG image.</button>
+            <button class="chat-suggestion">Make all branches blue and lines only. </button>
+            <button class="chat-suggestion">Go into more detail by adding more subbranches everywhere.</button>
+        </div>
+        
+        <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+                <textarea id="chat-input" placeholder="Ask AI to edit map..." rows="1"></textarea>
+                <button id="chat-send-btn" aria-label="Send Message" title="Send">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-icon lucide-arrow-up"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+                </button>
             </div>
         </div>
     </div>

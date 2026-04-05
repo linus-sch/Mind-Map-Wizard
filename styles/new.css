@@ -639,7 +639,7 @@
 
 .info-button {
   position: fixed;
-  bottom: 11px;
+  bottom: 12px;
   right: 15px;
   display: flex;
   align-items: center;
@@ -848,8 +848,11 @@ body *:not(.captcha-container):not(.captcha) {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  background-color: var(--background-color);
-  border-radius: 80px;
+  gap: 6px;
+  background-color: var(--white);
+  padding: 4px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .zoom-controls.show {
@@ -861,7 +864,7 @@ body *:not(.captcha-container):not(.captcha) {
   width: 40px;
   height: 40px;
   border-radius: 80px;
-  background-color: var(--background-color);
+  background-color: var(---white);
   border: none;
   cursor: pointer;
   display: flex;

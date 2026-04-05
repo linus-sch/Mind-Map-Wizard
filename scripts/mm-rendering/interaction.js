@@ -4,6 +4,109 @@ const localStorageKey = 'json-mindmap-content';
 let scale = 1, isPanning = false;
 let startPoint = { x: 0, y: 0 }, currentPoint = { x: 0, y: 0 };
 
+let __mmwNextUid = 1;
+function __mmwGenerateUid() {
+    return 'n' + (__mmwNextUid++);
+}
+
+
+function __mmwAssignStableIds(newHierarchy, oldHierarchy) {
+    if (!oldHierarchy) {
+        __mmwAssignFreshIds(newHierarchy);
+        return;
+    }
+    newHierarchy.id = 'root';
+    if (newHierarchy.children && newHierarchy.children.length > 0) {
+        newHierarchy.children[0].id = '0';
+        if (oldHierarchy.children && oldHierarchy.children.length > 0) {
+            __mmwMatchChildren(newHierarchy.children[0], oldHierarchy.children[0]);
+        } else {
+            newHierarchy.children[0].children.forEach(c => __mmwAssignFreshIds(c));
+        }
+    }
+}
+
+function __mmwAssignFreshIds(node) {
+    if (node.id === 'root' || node.id === '0') {
+    } else {
+        node.id = __mmwGenerateUid();
+    }
+    if (node.children) {
+        node.children.forEach(child => __mmwAssignFreshIds(child));
+    }
+}
+
+function __mmwMatchChildren(newParent, oldParent) {
+    if (!newParent.children || newParent.children.length === 0) return;
+    if (!oldParent || !oldParent.children || oldParent.children.length === 0) {
+        newParent.children.forEach(child => {
+            child.id = __mmwGenerateUid();
+            if (child.children) {
+                child.children.forEach(c => __mmwAssignFreshIds(c));
+            }
+        });
+        return;
+    }
+
+    const oldChildren = oldParent.children.slice(); 
+    const used = new Array(oldChildren.length).fill(false);
+    const matched = new Array(newParent.children.length).fill(false);
+
+    newParent.children.forEach((newChild, newIdx) => {
+        let bestIdx = -1;
+        let bestScore = -1;
+
+        for (let i = 0; i < oldChildren.length; i++) {
+            if (used[i]) continue;
+            if (oldChildren[i].text === newChild.text) {
+                const posScore = (i === newIdx) ? 2 : 1;
+                if (posScore > bestScore) {
+                    bestScore = posScore;
+                    bestIdx = i;
+                }
+            }
+        }
+
+        if (bestIdx >= 0) {
+            used[bestIdx] = true;
+            matched[newIdx] = true;
+            newChild.id = oldChildren[bestIdx].id;
+            __mmwMatchChildren(newChild, oldChildren[bestIdx]);
+        }
+    });
+
+    newParent.children.forEach((newChild, newIdx) => {
+        if (matched[newIdx]) return;
+        if (newIdx < oldChildren.length && !used[newIdx]) {
+            used[newIdx] = true;
+            matched[newIdx] = true;
+            newChild.id = oldChildren[newIdx].id;
+            __mmwMatchChildren(newChild, oldChildren[newIdx]);
+        }
+    });
+
+    newParent.children.forEach((newChild, newIdx) => {
+        if (!matched[newIdx]) {
+            newChild.id = __mmwGenerateUid();
+            if (newChild.children) {
+                newChild.children.forEach(c => __mmwAssignFreshIds(c));
+            }
+        }
+    });
+}
+
+function __mmwBuildPathToStableMap(node, positionalPath) {
+    const map = {};
+    map[positionalPath] = node.id;
+    if (node.children) {
+        node.children.forEach((child, index) => {
+            const childPath = positionalPath === 'root' ? '0' : `${positionalPath}-${index}`;
+            Object.assign(map, __mmwBuildPathToStableMap(child, childPath));
+        });
+    }
+    return map;
+}
+
 const HistoryManager = {
     undoStack: [],
     redoStack: [],
@@ -68,6 +171,7 @@ const HistoryManager = {
 };
 
 let lastRenderedStyle = null;
+let isAllFolded = false;
 
 function getMindMapStyle(jsonString) {
     try {
@@ -75,12 +179,22 @@ function getMindMapStyle(jsonString) {
         const settings = data['mm-settings'] || data.mmSettings || null;
         if (settings) {
             const ms = settings['style'] ?? settings.mindmapStyle ?? settings.theme;
+            let styleId = '1';
             if (ms !== undefined && ms !== null) {
                 const s = String(ms).toLowerCase().trim();
-                if (s === 'clean') return '3';
-                if (s === 'default') return '1';
-                return s;
+                if (s === 'clean') styleId = '3';
+                else if (s === 'default') styleId = '1';
+                else styleId = s;
             }
+
+            return [
+                styleId,
+                settings.spacing ?? '',
+                settings['font-family'] ?? settings.fontFamily ?? '',
+                settings['border-radius'] ?? settings.borderRadius ?? '',
+                settings['mm-link-width'] ?? settings.linkWidth ?? '',
+                settings['branch-alignment'] ?? settings.branchAlignment ?? ''
+            ].join('|');
         }
     } catch (e) { }
     return '1';
@@ -91,6 +205,15 @@ let previousHierarchy = null;
 
 let autoSaveTimer = null;
 const AUTO_SAVE_DEBOUNCE_MS = 500;
+
+function __mmwHasMarkdownStyles(s) {
+    if (!s) return false;
+    const hasBold = /\*\*|__/.test(s);
+    const hasItalic = /\*(?!\*)[\s\S]+\*(?!\*)|_(?!_)[\s\S]+_(?!_)/.test(s);
+    const hasStrikethrough = /~~/.test(s);
+    const hasLink = /\[.+\]\(.+\)/.test(s);
+    return hasBold || hasItalic || hasStrikethrough || hasLink;
+}
 
 async function autoSaveMindMapToBackend() {
     if (!window.currentMindmap || !window.currentMindmap.id) {
@@ -199,7 +322,10 @@ function initInteraction() {
         }
         updateMindMap();
         editor.addEventListener('input', () => {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
             updateMindMap();
+            editor.setSelectionRange(start, end);
         });
         if (slider) slider.addEventListener('mousedown', startResize);
         attachCanvasListeners();
@@ -236,13 +362,22 @@ function initInteraction() {
         });
 
         HistoryManager.updateButtons();
+
+
     }
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initInteraction);
-} else {
+async function initApp() {
+    if (window.ImageHandler && window.ImageHandler.ready) {
+        await window.ImageHandler.ready();
+    }
     initInteraction();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
 }
 
 
@@ -251,6 +386,47 @@ if (document.readyState === 'loading') {
 
 
 window.__editingNodeId = null;
+window.__mmwNotesActiveNodeId = null;
+
+function __mmwApplyNotesOutline() {
+    document.querySelectorAll('.mm-notes-outline').forEach(el => el.remove());
+
+    const activeId = window.__mmwNotesActiveNodeId;
+    if (!activeId || !preview) return;
+
+    const nodeGroup = preview.querySelector(`.mm-node[data-node-id="${activeId}"]`);
+    if (!nodeGroup) return;
+
+    const rect = nodeGroup.querySelector('rect:not(.mm-notes-outline)');
+    if (!rect) return;
+
+    const x = parseFloat(rect.getAttribute('x') || 0);
+    const y = parseFloat(rect.getAttribute('y') || 0);
+    const w = parseFloat(rect.getAttribute('width') || 0);
+    const h = parseFloat(rect.getAttribute('height') || 0);
+    const rx = parseFloat(rect.getAttribute('rx') || 0);
+    const fill = rect.getAttribute('fill') || '#03a9f4';
+
+    const gap = 3;
+    const strokeW = 4;
+    const offset = gap + strokeW / 2;
+
+    const outline = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    outline.setAttribute('x', x - offset);
+    outline.setAttribute('y', y - offset);
+    outline.setAttribute('width', w + offset * 2);
+    outline.setAttribute('height', h + offset * 2);
+    outline.setAttribute('rx', rx + gap);
+    outline.setAttribute('fill', 'none');
+    outline.setAttribute('stroke', fill);
+    outline.setAttribute('stroke-width', strokeW);
+    outline.setAttribute('opacity', '0.5');
+    outline.classList.add('mm-notes-outline');
+    outline.style.pointerEvents = 'none';
+
+    nodeGroup.insertBefore(outline, nodeGroup.firstChild);
+}
+window.__mmwApplyNotesOutline = __mmwApplyNotesOutline;
 
 function __mmwGetCurrentSettings() {
     try {
@@ -301,6 +477,11 @@ function updateMindMap() {
         newHierarchy = { text: 'Root', children: [], level: 0, id: 'root' };
     }
 
+    __mmwAssignStableIds(newHierarchy, previousHierarchy);
+
+    const pathToStable = __mmwBuildPathToStableMap(newHierarchy, 'root');
+    window.__mmwPathToStableId = pathToStable;
+
     const currentStyle = getMindMapStyle(json);
     const svg = preview.querySelector('svg');
     if (svg && previousHierarchy && lastRenderedStyle === currentStyle) {
@@ -311,8 +492,16 @@ function updateMindMap() {
         const result = generateSVG(json, { contextUrls: contextLinks });
         const svgString = typeof result === 'string' ? result : result.svg;
         preview.innerHTML = svgString;
-        if (result.updatedJson) {
+
+        preview.classList.remove('pop-anim');
+        void preview.offsetWidth;
+        preview.classList.add('pop-anim');
+
+        if (result.updatedJson && editor.value !== result.updatedJson) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
             editor.value = result.updatedJson;
+            editor.setSelectionRange(start, end);
         }
         centerMindMap();
 
@@ -348,6 +537,35 @@ function updateMindMap() {
     previousHierarchy = cloneHierarchy(newHierarchy);
     currentHierarchy = newHierarchy;
     attachEventListeners();
+    if (window.__mmwNotesActiveNodeId && typeof __mmwApplyNotesOutline === 'function') __mmwApplyNotesOutline();
+
+    const foldUnfoldBtn = document.getElementById('fold-unfold-all-btn');
+    if (foldUnfoldBtn) {
+        let canFold = false;
+        function checkFoldable(node, level = 0) {
+            if (canFold) return;
+            if (level >= 2 && node.children && node.children.length > 0) {
+                canFold = true;
+                return;
+            }
+            if (node.children) {
+                for (const child of node.children) {
+                    checkFoldable(child, level + 1);
+                    if (canFold) return;
+                }
+            }
+        }
+        checkFoldable(newHierarchy);
+        foldUnfoldBtn.disabled = !canFold;
+    }
+
+    if (typeof window.loadLocalImages === 'function') {
+        window.__mmwLocalizationPromise = window.loadLocalImages().catch(err => {
+            console.error('Failed to load local images:', err);
+        });
+    }
+
+    document.dispatchEvent(new CustomEvent('mmw-render-complete'));
 }
 
 const __mmwUpdateMindMapCore = updateMindMap;
@@ -387,7 +605,7 @@ function storePreviousPositions(hierarchy) {
 
 function convertJsonToNode(jsonNode, level, pathId) {
     const node = {
-        text: jsonNode.content || '',
+        text: __mmwTrimTrailingNewlines(jsonNode.content || ''),
         children: [],
         level: level,
         level: level,
@@ -395,7 +613,9 @@ function convertJsonToNode(jsonNode, level, pathId) {
         id: pathId,
         branchColor: jsonNode.branchColor,
         collapsed: !!jsonNode.collapsed,
-        notes: jsonNode.notes || ''
+        notes: jsonNode.notes || '',
+        imageSize: jsonNode.imageSize || null,
+        checked: jsonNode.checked !== undefined ? jsonNode.checked : undefined
     };
     if (jsonNode.children && Array.isArray(jsonNode.children)) {
         jsonNode.children.forEach((childJson, index) => {
@@ -450,7 +670,7 @@ function attachEventListeners() {
                 isLongPress = true;
                 const nodeId = node.getAttribute('data-node-id');
                 if (window.openNotesDrawer) {
-                    window.openNotesDrawer(nodeId);
+                    window.openNotesDrawer(nodeId, 'longpress');
                     if (navigator.vibrate) navigator.vibrate(50);
                 }
             }, longPressDelay);
@@ -509,7 +729,7 @@ function attachEventListeners() {
                 return;
             }
 
-            if (e.target.closest && e.target.closest('.mm-add-btn')) {
+            if (e.target.closest && (e.target.closest('.mm-add-btn') || e.target.closest('.mmw-checkbox'))) {
                 return;
             }
             e.stopPropagation();
@@ -539,18 +759,40 @@ function attachEventListeners() {
             editNodeText(node);
         });
 
-        const addBtn = node.querySelector('.mm-add-btn');
+        let addBtn = node.querySelector('.mm-add-btn');
+        const isBtnInsideNode = !!addBtn;
+        if (!addBtn) {
+            const nodeId = node.getAttribute('data-node-id');
+            if (nodeId) {
+                addBtn = svg.querySelector(`.mm-add-btn[data-for-id="${nodeId}"]`);
+            }
+        }
         if (addBtn && !window.MMW_READONLY) {
-            node.addEventListener('mouseenter', () => {
-                addBtn.style.opacity = '1';
-                addBtn.style.pointerEvents = 'auto';
-                addBtn.style.transition = 'opacity 200ms ease, pointer-events 200ms ease';
-            });
-            node.addEventListener('mouseleave', () => {
-                addBtn.style.opacity = '0';
-                addBtn.style.pointerEvents = 'none';
-                addBtn.style.transition = 'opacity 200ms ease, pointer-events 200ms ease';
-            });
+            if (isBtnInsideNode) {
+                node.addEventListener('mouseenter', () => {
+                    addBtn.style.opacity = '1';
+                    addBtn.style.pointerEvents = 'auto';
+                    addBtn.style.transition = 'opacity 200ms ease, pointer-events 200ms ease';
+                });
+                node.addEventListener('mouseleave', () => {
+                    addBtn.style.opacity = '0';
+                    addBtn.style.pointerEvents = 'none';
+                    addBtn.style.transition = 'opacity 200ms ease, pointer-events 200ms ease';
+                });
+            } else {
+                const showBtn = () => {
+                    addBtn.style.opacity = '1';
+                    addBtn.style.transition = 'opacity 200ms ease';
+                };
+                const hideBtn = () => {
+                    addBtn.style.opacity = '0';
+                    addBtn.style.transition = 'opacity 200ms ease';
+                };
+                node.addEventListener('mouseenter', showBtn);
+                node.addEventListener('mouseleave', hideBtn);
+                addBtn.addEventListener('mouseenter', showBtn);
+                addBtn.addEventListener('mouseleave', hideBtn);
+            }
         }
     });
 
@@ -590,6 +832,21 @@ function attachEventListeners() {
             showContextMenu(e);
         });
         svg.__mmwContextHandlerAttached = true;
+    }
+
+    if (!svg.__mmwCheckboxHandlerAttached) {
+        svg.addEventListener('click', (e) => {
+            const btn = e.target && typeof e.target.closest === 'function' ? e.target.closest('.mmw-checkbox') : null;
+            if (!btn) return;
+            e.stopPropagation();
+            e.preventDefault();
+            const nodeGroup = btn.closest('.mm-node');
+            const nodeId = nodeGroup ? nodeGroup.getAttribute('data-node-id') : btn.getAttribute('data-node-id');
+            if (nodeId && typeof window.toggleCheckboxState === 'function') {
+                window.toggleCheckboxState(nodeId);
+            }
+        });
+        svg.__mmwCheckboxHandlerAttached = true;
     }
 }
 
@@ -653,7 +910,7 @@ function editNodeText(nodeElement) {
                     width: ${width}px;
                     height: ${height}px;
                     box-sizing: border-box;
-                    padding: 8px 22px;
+                    padding: 5px 20px;
                     outline: none;
                     border: none;
                     box-shadow: inset 0 0 0 2px ${branchColor};
@@ -685,7 +942,16 @@ function editNodeText(nodeElement) {
     nodeElement.appendChild(fo);
     (function () {
         try {
-            const addBtn = nodeElement.querySelector('.mm-add-btn');
+            let addBtn = nodeElement.querySelector('.mm-add-btn');
+            if (!addBtn) {
+                const nodeId = nodeElement.getAttribute('data-node-id');
+                if (nodeId) {
+                    const svg = nodeElement.closest('svg');
+                    if (svg) {
+                        addBtn = svg.querySelector(`.mm-add-btn[data-for-id="${nodeId}"]`);
+                    }
+                }
+            }
             if (addBtn && addBtn.parentNode === nodeElement) {
                 nodeElement.appendChild(addBtn);
             }
@@ -1323,13 +1589,20 @@ function editNodeText(nodeElement) {
             addBtn(`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-italic-icon lucide-italic"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg>`, () => applyWrap('*', '*'), 'Italic');
             addBtn(`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-strikethrough-icon lucide-strikethrough"><path d="M16 4H9a3 3 0 0 0-2.83 4"/><path d="M14 12a4 4 0 0 1 0 8H6"/><line x1="4" x2="20" y1="12" y2="12"/></svg>`, () => applyWrap('~~', '~~'), 'Strikethrough');
             addBtn(`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-icon lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`, applyLink, 'Insert link');
-            addBtn(`<svg xmlns="http://www.w3.org/2000/svg"r width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-remove-formatting-icon lucide-remove-formatting"><path d="M4 7V4h16v3"/><path d="M5 20h6"/><path d="M13 4 8 20"/><path d="m15 15 5 5"/><path d="m20 15-5 5"/></svg><span>Remove Styling</span>`, () => {
-                const raw = __mmwPlainFromDiv(div);
-                const cleaned = __mmwStripMarkdown(raw);
-                div.textContent = cleaned;
-                setSelectionOffsets(div, cleaned.length, cleaned.length);
-                triggerLiveUpdate();
-            }, 'Remove styling');
+
+            const currentPlain = __mmwPlainFromDiv(div);
+            const selOff = getSelectionOffsets(div);
+            const selectionText = (selOff && selOff.start !== selOff.end) ? currentPlain.slice(selOff.start, selOff.end) : currentPlain;
+
+            if (__mmwHasMarkdownStyles(selectionText)) {
+                addBtn(`<svg xmlns="http://www.w3.org/2000/svg"r width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-remove-formatting-icon lucide-remove-formatting"><path d="M4 7V4h16v3"/><path d="M5 20h6"/><path d="M13 4 8 20"/><path d="m15 15 5 5"/><path d="m20 15-5 5"/></svg><span>Remove Styling</span>`, () => {
+                    const raw = __mmwPlainFromDiv(div);
+                    const cleaned = __mmwStripMarkdown(raw);
+                    div.textContent = cleaned;
+                    setSelectionOffsets(div, cleaned.length, cleaned.length);
+                    triggerLiveUpdate();
+                }, 'Remove styling');
+            }
 
             document.body.appendChild(tb);
             toolbarOpen = true;
@@ -1401,6 +1674,10 @@ function syncEditorOverlayWithNode(nodeElement, animMs = 200) {
     }
 }
 
+function __mmwTrimTrailingNewlines(text) {
+    return String(text || '').replace(/\n+$/, '');
+}
+
 function updateNodeTextInHierarchy(nodeElement, newText) {
     const nodeId = nodeElement.getAttribute('data-node-id');
 
@@ -1415,7 +1692,7 @@ function updateNodeTextInHierarchy(nodeElement, newText) {
 
     const targetNode = findNodeById(currentHierarchy, nodeId);
     if (targetNode) {
-        targetNode.text = newText;
+        targetNode.text = __mmwTrimTrailingNewlines(newText);
         const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
         localStorage.setItem(localStorageKey, json);
     }
@@ -1435,7 +1712,7 @@ function updateNodeTextInHierarchyLive(nodeElement, newText) {
 
     const targetNode = findNodeById(currentHierarchy, nodeId);
     if (targetNode) {
-        targetNode.text = newText;
+        targetNode.text = __mmwTrimTrailingNewlines(newText);
     }
 }
 
@@ -1476,22 +1753,24 @@ function showContextMenu(e) {
 
     const isLevelDeepEnough = targetNode && targetNode.level >= 2;
 
-    const menuScale = Math.min(scale, 1.0);
     const menu = document.createElement('div');
     menu.className = 'context-menu';
-    menu.style.left = e.clientX + 'px';
-    menu.style.top = e.clientY + 'px';
-    menu.style.maxWidth = `${225 / menuScale}px`;
+    menu.style.position = 'fixed';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    menu.style.maxWidth = `225px`;
+    menu.style.transformOrigin = 'top left';
+    menu.style.animation = 'none';
 
     menu.style.opacity = '0';
-    menu.style.transform = `scale(${menuScale * 0.85})`;
+    menu.style.transform = `scale(0.85)`;
     menu.style.transition = 'transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 140ms cubic-bezier(0.2, 0.8, 0.2, 1)';
 
     menu.innerHTML = `
                     <div class="context-menu-buttons-container">
                         <div class="context-menu-colors" style="display: flex; gap: 7px; padding: 4px 0px 8px 2px; justify-content: center; flex-wrap: wrap;  margin-bottom: 4px;">
                             ${['rgb(255, 127, 15)', 'rgb(0, 191, 191)', 'rgb(255, 64, 129)', 'rgb(206, 91, 255)', 'rgb(50, 205, 53)', 'rgb(255, 191, 0)', 'rgb(3, 169, 244)'].map(color => `
-                                <div onclick="setBranchColor('${color}')" style="width: 18px; height: 18px; border-radius: 50%; background-color: ${color}; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: transform 0.1s; opacity: 0.8;"></div>
+                                <div onclick="setBranchColor('${color}')" style="width: 18px; height: 18px; border-radius: 50%; background-color: ${color}; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: transform 0.1s; opacity: 0.8; corner-shape: round !important;"></div>
                             `).join('')}
                         </div>
                         ${(!targetNode.collapsed) ? `<div class="context-menu-button" onclick="addChildNode()">
@@ -1502,7 +1781,16 @@ function showContextMenu(e) {
                             Add Branch
                         </div>` : ''}
                         
-                         ${(!targetNode.notes) ? `<div class="context-menu-button" onclick="window.openNotesDrawer('${targetNode.id}')">
+                        ${(!targetNode.collapsed) ? `<div class="context-menu-button" onclick="showImageUploadPopup()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: -2px;">
+                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                            </svg>
+                            Add Image
+                        </div>` : ''}
+                        
+                         ${(!targetNode.notes) ? `<div class="context-menu-button" onclick="window.openNotesDrawer('${targetNode.id}', 'menu')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: -2px;">
                                 <path d="M21 5H3"/>
                                 <path d="M15 12H3"/>
@@ -1510,8 +1798,20 @@ function showContextMenu(e) {
                             </svg>
                             Add Notes
                         </div>` : ''}
+
+                        ${targetNode && targetNode.checked === undefined ? `<div class="context-menu-button" onclick="window.toggleCheckbox()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: -2px;">
+                                <polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Add Checkbox
+                        </div>` : `<div class="context-menu-button" onclick="window.toggleCheckbox()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: -2px;">
+                                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Remove Checkbox
+                        </div>`}
                         
-                        ${isLevelDeepEnough && !window.MMW_DISABLE_AI_FEATURES ? `<div class="context-menu-button" onclick="expandMindMapNode()">
+                         ${isLevelDeepEnough ? `<div class="context-menu-button ai-expand-button" onclick="expandMindMapNode()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M8 12C13 12 11 6 16 6" />
                         <path d="M8 12C13 12 11 18 16 18" />
@@ -1522,19 +1822,34 @@ function showContextMenu(e) {
                         AI Expand                
                         </div>` : ''}
 
-                        <div class="context-menu-button" onclick="editNode()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        ${!(targetNode && targetNode.text && typeof targetNode.text === 'string' && window.isImageRef && window.isImageRef(targetNode.text)) ? `<div class="context-menu-button" onclick="editNode()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.1rem" height="1.1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M13 21h8"/>
                                 <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5 .5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
                             </svg>
                             Edit Node
-                        </div>
+                        </div>` : ''}
+                        
+                        ${(targetNode && targetNode.text && typeof targetNode.text === 'string' && window.isImageRef && window.isImageRef(targetNode.text)) ? `<div class="context-menu-button has-submenu" onmouseenter="showImageSizeSubmenu(event, '${targetNode.imageSize || 'medium'}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-proportions-icon lucide-proportions"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M12 9v11"/><path d="M2 9h13a2 2 0 0 1 2 2v9"/></svg>
+                            Size
+                        </div>` : ''}
+                        
+                        ${(targetNode && targetNode.text && typeof targetNode.text === 'string' && window.isImageRef && window.isImageRef(targetNode.text)) ? `<div class="context-menu-button" onclick="downloadImage()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download-icon lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            Download Image
+                        </div>` : ''}
+                        
+                        ${(targetNode && targetNode.text && typeof targetNode.text === 'string' && window.isImageRef && window.isImageRef(targetNode.text)) ? `<div class="context-menu-button" onclick="showReplaceImagePopup()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat-icon lucide-repeat"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>                            Replace Image
+                        </div>` : ''}
 
                         ${(isLevelDeepEnough && targetNode.children && targetNode.children.length > 0 && !targetNode.collapsed) ? `<div class="context-menu-button" onclick="collapseNodeChildren()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 20 5-5 5 5"/><path d="m7 4 5 5 5-5"/></svg>
                             Collapse Children
                         </div>` : ''}
 
+                        ${(targetNode && __mmwHasMarkdownStyles(targetNode.text)) ? `
                         <div class="context-menu-button" onclick="removeStylingFromNode()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-remove-formatting-icon lucide-remove-formatting">
                                 <path d="M4 7V4h16v3"/>
@@ -1544,7 +1859,16 @@ function showContextMenu(e) {
                                 <path d="m20 15-5 5"/>
                             </svg>
                             Remove Styles
-                        </div>
+                        </div>` : ''}
+
+                        ${(targetNode && targetNode.branchColor) ? `
+                        <div class="context-menu-button" onclick="resetBranchColor()">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                <path d="M3 3v5h5"/>
+                            </svg>
+                            Reset Color
+                        </div>` : ''}
                         ${isLevelDeepEnough ? `<div class="context-menu-button delete-node-button" onclick="deleteNode()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1.55rem" height="1.55rem" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="delete-node-icon">
                                 <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1557,9 +1881,39 @@ function showContextMenu(e) {
                 `;
     document.body.appendChild(menu);
 
+    menu.style.transform = 'scale(1)'; 
+    const rect = menu.getBoundingClientRect();
+    const menuWidth = rect.width;
+    const menuHeight = rect.height;
+    
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    const padding = 10;
+    
+    let left = e.clientX;
+    let top = e.clientY;
+    
+    if (left + menuWidth > viewportWidth - padding) {
+        left = viewportWidth - menuWidth - padding;
+    }
+    if (left < padding) {
+        left = padding;
+    }
+    
+    if (top + menuHeight > viewportHeight - padding) {
+        top = viewportHeight - menuHeight - padding;
+    }
+    if (top < padding) {
+        top = padding;
+    }
+    
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+    menu.style.transform = `scale(0.85)`;
+
     requestAnimationFrame(() => {
         menu.style.opacity = '1';
-        menu.style.transform = `scale(${menuScale})`;
+        menu.style.transform = `scale(1)`;
     });
 
     const removeMenu = () => {
@@ -1587,14 +1941,13 @@ window.addChildNodeFor = function (targetNodeId) {
 
     const parentNode = findNodeById(currentHierarchy, targetNodeId);
     if (parentNode) {
-        const newChildIndex = parentNode.children.length;
-        const newPathId = `${parentNode.id}-${newChildIndex}`;
+        const newStableId = __mmwGenerateUid();
         const newNode = {
             text: 'New Node',
             children: [],
             level: parentNode.level + 1,
             parent: parentNode,
-            id: newPathId
+            id: newStableId
         };
         HistoryManager.captureState();
         parentNode.children.push(newNode);
@@ -1607,7 +1960,15 @@ window.addChildNodeFor = function (targetNodeId) {
         triggerAutoSave();
 
         setTimeout(() => {
-            const newNodeElement = preview.querySelector(`[data-node-id="${newPathId}"]`);
+            const updatedParent = findNodeById(currentHierarchy, targetNodeId);
+            let actualId = newStableId;
+            if (updatedParent && updatedParent.children.length > 0) {
+                const lastChild = updatedParent.children[updatedParent.children.length - 1];
+                if (lastChild.text === 'New Node') {
+                    actualId = lastChild.id;
+                }
+            }
+            const newNodeElement = preview.querySelector(`[data-node-id="${actualId}"]`);
             if (newNodeElement) {
                 editNodeText(newNodeElement);
             }
@@ -1619,6 +1980,882 @@ window.addChildNode = function () {
     if (!window.currentNodeElement) return;
     const clickedNodeId = window.currentNodeElement.getAttribute('data-node-id');
     window.addChildNodeFor(clickedNodeId);
+};
+
+window.showImageUploadPopup = async function () {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+    
+    const clickedNodeId = window.currentNodeElement.getAttribute('data-node-id');
+    
+    const backdrop = document.createElement('div');
+    backdrop.className = 'image-upload-backdrop';
+    
+    const dialog = document.createElement('div');
+    dialog.className = 'image-upload-dialog';
+    
+    const storage = window.ImageHandler;
+    
+    const title = document.createElement('h3');
+    title.textContent = 'Add Image';
+    dialog.appendChild(title);
+    
+    const dropZone = document.createElement('div');
+    dropZone.className = 'image-drop-zone';
+    dropZone.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+        </svg>
+        <p>Drag and drop an image here</p>
+        <span>or</span>
+    `;
+    
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'image-upload-btn';
+    uploadBtn.textContent = 'Upload';
+    
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    
+    uploadBtn.appendChild(fileInput);
+    dropZone.appendChild(uploadBtn);
+    dialog.appendChild(dropZone);
+    
+    const previewArea = document.createElement('div');
+    previewArea.className = 'image-preview-area';
+    previewArea.style.display = 'none';
+    dialog.appendChild(previewArea);
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'image-upload-buttons';
+    
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.className = 'image-upload-btn image-upload-btn-cancel';
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.textContent = 'Add Image';
+    confirmBtn.className = 'image-upload-btn image-upload-btn-confirm';
+    confirmBtn.style.display = 'none';
+    
+    buttonContainer.appendChild(cancelBtn);
+    buttonContainer.appendChild(confirmBtn);
+    dialog.appendChild(buttonContainer);
+    
+    backdrop.appendChild(dialog);
+    document.body.appendChild(backdrop);
+    
+    let currentImageData = null;
+    
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            return;
+        }
+        
+        const storage = window.ImageHandler;
+        storage.fileToDataUrl(file).then(dataUrl => {
+            currentImageData = dataUrl;
+            
+            previewArea.innerHTML = '';
+            previewArea.style.display = 'block';
+            
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.className = 'image-preview-img';
+            previewArea.appendChild(img);
+            
+            confirmBtn.style.display = 'block';
+            
+            dropZone.style.display = 'none';
+        }).catch(err => {
+            console.error('Failed to process image:', err);
+            
+            previewArea.innerHTML = '';
+            previewArea.style.display = 'block';
+            
+            if (err.message && err.message.includes('Maximum number of images reached')) {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'image-limit-message';
+                errorMsg.style.cssText = 'text-align: center; padding: 20px;';
+                
+                const messageText = document.createElement('p');
+                messageText.style.cssText = 'color: #ff6b6b; font-size: 14px; margin: 0 0 16px 0;';
+                messageText.textContent = 'Please sign in to upload more images to mind maps';
+                errorMsg.appendChild(messageText);
+                
+                const signUpBtn = document.createElement('a');
+                signUpBtn.href = '/sign-up';
+                signUpBtn.className = 'pill-button';
+                signUpBtn.style.cssText = 'display: inline-block; padding: 10px 24px; background: #4a90d9; color: white; text-decoration: none; border-radius: 25px; font-size: 14px; font-weight: 500; transition: background 0.2s;';
+                signUpBtn.textContent = 'Sign up';
+                signUpBtn.onmouseenter = () => signUpBtn.style.background = '#3a7bc8';
+                signUpBtn.onmouseleave = () => signUpBtn.style.background = '#4a90d9';
+                errorMsg.appendChild(signUpBtn);
+                
+                previewArea.appendChild(errorMsg);
+            } else {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'image-error-message';
+                errorMsg.style.cssText = 'color: #ff6b6b; text-align: center; padding: 20px; font-size: 14px;';
+                errorMsg.textContent = err.message || 'Failed to process image. Please try a different file.';
+                previewArea.appendChild(errorMsg);
+            }
+            
+            confirmBtn.style.display = 'none';
+            dropZone.style.display = 'flex';
+        });
+    }
+    
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-over');
+    });
+    
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+    });
+    
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+    
+    dialog.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+    dialog.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+    
+    uploadBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+        if (fileInput.files.length > 0) {
+            handleFile(fileInput.files[0]);
+        }
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+        document.body.removeChild(backdrop);
+    });
+    
+    let isUploading = false;
+    
+    confirmBtn.addEventListener('click', async () => {
+        if (!currentImageData || isUploading) return;
+        
+        isUploading = true;
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span class="button-loading-spinner"></span>';
+        
+        try {
+            const storage = window.ImageHandler;
+            const imageRef = await storage.saveImage(currentImageData);
+            
+            if (imageRef) {
+                window.addImageNodeFor(clickedNodeId, imageRef);
+            }
+            
+            document.body.removeChild(backdrop);
+        } finally {
+            isUploading = false;
+            confirmBtn.disabled = false;
+        }
+    });
+    
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+            document.body.removeChild(backdrop);
+        }
+    });
+    
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+            document.body.removeChild(backdrop);
+            document.removeEventListener('keydown', handleKeydown);
+        }
+    };
+    document.addEventListener('keydown', handleKeydown);
+};
+
+window.showReplaceImagePopup = async function () {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+    
+    const clickedNodeId = window.currentNodeElement.getAttribute('data-node-id');
+    
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    
+    const targetNode = findNodeById(currentHierarchy, clickedNodeId);
+    if (!targetNode || !targetNode.text || !window.isImageRef(targetNode.text)) return;
+    
+    const oldImageRef = targetNode.text;
+    
+    const backdrop = document.createElement('div');
+    backdrop.className = 'image-upload-backdrop';
+    
+    const dialog = document.createElement('div');
+    dialog.className = 'image-upload-dialog';
+    
+    const title = document.createElement('h3');
+    title.textContent = 'Replace Image';
+    dialog.appendChild(title);
+    
+    const dropZone = document.createElement('div');
+    dropZone.className = 'image-drop-zone';
+    dropZone.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+        </svg>
+        <p>Drag and drop a new image here</p>
+        <span>or</span>
+    `;
+    
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'image-upload-btn';
+    uploadBtn.textContent = 'Upload';
+    
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    
+    uploadBtn.appendChild(fileInput);
+    dropZone.appendChild(uploadBtn);
+    dialog.appendChild(dropZone);
+    
+    const previewArea = document.createElement('div');
+    previewArea.className = 'image-preview-area';
+    previewArea.style.display = 'none';
+    dialog.appendChild(previewArea);
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'image-upload-buttons';
+    
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.className = 'image-upload-btn image-upload-btn-cancel';
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.textContent = 'Replace';
+    confirmBtn.className = 'image-upload-btn image-upload-btn-confirm';
+    confirmBtn.style.display = 'none';
+    
+    buttonContainer.appendChild(cancelBtn);
+    buttonContainer.appendChild(confirmBtn);
+    dialog.appendChild(buttonContainer);
+    
+    backdrop.appendChild(dialog);
+    document.body.appendChild(backdrop);
+    
+    let currentImageData = null;
+    
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            return;
+        }
+        
+        const storage = window.ImageHandler;
+        storage.fileToDataUrl(file).then(dataUrl => {
+            currentImageData = dataUrl;
+            
+            previewArea.innerHTML = '';
+            previewArea.style.display = 'block';
+            
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.className = 'image-preview-img';
+            previewArea.appendChild(img);
+            
+            confirmBtn.style.display = 'block';
+            
+            dropZone.style.display = 'none';
+        }).catch(err => {
+            console.error('Failed to process image:', err);
+            
+            previewArea.innerHTML = '';
+            previewArea.style.display = 'block';
+            
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'image-error-message';
+            errorMsg.style.cssText = 'color: #ff6b6b; text-align: center; padding: 20px; font-size: 14px;';
+            errorMsg.textContent = err.message || 'Failed to process image. Please try a different file.';
+            previewArea.appendChild(errorMsg);
+            
+            confirmBtn.style.display = 'none';
+            dropZone.style.display = 'flex';
+        });
+    }
+    
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-over');
+    });
+    
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+    });
+    
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+    
+    dialog.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+    dialog.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+    
+    uploadBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+        if (fileInput.files.length > 0) {
+            handleFile(fileInput.files[0]);
+        }
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+        document.body.removeChild(backdrop);
+    });
+    
+    let isUploading = false;
+    
+    confirmBtn.addEventListener('click', async () => {
+        if (!currentImageData || isUploading) return;
+        
+        isUploading = true;
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span class="button-loading-spinner"></span>';
+        
+        try {
+            const storage = window.ImageHandler;
+            
+            const newImageRef = await storage.saveImage(currentImageData);
+            
+            if (newImageRef) {
+                await storage.deleteImage(oldImageRef);
+                
+                window.replaceImageNodeFor(clickedNodeId, newImageRef);
+            }
+            
+            document.body.removeChild(backdrop);
+        } catch (err) {
+            console.error('Failed to replace image:', err);
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Replace Image';
+            isUploading = false;
+        } finally {
+            isUploading = false;
+            confirmBtn.disabled = false;
+        }
+    });
+    
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+            document.body.removeChild(backdrop);
+        }
+    });
+    
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+            document.body.removeChild(backdrop);
+            document.removeEventListener('keydown', handleKeydown);
+        }
+    };
+    document.addEventListener('keydown', handleKeydown);
+};
+
+window.replaceImageNodeFor = function (targetNodeId, newImageRef) {
+    if (!targetNodeId || !newImageRef) return;
+    
+    closeContextMenus();
+    
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    
+    const targetNode = findNodeById(currentHierarchy, targetNodeId);
+    if (targetNode) {
+        HistoryManager.captureState();
+        targetNode.text = newImageRef;
+        
+        const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+        editor.value = json;
+        localStorage.setItem(localStorageKey, json);
+        updateMindMap();
+        
+        triggerAutoSave();
+    }
+};
+
+window.showReplaceImagePopupForNode = async function (nodeId, oldImageRef) {
+    if (!nodeId) return;
+    
+    const backdrop = document.createElement('div');
+    backdrop.className = 'image-upload-backdrop';
+    
+    const dialog = document.createElement('div');
+    dialog.className = 'image-upload-dialog';
+    
+    const title = document.createElement('h3');
+    title.textContent = 'Replace Image';
+    dialog.appendChild(title);
+    
+    const dropZone = document.createElement('div');
+    dropZone.className = 'image-drop-zone';
+    dropZone.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+        </svg>
+        <p>Drag and drop a new image here</p>
+        <span>or</span>
+    `;
+    
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'image-upload-btn';
+    uploadBtn.textContent = 'Upload';
+    
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    
+    uploadBtn.appendChild(fileInput);
+    dropZone.appendChild(uploadBtn);
+    dialog.appendChild(dropZone);
+    
+    const previewArea = document.createElement('div');
+    previewArea.className = 'image-preview-area';
+    previewArea.style.display = 'none';
+    dialog.appendChild(previewArea);
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'image-upload-buttons';
+    
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.className = 'image-upload-btn image-upload-btn-cancel';
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.textContent = 'Replace';
+    confirmBtn.className = 'image-upload-btn image-upload-btn-confirm';
+    confirmBtn.style.display = 'none';
+    
+    buttonContainer.appendChild(cancelBtn);
+    buttonContainer.appendChild(confirmBtn);
+    dialog.appendChild(buttonContainer);
+    
+    backdrop.appendChild(dialog);
+    document.body.appendChild(backdrop);
+    
+    let currentImageData = null;
+    
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            return;
+        }
+        
+        const storage = window.ImageHandler;
+        storage.fileToDataUrl(file).then(dataUrl => {
+            currentImageData = dataUrl;
+            
+            previewArea.innerHTML = '';
+            previewArea.style.display = 'block';
+            
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.className = 'image-preview-img';
+            previewArea.appendChild(img);
+            
+            confirmBtn.style.display = 'block';
+            
+            dropZone.style.display = 'none';
+        }).catch(err => {
+            console.error('Failed to process image:', err);
+            
+            previewArea.innerHTML = '';
+            previewArea.style.display = 'block';
+            
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'image-error-message';
+            errorMsg.style.cssText = 'color: #ff6b6b; text-align: center; padding: 20px; font-size: 14px;';
+            errorMsg.textContent = err.message || 'Failed to process image. Please try a different file.';
+            previewArea.appendChild(errorMsg);
+            
+            confirmBtn.style.display = 'none';
+            dropZone.style.display = 'flex';
+        });
+    }
+    
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-over');
+    });
+    
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+    });
+    
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+    
+    dialog.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+    dialog.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+    
+    uploadBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+        if (fileInput.files.length > 0) {
+            handleFile(fileInput.files[0]);
+        }
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+        document.body.removeChild(backdrop);
+    });
+    
+    let isUploading = false;
+    
+    confirmBtn.addEventListener('click', async () => {
+        if (!currentImageData || isUploading) return;
+        
+        isUploading = true;
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span class="button-loading-spinner"></span>';
+        
+        try {
+            const storage = window.ImageHandler;
+            
+            const newImageRef = await storage.saveImage(currentImageData);
+            
+            if (newImageRef) {
+                if (oldImageRef) {
+                    await storage.deleteImage(oldImageRef);
+                }
+                
+                window.replaceImageNodeFor(nodeId, newImageRef);
+            }
+            
+            document.body.removeChild(backdrop);
+        } catch (err) {
+            console.error('Failed to replace image:', err);
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Replace';
+            isUploading = false;
+        } finally {
+            isUploading = false;
+            confirmBtn.disabled = false;
+        }
+    });
+    
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+            document.body.removeChild(backdrop);
+        }
+    });
+    
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+            document.body.removeChild(backdrop);
+            document.removeEventListener('keydown', handleKeydown);
+        }
+    };
+    document.addEventListener('keydown', handleKeydown);
+};
+
+window.showImageSizeSubmenu = function (e, currentSize) {
+    const parentButton = e.target.closest('.context-menu-button');
+    if (!parentButton) return;
+    
+    const rect = parentButton.getBoundingClientRect();
+    
+    document.querySelectorAll('.context-submenu').forEach(el => el.remove());
+    
+    const submenu = document.createElement('div');
+    submenu.className = 'context-menu context-submenu';
+    submenu.style.position = 'fixed';
+    submenu.style.left = `${rect.right + 5}px`;
+    submenu.style.top = `${rect.top}px`;
+    submenu.style.opacity = '0';
+    submenu.style.transform = 'scale(0.85)';
+    submenu.style.transition = 'transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 140ms cubic-bezier(0.2, 0.8, 0.2, 1)';
+    
+    const sizes = [
+        { id: 'small', label: 'Small', icon: '<rect width="10" height="8" x="7" y="8" rx="1" ry="1"/>' },
+        { id: 'medium', label: 'Medium', icon: '<rect width="14" height="10" x="5" y="7" rx="1" ry="1"/>' },
+        { id: 'large', label: 'Large', icon: '<rect width="18" height="12" x="3" y="6" rx="1" ry="1"/>' }
+    ];
+    
+    submenu.innerHTML = `
+        <div class="context-menu-buttons-container">
+            ${sizes.map(size => `
+                <div class="context-menu-button ${currentSize === size.id ? 'selected' : ''}" onclick="setImageSize('${size.id}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        ${size.icon}
+                    </svg>
+                    ${size.label}
+                    ${currentSize === size.id ? '<svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto;"><path d="M20 6 9 17l-5-5"/></svg>' : ''}
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    document.body.appendChild(submenu);
+    
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    const padding = 10;
+    const submenuWidth = submenu.offsetWidth;
+    const submenuHeight = submenu.offsetHeight;
+    
+    let left = rect.right + 5;
+    let top = rect.top;
+    
+    if (left + submenuWidth > viewportWidth - padding) {
+        left = rect.left - submenuWidth - 5;
+    }
+    if (left < padding) {
+        left = padding;
+    }
+    
+    if (top + submenuHeight > viewportHeight - padding) {
+        top = viewportHeight - submenuHeight - padding;
+    }
+    if (top < padding) {
+        top = padding;
+    }
+    
+    submenu.style.left = `${left}px`;
+    submenu.style.top = `${top}px`;
+    
+    requestAnimationFrame(() => {
+        submenu.style.opacity = '1';
+        submenu.style.transform = 'scale(1)';
+    });
+    
+    const removeSubmenu = () => {
+        if (document.body.contains(submenu)) {
+            document.body.removeChild(submenu);
+        }
+        document.removeEventListener('click', removeSubmenu);
+    };
+    
+    setTimeout(() => document.addEventListener('click', removeSubmenu), 100);
+};
+
+window.setImageSize = function (size) {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+    
+    const nodeEl = window.currentNodeElement;
+    const nodeId = nodeEl.getAttribute('data-node-id');
+    
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target) return;
+    
+    HistoryManager.captureState();
+    target.imageSize = size;
+    const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+    editor.value = json;
+    localStorage.setItem(localStorageKey, json);
+    updateMindMap();
+    triggerAutoSave();
+};
+
+window.downloadImage = async function () {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+    
+    const nodeEl = window.currentNodeElement;
+    const nodeId = nodeEl.getAttribute('data-node-id');
+    
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target || !target.text || !window.isImageRef(target.text)) return;
+    
+    let imageData = window.loadImageFromStorage(target.text);
+    if (!imageData) {
+        imageData = await window.loadImageFromStorageAsync(target.text);
+    }
+    if (!imageData) {
+        console.error('Failed to load image data');
+        return;
+    }
+    
+    let extension = 'png';
+    let mimeType = 'image/png';
+    if (imageData.startsWith('data:image/svg+xml')) {
+        extension = 'svg';
+        mimeType = 'image/svg+xml';
+    } else if (imageData.startsWith('data:image/jpeg') || imageData.startsWith('data:image/jpg')) {
+        extension = 'jpg';
+        mimeType = 'image/jpeg';
+    } else if (imageData.startsWith('data:image/gif')) {
+        extension = 'gif';
+        mimeType = 'image/gif';
+    } else if (imageData.startsWith('data:image/webp')) {
+        extension = 'webp';
+        mimeType = 'image/webp';
+    }
+    
+    const link = document.createElement('a');
+    link.href = imageData;
+    link.download = `mindmap-image-${target.text.substring(6)}.${extension}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+window.addImageNodeFor = function (targetNodeId, imageRef) {
+    if (!targetNodeId || !imageRef) return;
+    
+    closeContextMenus();
+    
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    
+    const parentNode = findNodeById(currentHierarchy, targetNodeId);
+    if (parentNode) {
+        const newStableId = __mmwGenerateUid();
+        const newNode = {
+            text: imageRef,
+            children: [],
+            level: parentNode.level + 1,
+            parent: parentNode,
+            id: newStableId,
+            isImage: true,
+            imageSize: 'medium'
+        };
+        HistoryManager.captureState();
+        parentNode.children.push(newNode);
+        
+        const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+        editor.value = json;
+        localStorage.setItem(localStorageKey, json);
+        updateMindMap();
+        
+        triggerAutoSave();
+    }
 };
 
 function deleteNodeByElement(nodeElement) {
@@ -1633,16 +2870,26 @@ function deleteNodeByElement(nodeElement) {
         return null;
     }
 
+    function collectImageRefs(node) {
+        const refs = [];
+        if (node.text && typeof node.text === 'string' && window.isImageRef(node.text)) {
+            refs.push(node.text);
+        }
+        for (const child of node.children) {
+            refs.push(...collectImageRefs(child));
+        }
+        return refs;
+    }
+
     const result = findNodeAndParent(currentHierarchy, nodeId);
     if (result && result.parent) {
         const { node, parent } = result;
         const childIndex = parent.children.indexOf(node);
         if (childIndex > -1) {
+            collectImageRefs(node).forEach(ref => window.deleteImageFromStorage(ref));
+
             parent.children.splice(childIndex, 1);
 
-            parent.children.forEach((child, index) => {
-                reassignPathIds(child, `${parent.id}-${index}`);
-            });
 
             const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
             editor.value = json;
@@ -1752,6 +2999,86 @@ window.setBranchColor = function (color) {
     }
 };
 
+window.toggleCheckbox = function () {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+    const nodeEl = window.currentNodeElement;
+    const nodeId = nodeEl.getAttribute('data-node-id');
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target) return;
+    HistoryManager.captureState();
+    if (target.checked === undefined) {
+        target.checked = false;
+    } else {
+        target.checked = undefined;
+    }
+    const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+    editor.value = json;
+    localStorage.setItem(localStorageKey, json);
+    updateMindMap();
+    triggerAutoSave();
+};
+
+window.toggleCheckboxState = function (nodeId) {
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target) return;
+    if (target.checked !== undefined) {
+        HistoryManager.captureState();
+        target.checked = !target.checked;
+        const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+        editor.value = json;
+        localStorage.setItem(localStorageKey, json);
+        updateMindMap();
+        triggerAutoSave();
+    }
+};
+
+window.resetBranchColor = function () {
+    if (!window.currentNodeElement) return;
+    closeContextMenus();
+
+    const nodeEl = window.currentNodeElement;
+    const nodeId = nodeEl.getAttribute('data-node-id');
+
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+
+    const target = findNodeById(currentHierarchy, nodeId);
+    if (!target) return;
+
+    if (target.branchColor) {
+        HistoryManager.captureState();
+        delete target.branchColor;
+        const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+        editor.value = json;
+        localStorage.setItem(localStorageKey, json);
+        updateMindMap();
+        triggerAutoSave();
+    }
+};
+
 window.collapseNodeChildren = function () {
     if (!window.currentNodeElement) return;
     closeContextMenus();
@@ -1801,6 +3128,47 @@ window.expandNodeChildren = function (nodeId) {
     triggerAutoSave();
 };
 
+let __mmwIsToggling = false;
+window.toggleFoldUnfoldAll = function () {
+    if (__mmwIsToggling) return;
+    __mmwIsToggling = true;
+    
+    function setAllCollapsed(node, collapsed, level = 0) {
+        if (node.children && node.children.length > 0) {
+            if (level >= 2) {
+                node.collapsed = collapsed;
+            } else {
+                node.collapsed = false;
+            }
+            node.children.forEach(child => setAllCollapsed(child, collapsed, level + 1));
+        }
+    }
+
+    function hasAnyExpanded(node, level = 0) {
+        if (level >= 2 && node.children && node.children.length > 0 && !node.collapsed) {
+            return true;
+        }
+        if (node.children) {
+            for (const child of node.children) {
+                if (hasAnyExpanded(child, level + 1)) return true;
+            }
+        }
+        return false;
+    }
+
+    const shouldCollapse = hasAnyExpanded(currentHierarchy, 0);
+    setAllCollapsed(currentHierarchy, shouldCollapse, 0);
+
+    HistoryManager.captureState();
+    const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+    editor.value = json;
+    localStorage.setItem(localStorageKey, json);
+    updateMindMap();
+    triggerAutoSave();
+    
+    setTimeout(() => { __mmwIsToggling = false; }, 600);
+};
+
 window.replaceNodeChildren = function (targetNodeId, markdownContent) {
     if (!targetNodeId || !markdownContent) return null;
     closeContextMenus();
@@ -1821,7 +3189,7 @@ window.replaceNodeChildren = function (targetNodeId, markdownContent) {
     const rootFromMd = parsed['mm-node'];
 
     function convertToInternal(node, parent, level, index) {
-        const newId = `${parent.id}-${index}`;
+        const newId = __mmwGenerateUid();
         const newNode = {
             id: newId,
             text: node.content,
@@ -1943,6 +3311,8 @@ function animateViewBox(svg, targetViewBox, targetWidth, targetHeight, duration)
         svg.setAttribute('viewBox', currentViewBox.join(' '));
         svg.setAttribute('width', currentWidth);
         svg.setAttribute('height', currentHeight);
+
+        updateTransform();
 
         if (progress < 1) {
             viewBoxAnimationId = requestAnimationFrame(step);
@@ -2069,18 +3439,28 @@ function updateSVGWithAnimations(newHierarchy, contextLinks = []) {
         const existingNode = existingNodesMap.get(id);
 
         if (existingNode) {
-            const oldParent = oldParentMap.get(parseInt(id));
-            const newParent = newParentMap.get(parseInt(id));
+            const oldParent = oldParentMap.get(id);
+            const newParent = newParentMap.get(id);
             const parentUnchanged = oldParent === newParent;
 
             const newTransform = newNode.getAttribute('transform');
-            existingNode.style.transition = `transform ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity ${fadeInDuration}ms ease`;
+            if (isEditing) {
+                existingNode.style.transition = 'none';
+                existingNode.style.willChange = 'transform';
+            } else {
+                existingNode.style.transition = `transform ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity ${fadeInDuration}ms ease`;
+                existingNode.style.willChange = 'auto';
+            }
             existingNode.setAttribute('transform', newTransform);
 
-            const existingRect = existingNode.querySelector('rect');
-            const newRect = newNode.querySelector('rect');
+            const existingRect = existingNode.querySelector('rect:not(.mm-notes-outline)');
+            const newRect = newNode.querySelector('rect:not(.mm-notes-outline)');
             if (existingRect && newRect) {
-                existingRect.style.transition = `height ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms ease, fill-opacity 300ms ease`;
+                if (isEditing) {
+                    existingRect.style.transition = 'none';
+                } else {
+                    existingRect.style.transition = `width ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), height ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), fill 300ms ease, fill-opacity 300ms ease`;
+                }
                 existingRect.setAttribute('width', newRect.getAttribute('width'));
                 existingRect.setAttribute('height', newRect.getAttribute('height'));
                 existingRect.setAttribute('rx', newRect.getAttribute('rx'));
@@ -2114,13 +3494,31 @@ function updateSVGWithAnimations(newHierarchy, contextLinks = []) {
                 });
 
                 Array.from(newNode.children).forEach((child) => {
-                    if (!keep(child)) existingNode.appendChild(child.cloneNode(true));
+                    if (!keep(child) && child && typeof child.cloneNode === 'function') existingNode.appendChild(child.cloneNode(true));
                 });
             } catch (e) {
             }
 
-            const existingBtn = existingNode.querySelector('.mm-add-btn');
-            const newBtn = newNode.querySelector('.mm-add-btn');
+            let existingBtn = existingNode.querySelector('.mm-add-btn');
+            if (!existingBtn) {
+                const existingNodeId = existingNode.getAttribute('data-node-id');
+                if (existingNodeId) {
+                    const svgEl = existingNode.closest('svg');
+                    if (svgEl) {
+                        existingBtn = svgEl.querySelector(`.mm-add-btn[data-for-id="${existingNodeId}"]`);
+                    }
+                }
+            }
+            let newBtn = newNode.querySelector('.mm-add-btn');
+            if (!newBtn) {
+                const newNodeId = newNode.getAttribute('data-node-id');
+                if (newNodeId) {
+                    const svgEl = newNode.closest('svg');
+                    if (svgEl) {
+                        newBtn = svgEl.querySelector(`.mm-add-btn[data-for-id="${newNodeId}"]`);
+                    }
+                }
+            }
 
             if (existingBtn && newBtn) {
                 existingBtn.style.transition = `transform ${animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
@@ -2140,7 +3538,10 @@ function updateSVGWithAnimations(newHierarchy, contextLinks = []) {
                     if (existingBtn.parentNode) existingBtn.parentNode.removeChild(existingBtn);
                 }, 300);
             } else if (!existingBtn && newBtn) {
-                existingNode.appendChild(newBtn);
+                const svgEl = existingNode.closest('svg');
+                if (svgEl) {
+                    svgEl.appendChild(newBtn);
+                }
             }
 
             const existingNoteInd = existingNode.querySelector('.node-note-indicator');
@@ -2165,6 +3566,15 @@ function updateSVGWithAnimations(newHierarchy, contextLinks = []) {
             newNode.style.opacity = '0';
             newNode.style.transition = `opacity ${fadeInDuration}ms ease-in`;
             stage.appendChild(newNode);
+            
+            const newNodeId = newNode.getAttribute('data-node-id');
+            if (newNodeId) {
+                const newAddBtn = newSvg.querySelector(`.mm-add-btn[data-for-id="${newNodeId}"]`);
+                if (newAddBtn && !newNode.contains(newAddBtn)) {
+                    stage.appendChild(newAddBtn.cloneNode(true));
+                }
+            }
+            
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     newNode.style.opacity = '1';
@@ -2300,7 +3710,7 @@ function updateSVGWithAnimations(newHierarchy, contextLinks = []) {
             }
         } else {
             const titleNode = svg.querySelector('.mm-node[data-node-id="0"]');
-            if (titleNode) {
+            if (titleNode && newLink && typeof newLink.cloneNode === 'function') {
                 titleNode.appendChild(newLink.cloneNode(true));
             }
         }
@@ -2343,7 +3753,7 @@ function updateSVGWithAnimations(newHierarchy, contextLinks = []) {
             }
         } else {
             const titleNode = svg.querySelector('.mm-node[data-node-id="0"]');
-            if (titleNode) {
+            if (titleNode && newBtn && typeof newBtn.cloneNode === 'function') {
                 titleNode.appendChild(newBtn.cloneNode(true));
             }
         }
@@ -2464,10 +3874,41 @@ function stopResize() {
 
 
 function updateTransform() {
+    if (!preview) return;
     const svg = preview.querySelector('svg');
+    let fitScale = 1;
+
     if (svg) {
+        const viewBox = svg.getAttribute('viewBox');
+        if (viewBox) {
+            const parts = viewBox.split(' ');
+            if (parts.length === 4) {
+                const vbW = parseFloat(parts[2]);
+                const vbH = parseFloat(parts[3]);
+                const cw = preview.clientWidth || preview.offsetWidth;
+                const ch = preview.clientHeight || preview.offsetHeight;
+
+                if (vbW > 0 && vbH > 0 && cw > 20 && ch > 20) {
+                    const scaleX = cw / vbW;
+                    const scaleY = ch / vbH;
+                    fitScale = Math.min(scaleX, scaleY);
+                }
+            }
+        }
+
         svg.style.transform = `scale(${scale}) translate(${currentPoint.x / scale}px, ${currentPoint.y / scale}px)`;
         svg.style.transformOrigin = '0 0';
+    }
+    if (preview) {
+        preview.style.backgroundPosition = `${currentPoint.x}px ${currentPoint.y}px`;
+        let safeFitScale = fitScale;
+        if (!Number.isFinite(safeFitScale) || safeFitScale <= 0) safeFitScale = 1;
+        
+        let bgSize = 40 * scale * safeFitScale;
+        
+        if (bgSize < 5) bgSize = 5;
+        
+        preview.style.backgroundSize = `${bgSize}px ${bgSize}px`;
     }
 }
 
@@ -2477,6 +3918,9 @@ function fitToScreen() {
     closeContextMenus();
 
     svg.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+    if (preview) {
+        preview.style.transition = 'background-position 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-size 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
 
     scale = 1;
     currentPoint = { x: 0, y: 0 };
@@ -2484,6 +3928,9 @@ function fitToScreen() {
 
     setTimeout(() => {
         svg.style.transition = '';
+        if (preview) {
+            preview.style.transition = '';
+        }
     }, 500);
 }
 
@@ -2508,7 +3955,7 @@ function centerMindMap() {
     currentPoint.x = 0;
     currentPoint.y = 0;
 
-    svg.style.transform = `translate(${currentPoint.x}px, ${currentPoint.y}px) scale(${scale})`;
+    updateTransform();
 }
 
 
@@ -2521,16 +3968,32 @@ function attachCanvasListeners() {
         if (!preview.querySelector('svg')) return;
         e.preventDefault();
         closeContextMenus();
-        const scaleAmount = e.deltaY > 0 ? 0.9 : 1.1;
+
+        let delta = e.deltaY;
+        if (e.deltaMode === 1) { 
+            delta *= 20;
+        } else if (e.deltaMode === 2) { 
+            delta *= 100;
+        }
+
+        const isPinch = e.ctrlKey;
+        const scrollSensitivity = 0.002; 
+        const pinchSensitivity = 0.015; 
+
+        const zoomFactor = -delta * (isPinch ? pinchSensitivity : scrollSensitivity);
+
+        const scaleAmount = Math.pow(2, zoomFactor);
+
         const newScale = Math.min(Math.max(0.1, scale * scaleAmount), 10);
         const rect = preview.getBoundingClientRect();
         const mouseX = e.clientX - rect.left, mouseY = e.clientY - rect.top;
         const scaleRatio = newScale / scale;
+        
         currentPoint.x = mouseX - (mouseX - currentPoint.x) * scaleRatio;
         currentPoint.y = mouseY - (mouseY - currentPoint.y) * scaleRatio;
         scale = newScale;
         updateTransform();
-    });
+    }, { passive: false });
 
     preview.addEventListener('mousedown', (e) => {
         if (!preview.querySelector('svg')) return;
@@ -2639,11 +4102,21 @@ function attachCanvasListeners() {
             startPoint = { x: e.touches[0].clientX - currentPoint.x, y: e.touches[0].clientY - currentPoint.y };
         }
     });
+
+    if (window.ResizeObserver && preview) {
+        const ro = new ResizeObserver(() => {
+            requestAnimationFrame(() => updateTransform());
+        });
+        ro.observe(preview);
+    }
 }
 
 function zoom(factor) {
     if (!preview.querySelector('svg')) return;
     closeContextMenus();
+    const svg = preview.querySelector('svg');
+    if (svg) svg.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+    if (preview) preview.style.transition = 'background-position 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-size 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
     const newScale = Math.min(Math.max(0.1, scale * factor), 10);
     const rect = preview.getBoundingClientRect();
     const centerX = rect.width / 2;
@@ -2654,6 +4127,10 @@ function zoom(factor) {
     currentPoint.y = centerY - (centerY - currentPoint.y) * scaleRatio;
     scale = newScale;
     updateTransform();
+    setTimeout(() => {
+        if (svg) svg.style.transition = '';
+        if (preview) preview.style.transition = '';
+    }, 250);
 }
 
 function __mmwExtractFontFamiliesFromJson(json) {
@@ -2686,6 +4163,12 @@ function hierarchyToJson(hierarchy) {
         }
         if (node.citations && Array.isArray(node.citations) && node.citations.length > 0) {
             obj.citations = node.citations;
+        }
+        if (node.imageSize && node.text && typeof node.text === 'string' && window.isImageRef && window.isImageRef(node.text)) {
+            obj.imageSize = node.imageSize;
+        }
+        if (node.checked !== undefined) {
+            obj.checked = node.checked;
         }
         if (node.children && node.children.length > 0) {
             obj.children = node.children.map(convert);

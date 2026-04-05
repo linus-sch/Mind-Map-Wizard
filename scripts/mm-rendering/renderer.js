@@ -1,14 +1,14 @@
 function generateSVG(jsonString, options = {}) {
-    let nodeSpacing = 30;
-    let levelSpacing = 100;
+    let nodeSpacing = 10;
+    let levelSpacing = 80;
     const maxNodeWidth = 300;
     const lineHeight = 22;
     const fontSize = 16;
     const titleFontSize = 26;
     const titleLineHeight = 32;
     const titleFontWeight = '700';
-    const horizontalPadding = 22;
-    const verticalPadding = 8;
+    const horizontalPadding = 20;
+    const verticalPadding = 6;
     let linkWidth = 4;
     let nodeRadius = 14;
     let fontFamily = 'system-ui';
@@ -37,7 +37,8 @@ function generateSVG(jsonString, options = {}) {
     }
     function measureTextWidthAccurate(text, weight = fontWeight, size = fontSize) {
         setMeasurementFont(weight, size);
-        return __mmwCtx.measureText(text ?? '').width;
+        const width = __mmwCtx.measureText(text ?? '').width;
+        return width + 1.5;
     }
     function wrapTextToWidthAccurate(text, maxWidth, weight = fontWeight, size = fontSize) {
         setMeasurementFont(weight, size);
@@ -115,6 +116,10 @@ function generateSVG(jsonString, options = {}) {
         } catch (e) {
             return url.split('/')[0] || url;
         }
+    }
+
+    function __mmwTrimTrailingNewlines(text) {
+        return String(text || '').replace(/\n+$/, '');
     }
 
     function parseInlineMarkdown(text) {
@@ -237,6 +242,12 @@ function generateSVG(jsonString, options = {}) {
                 continue;
             }
 
+            if (text[i] === '*' && text[i + 1] === '*') {
+                pushBuf();
+                state.italic = !state.italic;
+                i += 1;
+                continue;
+            }
             if (text[i] === '*') {
                 pushBuf();
                 state.italic = !state.italic;
@@ -415,16 +426,20 @@ function generateSVG(jsonString, options = {}) {
     }
 
     function convertJsonToNode(jsonNode, level, pathId) {
+        const stableMap = (typeof window !== 'undefined') ? window.__mmwPathToStableId : null;
+        const stableId = stableMap ? stableMap[pathId] : null;
         const node = {
-            text: jsonNode.content || '',
+            text: __mmwTrimTrailingNewlines(jsonNode.content || ''),
             children: [],
             level: level,
             parent: null,
-            id: pathId,
+            id: stableId || pathId,
             branchColor: jsonNode.branchColor,
             collapsed: !!jsonNode.collapsed,
             notes: jsonNode.notes || '',
-            citations: jsonNode.citations || []
+            citations: jsonNode.citations || [],
+            imageSize: jsonNode.imageSize || null,
+            checked: jsonNode.checked !== undefined ? jsonNode.checked : undefined
         };
         if (jsonNode.children && Array.isArray(jsonNode.children)) {
             jsonNode.children.forEach((childJson, index) => {
@@ -489,9 +504,9 @@ function generateSVG(jsonString, options = {}) {
             assignXPositions(hierarchy, 0);
             let tmpExt = createExtents();
             collectExtents(hierarchy, tmpExt);
-            const widthPx = tmpExt.maxX - tmpExt.minX;
+            const heightPx = tmpExt.maxY - tmpExt.minY;
 
-            if (widthPx >= 1000) {
+            if (heightPx >= 800) {
                 if (typeof __mmwAssignSidesBalanced === 'function') {
                     __mmwAssignSidesBalanced(hierarchy);
                 } else {
@@ -545,15 +560,57 @@ function generateSVG(jsonString, options = {}) {
     window.drawNodeWithId = drawNodeWithId;
     window.assignSides = assignSides;
 
+    function getImageDimensions(size) {
+        switch (size) {
+            case 'small':
+                return { width: 120, height: 90 };
+            case 'large':
+                return { width: 300, height: 225 };
+            case 'medium':
+            default:
+                return { width: 200, height: 150 };
+        }
+    }
+
     function processNode(node) {
         const isEditingThis = editingId !== null && String(node.id) === editingId;
         const isTitleNode = node.id === '0';
+        
+        const isImageNode = node.text && typeof node.text === 'string' && (node.text.startsWith('local:') || node.text.startsWith('remote:'));
 
-        if ((!node.text || node.text.trim() === '') && !isEditingThis) {
+        if ((!node.text || node.text.trim() === '') && !isEditingThis && !isImageNode) {
             node.__mdLines = [];
             node.textLines = [];
             node.rectWidth = 0;
             node.rectHeight = 0;
+        } else if (isImageNode) {
+            node.__isImageNode = true;
+            node.__mdLines = [];
+            node.textLines = [];
+            
+            const dimensions = getImageDimensions(node.imageSize);
+            const maxSize = Math.max(dimensions.width, dimensions.height);
+            
+            let actualWidth = maxSize;
+            let actualHeight = maxSize;
+
+            const imageRef = node.text;
+            if (imageRef && window.loadImageFromStorage) {
+                const imageUrl = window.loadImageFromStorage(imageRef);
+                if (imageUrl) {
+                    if (imageRef.startsWith('local:') && window.ImageStorage) {
+                        const meta = window.ImageStorage.getImageDimensionsFromDataUrl(imageUrl);
+                        if (meta && meta.width && meta.height) {
+                            const ratio = Math.min(maxSize / meta.width, maxSize / meta.height);
+                            actualWidth = Math.round(meta.width * ratio);
+                            actualHeight = Math.round(meta.height * ratio);
+                        }
+                    }
+                }
+            }
+
+            node.rectWidth = actualWidth;
+            node.rectHeight = actualHeight;
         } else {
             const effectiveText = (!node.text || node.text.trim() === '') ? ' ' : String(node.text);
 
@@ -595,10 +652,13 @@ function generateSVG(jsonString, options = {}) {
 
             const textWidth = Math.ceil(maxLineW);
             node.rectWidth = Math.max(textWidth + horizontalPadding * 2, horizontalPadding * 2 + 1);
+            if (node.checked !== undefined) {
+                node.rectWidth += 26;
+            }
             if (node.notes && node.notes.trim().length > 0) {
                 node.rectWidth += 30;
             }
-            node.rectHeight = textHeight + verticalPadding * 2;
+            node.rectHeight = textHeight + verticalPadding * 1.75;
 
             if (isTitleNode && contextLinks.length > 0) {
                 const badgeFontSize = 10;
@@ -663,27 +723,67 @@ function generateSVG(jsonString, options = {}) {
         let currentY = startY;
 
         if (node.collapsed) {
-            node.totalSubtreeHeight = node.rectHeight;
-            node.y = startY + node.rectHeight / 2;
+            node.totalSubtreeHeight = node.rectHeight + (node._extraHeight || 0);
+            if (mindmapStyle === '3' || mindmapStyle === '4') {
+                node.y = startY + node.rectHeight;
+            } else {
+                node.y = startY + node.rectHeight / 2;
+            }
             return;
         }
 
         node.children.forEach((child) => {
             assignPositions(child, currentY);
-            const childrenHeight = child.totalSubtreeHeight || (child.rectHeight + (child._extraHeight || 0));
-            currentY += childrenHeight + nodeSpacing;
+            currentY += child.totalSubtreeHeight + nodeSpacing;
         });
 
-        node.totalSubtreeHeight = Math.max((node.rectHeight || 0) + (node._extraHeight || 0), currentY - startY - nodeSpacing);
+        const childrenTotalHeight = node.children.length > 0 ? (currentY - startY - nodeSpacing) : 0;
+        const nodeHeight = (node.rectHeight || 0) + (node._extraHeight || 0);
 
         if (node.children.length > 0) {
             const firstChild = node.children[0];
             const lastChild = node.children[node.children.length - 1];
-            node.y = (firstChild.y + lastChild.y) / 2;
+            const childrenCenterY = (firstChild.y + lastChild.y) / 2;
+
+            if (mindmapStyle === '3' || mindmapStyle === '4') {
+                node.y = childrenCenterY;
+            } else {
+                node.y = childrenCenterY;
+            }
+
+            let nodeTopRel, nodeBottomRel;
+            if (mindmapStyle === '3' || mindmapStyle === '4') {
+                nodeTopRel = -(node.rectHeight || 0);
+                nodeBottomRel = (node._extraHeight || 0);
+            } else {
+                nodeTopRel = -(node.rectHeight || 0) / 2;
+                nodeBottomRel = (node.rectHeight || 0) / 2 + (node._extraHeight || 0);
+            }
+
+            const childrenTop = startY;
+            const childrenBottom = startY + childrenTotalHeight;
+            
+            const absoluteNodeTop = node.y + nodeTopRel;
+            const absoluteNodeBottom = node.y + nodeBottomRel;
+
+            const finalTop = Math.min(childrenTop, absoluteNodeTop);
+            const finalBottom = Math.max(childrenBottom, absoluteNodeBottom);
+
+            node.totalSubtreeHeight = finalBottom - finalTop;
+
+            const shiftDown = startY - finalTop;
+            if (shiftDown > 0) {
+                node.y += shiftDown;
+                node.children.forEach(ch => shiftSubtreeY(ch, shiftDown));
+            }
         } else {
-            node.y = startY + (node.rectHeight || 0) / 2;
+            if (mindmapStyle === '3' || mindmapStyle === '4') {
+                node.y = startY + (node.rectHeight || 0);
+            } else {
+                node.y = startY + (node.rectHeight || 0) / 2;
+            }
+            node.totalSubtreeHeight = nodeHeight;
         }
-        if (mindmapStyle === '3') node.y += (node.rectHeight || 0) / 2;
 
         if (node.children && node.children.length) {
             const leftChildren = node.children.filter(c => c.side === 'left');
@@ -770,11 +870,11 @@ function generateSVG(jsonString, options = {}) {
     }
 
     function collectExtents(node, extents) {
-        if (node.textLines && node.textLines.length) {
+        if (node.__isImageNode || (node.textLines && node.textLines.length)) {
             const left = node.x;
             const right = node.x + node.rectWidth;
             let top, bottom;
-            if (mindmapStyle === '3') {
+            if (mindmapStyle === '3' || mindmapStyle === '4') {
                 top = node.y - node.rectHeight;
                 bottom = node.y + (node._extraHeight || 0);
             } else {
@@ -790,7 +890,10 @@ function generateSVG(jsonString, options = {}) {
 
         if (node.collapsed) {
             const isLeft = node.side === 'left';
-            const startX = isLeft ? node.x : node.x + (node.rectWidth || 0);
+            
+            const nodeEffectiveWidth = node.__isImageNode ? node.rectWidth || 0 : (node.rectWidth || 0);
+            const nodeCenterX = node.x + (node.rectWidth || 0) / 2;
+            const startX = isLeft ? (nodeCenterX - nodeEffectiveWidth / 2) : (nodeCenterX + nodeEffectiveWidth / 2);
             const expandX = isLeft ? startX - 40 : startX + 40;
             const r = 12;
             extents.minX = Math.min(extents.minX, expandX - r);
@@ -809,9 +912,15 @@ function generateSVG(jsonString, options = {}) {
                 const parentIsTitle = node && node.id === '0';
                 const effectiveSpacing = parentIsTitle ? Math.max(levelSpacing, 100) : levelSpacing;
                 const curve = parentIsTitle ? effectiveSpacing * 0.6 : effectiveSpacing * 0.5;
-                const startX = isLeft ? node.x : node.x + (node.rectWidth || 0);
+                
+                const parentEffectiveWidth = node.__isImageNode ? node.rectWidth || 0 : (node.rectWidth || 0);
+                const parentCenterX = node.x + (node.rectWidth || 0) / 2;
+                const childEffectiveWidth = child.__isImageNode ? child.rectWidth || 0 : (child.rectWidth || 0);
+                const childCenterX = child.x + (child.rectWidth || 0) / 2;
+                
+                const startX = isLeft ? (parentCenterX - parentEffectiveWidth / 2) : (parentCenterX + parentEffectiveWidth / 2);
                 const startY = node.y;
-                const endX = isLeft ? child.x + (child.rectWidth || 0) : child.x;
+                const endX = isLeft ? (childCenterX + childEffectiveWidth / 2) : (childCenterX - childEffectiveWidth / 2);
                 const endY = child.y;
                 const control1X = isLeft ? startX - curve : startX + curve;
                 const control1Y = startY;
@@ -846,12 +955,13 @@ function generateSVG(jsonString, options = {}) {
         let svg = '';
         const branchColor = node._computedColor || node.branchColor || defaultBranchColor;
 
-        if (
-            parent &&
-            parent.textLines &&
-            parent.textLines.length &&
+        const parentIsValidForLink = parent &&
+            (parent.__isImageNode || (parent.textLines && parent.textLines.length)) &&
             typeof parent.x === 'number' &&
-            typeof parent.y === 'number' &&
+            typeof parent.y === 'number';
+
+        if (
+            parentIsValidForLink &&
             typeof node.x === 'number' &&
             typeof node.y === 'number'
         ) {
@@ -859,10 +969,16 @@ function generateSVG(jsonString, options = {}) {
             const parentIsTitle = parent && parent.id === '0';
             const effectiveSpacing = parentIsTitle ? Math.max(levelSpacing, 100) : levelSpacing;
             const curve = parentIsTitle ? effectiveSpacing * 0.6 : effectiveSpacing * 0.5;
-            const startX = isLeft ? parent.x : parent.x + (parent.rectWidth || 0);
-            const startY = parent.y;
-            const endX = isLeft ? node.x + (node.rectWidth || 0) : node.x;
-            const endY = node.y;
+            
+            const parentEffectiveWidth = parent.__isImageNode ? parent.rectWidth || 0 : (parent.rectWidth || 0);
+            const parentCenterX = parent.x + (parent.rectWidth || 0) / 2;
+            const nodeEffectiveWidth = node.__isImageNode ? node.rectWidth || 0 : (node.rectWidth || 0);
+            const nodeCenterX = node.x + (node.rectWidth || 0) / 2;
+            
+            const startX = isLeft ? (parentCenterX - parentEffectiveWidth / 2) : (parentCenterX + parentEffectiveWidth / 2);
+            const startY = (parent.__isImageNode && (mindmapStyle === '3' || mindmapStyle === '4')) ? parent.y - parent.rectHeight / 2 : parent.y;
+            const endX = isLeft ? (nodeCenterX + nodeEffectiveWidth / 2) : (nodeCenterX - nodeEffectiveWidth / 2);
+            const endY = (node.__isImageNode && (mindmapStyle === '3' || mindmapStyle === '4')) ? node.y - node.rectHeight / 2 : node.y;
             const control1X = isLeft ? startX - curve : startX + curve;
             const control2X = isLeft ? endX + curve : endX - curve;
 
@@ -877,8 +993,11 @@ function generateSVG(jsonString, options = {}) {
 
         if (node.collapsed && node.children.length > 0) {
             const isLeft = node.side === 'left';
-            const startX = isLeft ? node.x : node.x + (node.rectWidth || 0);
-            const startY = node.y;
+            
+            const nodeEffectiveWidth = node.__isImageNode ? node.rectWidth || 0 : (node.rectWidth || 0);
+            const nodeCenterX = node.x + (node.rectWidth || 0) / 2;
+            const startX = isLeft ? (nodeCenterX - nodeEffectiveWidth / 2) : (nodeCenterX + nodeEffectiveWidth / 2);
+            const startY = (node.__isImageNode && (mindmapStyle === '3' || mindmapStyle === '4')) ? node.y - node.rectHeight / 2 : node.y;
             const endX = isLeft ? startX - 40 : startX + 40;
             const endY = startY;
 
@@ -893,15 +1012,55 @@ function generateSVG(jsonString, options = {}) {
         } else {
 
 
-            if (node.textLines && node.textLines.length) {
+            if (node.__isImageNode) {
+                const dimensions = getImageDimensions(node.imageSize);
+                const imageWidth = dimensions.width;
+                const imageHeight = dimensions.height;
+                let nodeTransformY = (mindmapStyle === '3' || mindmapStyle === '4') ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
+                svg += `<g class="mm-node mm-image-node" data-node-id="${node.id}" transform="translate(${node.x},${nodeTransformY})">`;
+                
+                const imageRef = node.text;
+                let imageId = imageRef;
+                if (imageRef.startsWith('local:')) {
+                    imageId = imageRef.substring(6);
+                } else if (imageRef.startsWith('remote:')) {
+                    imageId = imageRef.substring(7);
+                }
+                
+                svg += `<foreignObject x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}">`;
+                svg += `<div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:${nodeRadius}px;">`;
+                svg += `<img data-local-image-id="${escapeAttr(imageRef)}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:${nodeRadius}px;" alt="Mind map image"/>`;
+                svg += `</div>`;
+                svg += `</foreignObject>`;
+                
+                svg += `</g>`;
+                
+                if (!node.collapsed) {
+                    if (mindmapStyle !== '2' && mindmapStyle !== '3' && mindmapStyle !== '4') {
+                        const addRadius = 8;
+                        const addOffset = 0;
+                        const __mmwIsLeftForBtn = node.side === 'left';
+                        const effectiveWidth = node.rectWidth;
+                        const centerX = node.rectWidth / 2;
+                        const __mmwAddX = __mmwIsLeftForBtn ? (centerX - effectiveWidth / 2 - addOffset) : (centerX + effectiveWidth / 2 + addOffset);
+                        const nodeTransformY = (mindmapStyle === '3' || mindmapStyle === '4') ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
+                        svg += `<g class="mm-add-btn" data-for-id="${node.id}" transform="translate(${node.x + __mmwAddX}, ${nodeTransformY + node.rectHeight / 2})" style="cursor: pointer; opacity: 0;">`;
+                        svg += `<circle cx="0" cy="0" r="${addRadius}" fill="#ffffff" stroke="none"></circle>`;
+                        svg += `<circle cx="0" cy="0" r="16" fill="transparent" stroke="none" style="pointer-events: fill;"></circle>`;
+                        svg += `<path d="M -5 0 H 5 M 0 -5 V 5" stroke="${branchColor}" stroke-width="1.5" stroke-linecap="round" style="pointer-events: none;"></path>`;
+                        svg += `</g>`;
+                    }
+                }
+            }
+            else if (node.textLines && node.textLines.length) {
                 const isTitleNode = node.id === '0';
                 const currentFontSize = isTitleNode ? titleFontSize : fontSize;
                 const currentLineHeight = isTitleNode ? titleLineHeight : lineHeight;
                 const currentFontWeight = isTitleNode ? titleFontWeight : fontWeight;
 
-                let nodeTransformY = mindmapStyle === '3' ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
+                let nodeTransformY = (mindmapStyle === '3' || mindmapStyle === '4') ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
                 svg += `<g class="mm-node" data-node-id="${node.id}" transform="translate(${node.x},${nodeTransformY})">`;
-                if (mindmapStyle !== '3' && mindmapStyle !== '2') {
+                if (mindmapStyle !== '3' && mindmapStyle !== '4' && mindmapStyle !== '2') {
                     svg += `<rect x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}" rx="${nodeRadius}" ry="${nodeRadius}" fill="${branchColor}" fill-opacity="0.18" stroke="none"/>`;
                 } else {
                     svg += `<rect x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}" rx="${nodeRadius}" ry="${nodeRadius}" fill="${branchColor}" fill-opacity="0" stroke="none"/>`;
@@ -925,9 +1084,31 @@ function generateSVG(jsonString, options = {}) {
                     textAnchor = 'start';
                     textX = horizontalPadding;
                 }
-                if (mindmapStyle === '3') {
+                if (mindmapStyle === '3' || (mindmapStyle === '4' && !isTitleNode)) {
                     textAnchor = 'start';
                     textX = horizontalPadding;
+                }
+
+                let checkboxSvg = '';
+                if (node.checked !== undefined) {
+                    textAnchor = 'start';
+                    textX = horizontalPadding + 26;
+                    
+                    const cbSize = 16;
+                    const cbX = horizontalPadding;
+                    const cbY = (node.rectHeight - cbSize) / 2;
+                    const cbRadius = Math.min(nodeRadius || 0, 4);
+                    
+                    const checkedFill = node.checked ? branchColor : '#ffffff';
+                    const opacityOp = (node.id === editingId) ? 0 : 1;
+                    
+                    checkboxSvg += `<g class="mmw-checkbox" data-node-id="${node.id}" transform="translate(${cbX}, ${cbY})" style="cursor: pointer; pointer-events: all;" opacity="${opacityOp}">`;
+                    checkboxSvg += `<rect x="-8" y="-8" width="32" height="32" fill="transparent" stroke="none" />`;
+                    checkboxSvg += `<rect x="0" y="0" width="${cbSize}" height="${cbSize}" rx="${cbRadius}" fill="${checkedFill}" stroke="${branchColor}" stroke-width="2" />`;
+                    if (node.checked) {
+                        checkboxSvg += `<path d="M 4 8 L 7 11 L 12 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none"/>`;
+                    }
+                    checkboxSvg += `</g>`;
                 }
 
                 if (Array.isArray(node.__mdLines) && node.__mdLines.length) {
@@ -953,6 +1134,7 @@ function generateSVG(jsonString, options = {}) {
                     });
 
                     {
+                        if (checkboxSvg) svg += checkboxSvg;
                         const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                         svg += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                         let firstTextLine = true;
@@ -983,11 +1165,12 @@ function generateSVG(jsonString, options = {}) {
                         });
                         svg += `</text>`;
                     }
-                    if (mindmapStyle === '3') {
+                    if (mindmapStyle === '3' || mindmapStyle === '4') {
                         svg += `<line x1="0" y1="${node.rectHeight}" x2="${node.rectWidth}" y2="${node.rectHeight}" stroke="${branchColor}" stroke-width="${linkWidth}" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none" />`;
                     }
                 } else if (node.textLines.length > 0) {
                     {
+                        if (checkboxSvg) svg += checkboxSvg;
                         const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                         svg += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                         let first = true;
@@ -1002,12 +1185,12 @@ function generateSVG(jsonString, options = {}) {
                         });
                         svg += `</text>`;
                     }
-                    if (mindmapStyle === '3') {
+                    if (mindmapStyle === '3' || mindmapStyle === '4') {
                         svg += `<line x1="0" y1="${node.rectHeight}" x2="${node.rectWidth}" y2="${node.rectHeight}" stroke="${branchColor}" stroke-width="${linkWidth}" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none" />`;
                     }
                 }
                 const addRadius = 8;
-                const addOffset = -2;
+                const addOffset = 0;
                 const __mmwIsLeftForBtn = node.side === 'left';
                 const __mmwAddX = __mmwIsLeftForBtn ? (0 - addOffset) : (node.rectWidth + addOffset);
                 let noteContent = node.notes || '';
@@ -1046,7 +1229,7 @@ function generateSVG(jsonString, options = {}) {
                 }
 
                 if (!node.collapsed) {
-                    if (mindmapStyle !== '2' && mindmapStyle !== '3') {
+                    if (mindmapStyle !== '2' && mindmapStyle !== '3' && mindmapStyle !== '4') {
                         svg += `<g class="mm-add-btn" data-for-id="${node.id}" transform="translate(${__mmwAddX}, ${node.rectHeight / 2})" style="cursor: pointer; opacity: 0; pointer-events: none; z-index: 10000;">`;
                         svg += `<circle cx="0" cy="0" r="${addRadius}" fill="#ffffff" stroke="none"></circle>`;
                         svg += `<path d="M -5 0 H 5 M 0 -5 V 5" stroke="${branchColor}" stroke-width="1.5" stroke-linecap="round"></path>`;
@@ -1056,9 +1239,11 @@ function generateSVG(jsonString, options = {}) {
                 svg += `</g>`;
             }
 
-            node.children.forEach((child) => {
-                svg += drawNodeWithId(child, node);
-            });
+            if (!node.collapsed) {
+                node.children.forEach((child) => {
+                    svg += drawNodeWithId(child, node);
+                });
+            }
 
             return svg;
         }
@@ -1067,12 +1252,13 @@ function generateSVG(jsonString, options = {}) {
     function __mmwCollectParts(node, parent, out) {
         const branchColor = node._computedColor || node.branchColor || defaultBranchColor;
 
-        if (
-            parent &&
-            parent.textLines &&
-            parent.textLines.length &&
+        const parentIsValidForLink = parent &&
+            (parent.__isImageNode || (parent.textLines && parent.textLines.length)) &&
             typeof parent.x === 'number' &&
-            typeof parent.y === 'number' &&
+            typeof parent.y === 'number';
+
+        if (
+            parentIsValidForLink &&
             typeof node.x === 'number' &&
             typeof node.y === 'number'
         ) {
@@ -1080,10 +1266,16 @@ function generateSVG(jsonString, options = {}) {
             const parentIsTitle = parent && parent.id === '0';
             const effectiveSpacing = parentIsTitle ? Math.max(levelSpacing, 100) : levelSpacing;
             const curve = parentIsTitle ? effectiveSpacing * 0.6 : effectiveSpacing * 0.5;
-            const startX = isLeft ? parent.x : parent.x + (parent.rectWidth || 0);
-            const startY = parent.y;
-            const endX = isLeft ? node.x + (node.rectWidth || 0) : node.x;
-            const endY = node.y;
+            
+            const parentEffectiveWidth = parent.__isImageNode ? parent.rectWidth || 0 : (parent.rectWidth || 0);
+            const parentCenterX = parent.x + (parent.rectWidth || 0) / 2;
+            const nodeEffectiveWidth = node.__isImageNode ? node.rectWidth || 0 : (node.rectWidth || 0);
+            const nodeCenterX = node.x + (node.rectWidth || 0) / 2;
+            
+            const startX = isLeft ? (parentCenterX - parentEffectiveWidth / 2) : (parentCenterX + parentEffectiveWidth / 2);
+            const startY = (parent.__isImageNode && (mindmapStyle === '3' || mindmapStyle === '4')) ? parent.y - parent.rectHeight / 2 : parent.y;
+            const endX = isLeft ? (nodeCenterX + nodeEffectiveWidth / 2) : (nodeCenterX - nodeEffectiveWidth / 2);
+            const endY = (node.__isImageNode && (mindmapStyle === '3' || mindmapStyle === '4')) ? node.y - node.rectHeight / 2 : node.y;
             const control1X = isLeft ? startX - curve : startX + curve;
             const control2X = isLeft ? endX + curve : endX - curve;
 
@@ -1096,16 +1288,59 @@ function generateSVG(jsonString, options = {}) {
             out.links.push(linkSvg);
         }
 
-        if (node.textLines && node.textLines.length) {
+        if (node.__isImageNode) {
+            const dimensions = getImageDimensions(node.imageSize);
+            const imageWidth = dimensions.width;
+            const imageHeight = dimensions.height;
+            let nodeTransformY = (mindmapStyle === '3' || mindmapStyle === '4') ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
+            let s = '';
+            s += `<g class="mm-node mm-image-node" data-node-id="${node.id}" transform="translate(${node.x},${nodeTransformY})">`;
+            
+            const imageRef = node.text;
+            let imageId = imageRef;
+            if (imageRef.startsWith('local:')) {
+                imageId = imageRef.substring(6);
+            } else if (imageRef.startsWith('remote:')) {
+                imageId = imageRef.substring(7);
+            }
+            
+            s += `<foreignObject x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}">`;
+            s += `<div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:${nodeRadius}px;">`;
+            s += `<img data-local-image-id="${escapeAttr(imageRef)}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:${nodeRadius}px;" alt="Mind map image"/>`;
+            s += `</div>`;
+            s += `</foreignObject>`;
+            
+            s += `</g>`;
+            
+            if (!node.collapsed) {
+                if (mindmapStyle !== '2' && mindmapStyle !== '3' && mindmapStyle !== '4') {
+                    const addRadius = 8;
+                    const addOffset = 0;
+                    const __mmwIsLeftForBtn = node.side === 'left';
+                    const effectiveWidth = node.rectWidth;
+                    const centerX = node.rectWidth / 2;
+                    const __mmwAddX = __mmwIsLeftForBtn ? (centerX - effectiveWidth / 2 - addOffset) : (centerX + effectiveWidth / 2 + addOffset);
+                    const nodeTransformY = (mindmapStyle === '3' || mindmapStyle === '4') ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
+                    s += `<g class="mm-add-btn" data-for-id="${node.id}" transform="translate(${node.x + __mmwAddX}, ${nodeTransformY + node.rectHeight / 2})" style="cursor: pointer; opacity: 0;">`;
+                    s += `<circle cx="0" cy="0" r="${addRadius}" fill="#ffffff" stroke="none"></circle>`;
+                    s += `<circle cx="0" cy="0" r="16" fill="transparent" stroke="none" style="pointer-events: fill;"></circle>`;
+                    s += `<path d="M -5 0 H 5 M 0 -5 V 5" stroke="${branchColor}" stroke-width="1.5" stroke-linecap="round" style="pointer-events: none;"></path>`;
+                    s += `</g>`;
+                }
+            }
+            
+            out.nodes.push(s);
+        }
+        else if (node.textLines && node.textLines.length) {
             const isTitleNode = node.id === '0';
             const currentFontSize = isTitleNode ? titleFontSize : fontSize;
             const currentLineHeight = isTitleNode ? titleLineHeight : lineHeight;
             const currentFontWeight = isTitleNode ? titleFontWeight : fontWeight;
 
             let s = '';
-            let nodeTransformY = mindmapStyle === '3' ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
+            let nodeTransformY = (mindmapStyle === '3' || mindmapStyle === '4') ? node.y - node.rectHeight : node.y - node.rectHeight / 2;
             s += `<g class="mm-node" data-node-id="${node.id}" transform="translate(${node.x},${nodeTransformY})">`;
-            if (mindmapStyle !== '3' && mindmapStyle !== '2') {
+            if (mindmapStyle !== '3' && mindmapStyle !== '4' && mindmapStyle !== '2') {
                 s += `<rect x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}" rx="${nodeRadius}" ry="${nodeRadius}" fill="${branchColor}" fill-opacity="0.18" stroke="none"/>`;
             } else {
                 s += `<rect x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}" rx="${nodeRadius}" ry="${nodeRadius}" fill="${branchColor}" fill-opacity="0" stroke="none"/>`;
@@ -1130,9 +1365,30 @@ function generateSVG(jsonString, options = {}) {
                 textAnchor = 'start';
                 textX = horizontalPadding;
             }
-            if (mindmapStyle === '3') {
+            if (mindmapStyle === '3' || (mindmapStyle === '4' && !isTitleNode)) {
                 textAnchor = 'start';
                 textX = horizontalPadding;
+            }
+
+            let checkboxSvg = '';
+            if (node.checked !== undefined) {
+                textAnchor = 'start';
+                textX = horizontalPadding + 26;
+                const cbSize = 16;
+                const cbX = horizontalPadding;
+                const cbY = (node.rectHeight - cbSize) / 2;
+                const cbRadius = Math.min(nodeRadius || 0, 4);
+                
+                const checkedFill = node.checked ? branchColor : '#ffffff';
+                const opacityOp = (node.id === editingId) ? 0 : 1;
+                
+                checkboxSvg += `<g class="mmw-checkbox" data-node-id="${node.id}" transform="translate(${cbX}, ${cbY})" style="cursor: pointer; pointer-events: all;" opacity="${opacityOp}">`;
+                checkboxSvg += `<rect x="-8" y="-8" width="32" height="32" fill="transparent" stroke="none" />`;
+                checkboxSvg += `<rect x="0" y="0" width="${cbSize}" height="${cbSize}" rx="${cbRadius}" fill="${checkedFill}" stroke="${branchColor}" stroke-width="2" />`;
+                if (node.checked) {
+                    checkboxSvg += `<path d="M 4 8 L 7 11 L 12 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none"/>`;
+                }
+                checkboxSvg += `</g>`;
             }
 
             if (Array.isArray(node.__mdLines) && node.__mdLines.length) {
@@ -1158,6 +1414,7 @@ function generateSVG(jsonString, options = {}) {
                 });
 
                 {
+                    if (checkboxSvg) s += checkboxSvg;
                     const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                     s += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                     let firstTextLine = true;
@@ -1197,11 +1454,12 @@ function generateSVG(jsonString, options = {}) {
                     });
                     s += `</text>`;
                 }
-                if (mindmapStyle === '3') {
+                if (mindmapStyle === '3' || mindmapStyle === '4') {
                     s += `<line x1="0" y1="${node.rectHeight}" x2="${node.rectWidth}" y2="${node.rectHeight}" stroke="${branchColor}" stroke-width="${linkWidth}" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none" />`;
                 }
             } else if (node.textLines.length > 0) {
                 {
+                    if (checkboxSvg) s += checkboxSvg;
                     const __mmwTxtOp = (node.id === editingId) ? 0 : 1;
                     s += `<text opacity="${__mmwTxtOp}" x="${textX}" y="${verticalPadding + currentFontSize}" font-family="${fontFamily}" font-size="${currentFontSize}px" font-weight="${currentFontWeight}" fill="var(--text-color)" text-anchor="${textAnchor}" xml:space="preserve">`;
                     let first = true;
@@ -1216,7 +1474,7 @@ function generateSVG(jsonString, options = {}) {
                     });
                     s += `</text>`;
                 }
-                if (mindmapStyle === '3') {
+                if (mindmapStyle === '3' || mindmapStyle === '4') {
                     s += `<line x1="0" y1="${node.rectHeight}" x2="${node.rectWidth}" y2="${node.rectHeight}" stroke="${branchColor}" stroke-width="${linkWidth}" stroke-linecap="round" stroke-linejoin="round" fill="none" pointer-events="none" />`;
                 }
             }
@@ -1308,7 +1566,7 @@ function generateSVG(jsonString, options = {}) {
                 });
             }
             const addRadius = 8;
-            const addOffset = -2;
+            const addOffset = 0;
             const __mmwIsLeftForBtn = node.side === 'left';
             const __mmwAddX = __mmwIsLeftForBtn ? (0 - addOffset) : (node.rectWidth + addOffset);
             const hasNotes = node.notes && node.notes.trim().length > 0;
@@ -1340,7 +1598,7 @@ function generateSVG(jsonString, options = {}) {
             }
 
             if (!node.collapsed) {
-                if (mindmapStyle !== '2' && mindmapStyle !== '3') {
+                if (mindmapStyle !== '2' && mindmapStyle !== '3' && mindmapStyle !== '4') {
                     s += `<g class="mm-add-btn" data-for-id="${node.id}" transform="translate(${__mmwAddX}, ${node.rectHeight / 2})" style="cursor: pointer; opacity: 0; pointer-events: none; z-index: 10000;">`;
                     s += `<circle cx="0" cy="0" r="${addRadius}" fill="#ffffff" stroke="none"></circle>`;
                     s += `<path d="M -5 0 H 5 M 0 -5 V 5" stroke="${branchColor}" stroke-width="1.5" stroke-linecap="round"></path>`;
@@ -1354,8 +1612,11 @@ function generateSVG(jsonString, options = {}) {
 
         if (node.collapsed && node.children.length > 0) {
             const isLeft = node.side === 'left';
-            const startX = isLeft ? node.x : node.x + (node.rectWidth || 0);
-            const startY = node.y;
+            
+            const nodeEffectiveWidth = node.__isImageNode ? node.rectWidth || 0 : (node.rectWidth || 0);
+            const nodeCenterX = node.x + (node.rectWidth || 0) / 2;
+            const startX = isLeft ? (nodeCenterX - nodeEffectiveWidth / 2) : (nodeCenterX + nodeEffectiveWidth / 2);
+            const startY = (node.__isImageNode && (mindmapStyle === '3' || mindmapStyle === '4')) ? node.y - node.rectHeight / 2 : node.y;
             const endX = isLeft ? startX - 40 : startX + 40;
             const endY = startY;
             const branchColor = node._computedColor || node.branchColor || defaultBranchColor;
@@ -1393,7 +1654,7 @@ function generateSVG(jsonString, options = {}) {
         if (settings && typeof settings === 'object') {
             if (Number.isFinite(settings.spacing)) {
                 nodeSpacing = Number(settings.spacing);
-                levelSpacing = nodeSpacing * 1.5;
+                levelSpacing = nodeSpacing * 2.5;
             }
             const sw = settings['mm-link-width'] ?? settings.linkWidth ?? settings['mm-link width'];
             if (Number.isFinite(sw)) {
@@ -1448,6 +1709,10 @@ function generateSVG(jsonString, options = {}) {
         }
     } catch (e) {
     }
+
+    const needsStyleMigration = settings != null && typeof settings === 'object' &&
+        !('style' in settings) &&
+        ('mindmapStyle' in settings || 'mindmapstyle' in settings);
 
     const contextLinks = __mmwNormalizeContextUrls(
         (options && Object.prototype.hasOwnProperty.call(options, 'contextUrls'))
@@ -1528,12 +1793,21 @@ function generateSVG(jsonString, options = {}) {
         '</svg>'
     ].join('\n');
 
-    if (options && Object.prototype.hasOwnProperty.call(options, 'contextUrls')) {
+    const needsContextUpdate = options && Object.prototype.hasOwnProperty.call(options, 'contextUrls');
+    if (needsStyleMigration || needsContextUpdate) {
         let updatedJson = null;
         try {
             const base = parsed ?? JSON.parse(jsonString);
             if (!base['mm-settings']) base['mm-settings'] = {};
-            base['mm-settings'].contextUrls = __mmwNormalizeContextUrls(options.contextUrls);
+            if (needsStyleMigration) {
+                const val = base['mm-settings'].mindmapStyle ?? base['mm-settings'].mindmapstyle;
+                base['mm-settings'].style = val;
+                delete base['mm-settings'].mindmapStyle;
+                delete base['mm-settings'].mindmapstyle;
+            }
+            if (needsContextUpdate) {
+                base['mm-settings'].contextUrls = __mmwNormalizeContextUrls(options.contextUrls);
+            }
             updatedJson = JSON.stringify(base, null, 2);
         } catch (e) {
             updatedJson = null;
@@ -1607,3 +1881,235 @@ window.initializeMindMapZoom = function (svgEl) {
 
     return panZoom;
 };
+
+window.loadLocalImages = async function() {
+    const imageElements = document.querySelectorAll('img[data-local-image-id]');
+    
+    const isAuthenticated = await (async () => {
+        try {
+            const clerk = (typeof Clerk !== 'undefined') ? Clerk : window.Clerk;
+            if (!clerk) return false;
+            await clerk.load();
+            return !!(clerk.user && clerk.session);
+        } catch (e) {
+            return false;
+        }
+    })();
+    
+    const loadPromises = Array.from(imageElements).map(async (img) => {
+        const imageRef = img.getAttribute('data-local-image-id');
+        if (!imageRef) return;
+        
+        const loadingDiv = showImageLoadingPlaceholder(img);
+        
+        let imageUrl = null;
+        
+        if (imageRef.startsWith('remote:')) {
+            const remoteId = imageRef.substring(7);
+            
+            if (window.BackendImageStorage) {
+                imageUrl = window.BackendImageStorage.loadImage(imageRef);
+                if (!imageUrl) {
+                    imageUrl = await window.BackendImageStorage.loadImageAsync(imageRef);
+                }
+            }
+            
+            if (!isAuthenticated && imageUrl && window.BackendImageStorage) {
+                const localRef = await window.BackendImageStorage.saveRemoteImageLocally(remoteId, imageUrl);
+                
+                if (localRef) {
+                    await window.updateImageRefInJson(imageRef, localRef);
+                }
+            }
+        } else {
+            if (window.loadImageFromStorage) {
+                imageUrl = window.loadImageFromStorage(imageRef);
+                if (!imageUrl) {
+                    imageUrl = await window.loadImageFromStorageAsync(imageRef);
+                }
+            } else if (window.ImageStorage) {
+                imageUrl = window.ImageStorage.loadImage(imageRef);
+                if (!imageUrl) {
+                    imageUrl = await window.ImageStorage.loadImageAsync(imageRef, 5, 200);
+                }
+            }
+        }
+        
+        if (loadingDiv && loadingDiv.parentElement) {
+            loadingDiv.replaceWith(img);
+        }
+        
+        if (imageUrl) {
+            img.src = imageUrl;
+        } else {
+            showImageNotFoundError(img, 'Image not found');
+        }
+    });
+    
+    await Promise.allSettled(loadPromises);
+};
+
+/**
+ * Update an image reference in the JSON editor
+ * @param {string} oldRef - Old image reference (e.g., remote:xxx)
+ * @param {string} newRef - New image reference (e.g., local:xxx)
+ */
+window.updateImageRefInJson = async function(oldRef, newRef) {
+    const editor = document.getElementById('json-editor');
+    if (!editor) return;
+
+    try {
+        const escapedRef = oldRef.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const json = editor.value;
+        const updatedJson = json.replace(new RegExp(escapedRef, 'g'), newRef);
+
+        if (json !== updatedJson) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            editor.value = updatedJson;
+            editor.setSelectionRange(start, end);
+
+            if (window.currentMarkdown !== undefined) {
+                const markdownStr = typeof window.currentMarkdown === 'string'
+                    ? window.currentMarkdown
+                    : JSON.stringify(window.currentMarkdown);
+                const updatedMarkdown = markdownStr.replace(new RegExp(escapedRef, 'g'), newRef);
+                if (updatedMarkdown !== markdownStr) {
+                    try {
+                        window.currentMarkdown = JSON.parse(updatedMarkdown);
+                    } catch {
+                        window.currentMarkdown = updatedMarkdown;
+                    }
+                }
+            }
+
+            if (!window.MMW_READONLY) {
+                localStorage.setItem('json-mindmap-content', updatedJson);
+            }
+        }
+    } catch (e) {
+        console.error('Failed to update image reference in JSON:', e);
+    }
+};
+
+/**
+ * Show a loading placeholder while image is being loaded
+ * @param {HTMLImageElement} img - The image element
+ * @returns {HTMLDivElement} The loading placeholder element
+ */
+function showImageLoadingPlaceholder(img) {
+    const parent = img.parentElement;
+    if (!parent) return null;
+    
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'mm-image-loading';
+    loadingDiv.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;min-width:40px;min-height:40px;max-width:40px;max-height:40px;flex-shrink:0"><circle cx="12" cy="12" r="10" fill="none" stroke-width="2" style="stroke:var(--light-grey)"/><path d="M12 2a10 10 0 0 1 10 10" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--primary-color)"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg>`;
+    
+    const width = img.style.maxWidth || img.getAttribute('width') || '100%';
+    const height = img.style.maxHeight || img.getAttribute('height') || '100%';
+    loadingDiv.style.cssText = `
+        width: ${width};
+        height: ${height};
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: rgba(0,0,0,0.03);
+        border-radius: inherit;
+        padding: 16px;
+        box-sizing: border-box;
+    `;
+    
+    img.replaceWith(loadingDiv);
+    return loadingDiv;
+}
+
+/**
+ * Show a styled "Image not found" placeholder
+ * @param {HTMLImageElement} img - The image element
+ * @param {string} message - The error message to display
+ */
+function showImageNotFoundError(img, message) {
+    const parent = img.parentElement;
+    if (!parent) return;
+    
+    const imageRef = img.getAttribute('data-local-image-id');
+    
+    const nodeElement = img.closest('.mm-node');
+    const nodeId = nodeElement ? nodeElement.getAttribute('data-node-id') : null;
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'mm-image-not-found';
+    
+    const errorContent = document.createElement('div');
+    errorContent.style.cssText = 'display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;';
+    const _iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#717b83" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16L7.46967 11.5303C7.80923 11.1908 8.26978 11 8.75 11C9.23022 11 9.69077 11.1908 10.0303 11.5303L14 15.5M15.5 17L14 15.5M21 16L18.5303 13.5303C18.1908 13.1908 17.7302 13 17.25 13C16.7698 13 16.3092 13.1908 15.9697 13.5303L14 15.5"/><path d="M12 2.5C7.77027 2.5 5.6554 2.5 4.25276 3.69797C4.05358 3.86808 3.86808 4.05358 3.69797 4.25276C2.5 5.6554 2.5 7.77027 2.5 12C2.5 16.2297 2.5 18.3446 3.69797 19.7472C3.86808 19.9464 4.05358 20.1319 4.25276 20.302C5.6554 21.5 7.77027 21.5 12 21.5C16.2297 21.5 18.3446 21.5 19.7472 20.302C19.9464 20.1319 20.1319 19.9464 20.302 19.7472C21.5 18.3446 21.5 16.2297 21.5 12"/><path d="M21.5 8.5L18.5 5.5M18.5 5.5L15.5 2.5M18.5 5.5L21.5 2.5M18.5 5.5L15.5 8.5"/></svg>';
+    const _isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    const _msgSpan = document.createElement('span');
+    _msgSpan.textContent = message;
+    if (!_isSafari) {
+        const _iconDiv = document.createElement('div');
+        _iconDiv.className = 'mm-image-not-found-icon';
+        _iconDiv.style.cssText = 'width:35px;height:35px;background-size:contain;background-repeat:no-repeat;background-position:center;opacity:0.5;flex-shrink:0;';
+        _iconDiv.style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(_iconSvg) + '")';
+        errorContent.appendChild(_iconDiv);
+    }
+    errorContent.appendChild(_msgSpan);
+    
+    errorDiv.appendChild(errorContent);
+    
+    if (!window.MMW_READONLY && nodeId && typeof window.showReplaceImagePopupForNode === 'function') {
+        const replaceBtn = document.createElement('button');
+        replaceBtn.type = 'button';
+        replaceBtn.className = 'mm-image-replace-btn';
+        replaceBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat-icon lucide-repeat"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+            Replace
+        `;
+        replaceBtn.style.cssText = `
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            margin-top: 8px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        `;
+        replaceBtn.onmouseenter = () => replaceBtn.style.background = 'var(--accent-hover-color)';
+        replaceBtn.onmouseleave = () => replaceBtn.style.background = 'var(--accent-color)';
+        replaceBtn.onclick = (e) => {
+            e.stopPropagation();
+            window.showReplaceImagePopupForNode(nodeId, imageRef);
+        };
+        errorDiv.appendChild(replaceBtn);
+    }
+    
+    const width = img.style.maxWidth || img.getAttribute('width') || '100%';
+    const height = img.style.maxHeight || img.getAttribute('height') || '100%';
+    errorDiv.style.cssText = `
+        width: ${width};
+        height: ${height};
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--dark-grey);
+        font-size: 12px;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--white);
+        border-radius: inherit;
+        padding: 16px;
+        box-sizing: border-box;
+        text-align: center;
+    `;
+    
+    img.replaceWith(errorDiv);
+}

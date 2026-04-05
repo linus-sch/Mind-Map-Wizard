@@ -47,11 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			}, 10);
 		}
 
-		const aiContentDisclaimer = document.getElementById('ai-content-disclaimer');
-		if (aiContentDisclaimer) {
-			aiContentDisclaimer.style.display = 'none';
-		}
-
 		const toolbarElement = document.querySelector('.mm-toolbar');
 		if (toolbarElement) {
 			toolbarElement.style.display = 'none';
@@ -82,6 +77,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		removeUrlParameter('id');
 		closeNotesDrawer();
+
+		if (window.chatManager) {
+			if (window.chatManager.isOpen) {
+				window.chatManager.toggle(false);
+			}
+			window.chatManager.reset();
+		}
 
 		document.querySelectorAll('.mindmap-item').forEach((item) => {
 			item.classList.remove('active');

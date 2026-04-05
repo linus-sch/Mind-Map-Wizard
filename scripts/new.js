@@ -329,11 +329,6 @@ function updateAiFeaturesUI() {
 		disableToggle.checked = !isDisabled;
 	}
 
-	const aiDisclaimer = document.getElementById('ai-content-disclaimer');
-	if (aiDisclaimer) {
-		aiDisclaimer.style.display = isDisabled ? 'none' : 'block';
-	}
-
 	const regenerateBtn = document.getElementById('regenerate-button');
 	if (regenerateBtn) {
 		regenerateBtn.style.display = isDisabled ? 'none' : '';
@@ -739,7 +734,6 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 
 	if (!isRegenerate) {
 		document.getElementById('header').style.display = 'none';
-		document.getElementById('ai-content-disclaimer').style.display = 'block';
 		document.getElementById('mindmap').style.display = 'none';
 	}
 	const loadingAnim = document.getElementById('loading-animation');
@@ -996,6 +990,10 @@ Structure your response exactly like this:
 		if (isRegenerate) {
 			const regenerateBtn = document.getElementById('regenerate-button');
 			regenerateBtn?.classList.remove('rotating');
+		}
+
+		if (window.innerWidth > 885) {
+			document.getElementById('chat-toggle-btn')?.click();
 		}
 
 	} catch (error) {
@@ -1382,11 +1380,6 @@ function showHeader() {
 		}, 10);
 	}
 
-	const aiContentDisclaimer = document.getElementById('ai-content-disclaimer');
-	if (aiContentDisclaimer) {
-		aiContentDisclaimer.style.display = 'none';
-	}
-
 	const toolbarElement = document.querySelector('.mm-toolbar');
 	if (toolbarElement) {
 		toolbarElement.style.display = 'none';
@@ -1413,6 +1406,13 @@ function showHeader() {
 	const undoRedoContainer = document.getElementById('undo-redo-container');
 	if (undoRedoContainer) {
 		undoRedoContainer.style.display = 'none';
+	}
+
+	if (window.chatManager) {
+		if (window.chatManager.isOpen) {
+			window.chatManager.toggle(false);
+		}
+		window.chatManager.reset();
 	}
 
 	closeNotesDrawer();
@@ -2013,8 +2013,6 @@ async function handlePdfUpload(file) {
 	try {
 		const loadingAnim = document.getElementById('loading-animation');
 		if (loadingAnim) loadingAnim.style.display = 'flex';
-		const aiDisclaimer = document.getElementById('ai-content-disclaimer');
-		if (aiDisclaimer) aiDisclaimer.style.display = 'block';
 
 		let apiKey = getStoredApiKey();
 		if (!apiKey) {
@@ -3091,6 +3089,13 @@ function openMindmapLeftSidebar(id) {
 
 	loadMindMapById(id);
 	hideHeader()
+
+	if (window.chatManager) {
+		if (window.chatManager.isOpen) {
+			window.chatManager.toggle(false);
+		}
+		window.chatManager.reset();
+	}
 }
 
 function getMindmapFromStorage(id) {
@@ -4823,3 +4828,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.showLicensePopup = showLicensePopup;
 window.closeLicensePopup = closeLicensePopup;
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.ChatManager) {
+        window.chatManager = new window.ChatManager();
+    }
+});
