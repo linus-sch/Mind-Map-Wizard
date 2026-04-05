@@ -2814,47 +2814,6 @@ window.showImageUploadPopup = async function () {
     dialog.className = 'image-upload-dialog';
     
     const storage = window.ImageHandler;
-    const limitReached = await storage.isImageLimitReached();
-    if (limitReached) {
-        const limitMessage = document.createElement('div');
-        limitMessage.className = 'image-limit-message';
-        limitMessage.style.cssText = 'text-align: center; padding: 40px 20px;';
-        
-        const messageText = document.createElement('p');
-        messageText.style.cssText = 'color: var(--text-color); font-size: 1rem; margin: 0 0 20px 0;';
-        messageText.textContent = 'Please sign in to upload more images to mind maps';
-        limitMessage.appendChild(messageText);
-        
-        const signUpBtn = document.createElement('a');
-        signUpBtn.href = '/sign-up';
-        signUpBtn.className = 'pill-button';
-        signUpBtn.style.cssText = 'display: inline-block; padding: 10px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 25px; font-size: 14px; font-weight: 500; transition: background 0.2s;';
-        signUpBtn.textContent = 'Sign up';
-        signUpBtn.onmouseenter = () => signUpBtn.style.background = 'var(--primary-color);';
-        signUpBtn.onmouseleave = () => signUpBtn.style.background = 'var(--primary-color);';
-        limitMessage.appendChild(signUpBtn);
-        
-        dialog.appendChild(limitMessage);
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.type = 'button';
-        closeBtn.textContent = 'Close';
-        closeBtn.className = 'image-upload-btn image-upload-btn-cancel';
-        closeBtn.style.cssText = 'margin-top: 20px;';
-        closeBtn.onclick = () => document.body.removeChild(backdrop);
-        dialog.appendChild(closeBtn);
-        
-        backdrop.appendChild(dialog);
-        document.body.appendChild(backdrop);
-        
-        backdrop.addEventListener('click', (e) => {
-            if (e.target === backdrop) {
-                document.body.removeChild(backdrop);
-            }
-        });
-        
-        return;
-    }
     
     const title = document.createElement('h3');
     title.textContent = 'Add Image';
