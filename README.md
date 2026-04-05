@@ -39,14 +39,18 @@
 
 - 🤖 AI Mind Map Generation
 - 🌐 Web Search
-- ➕ Mind map expansion
-- 📝 AI summaries
-- ✏️ Direct editing of mind maps
+- 🖼️ Image inserting
+- ✏️ Direct mind map editing 
+- ✍️ AI editing assistant
+- 🕹️ Drag and drop reordering
 - 🎨 Style customization
-- ↩️ Redo & Undo
+- ☑️ Checkboxes
 - 💾 Multiple export formats
+- 📝 AI summaries
 - 📚 Generation history
+- ➕ Mind map expansion
 - 🌈 Branch coloring
+- ↩️ Redoing & Undoing
 - 🔍 Zoom & pan
 - ⌨️ Keyboard shortcuts
 
