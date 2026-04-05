@@ -830,3 +830,107 @@
     to {
         transform: rotate(360deg);
     } }
+
+
+
+.notes-ai-research-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    margin-left: auto;
+    margin-right: 8px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.notes-ai-research-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+.notes-ai-research-btn svg {
+    flex-shrink: 0;
+}
+
+.notes-ai-confirm-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100001;
+    animation: ease-in;
+}
+
+.notes-ai-confirm-content {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 20px 24px;
+    max-width: 340px;
+    width: 90%;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.15s ease;
+
+}
+
+.notes-ai-confirm-content p {
+    margin: 0 0 16px 0;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+.notes-ai-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.notes-ai-confirm-cancel,
+.notes-ai-confirm-generate {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.notes-ai-confirm-cancel {
+    width: 49%; 
+}
+
+.notes-ai-confirm-generate {
+    width: 49%; 
+}
+
+.notes-ai-confirm-cancel {
+    background: var(--light-grey);
+    color: var(--text-color);
+}
+
+.notes-ai-confirm-cancel:hover {
+    background: var(--light-grey-dark);
+}
+
+.notes-ai-confirm-generate {
+    background: rgba(220, 20, 60, 0.1);
+    color:  crimson;
+}
+
+.notes-ai-confirm-generate:hover {
+    background: rgba(220, 20, 60, 0.2);
+}

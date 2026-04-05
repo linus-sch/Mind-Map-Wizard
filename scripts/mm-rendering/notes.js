@@ -22,9 +22,6 @@ function parseNodeNotes(rawNotes) {
                 if (window.rybbit) {
                     window.rybbit.event("mm_notes_opened", {});
                 }
-                if (window?.datafast) {
-                    window.datafast("mm_notes_opened", {});
-                }
                 return { text, citations };
             } catch (e) {
                 console.warn('Failed to parse citation metadata', e);
@@ -45,19 +42,114 @@ function serializeNodeNotes(text, citations) {
     return `${text.trim()}\n\n${CITATION_BLOCK_START}${JSON.stringify(cleanCitations)}${CITATION_BLOCK_END}`;
 }
 
-window.openNotesDrawer = function (nodeId) {
+function isImageNode(node) {
+    if (!node || !node.text) return false;
+    return /^(local|remote):img-/.test(node.text.trim());
+}
+
+function showAIResearchButton(editorDiv, nodeId, drawer) {
+    let btn = drawer.querySelector('.notes-ai-research-btn');
+    if (btn) btn.remove();
+
+    if (isImageNode(findNodeByIdGlobal(currentHierarchy, nodeId))) return;
+    if (window.MMW_READONLY) return;
+
+    btn = document.createElement('button');
+    btn.className = 'notes-ai-research-btn';
+    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="white" stroke-linecap="round" stroke-linejoin="round" ><path d="M18.5 3.05 Q19.08 5.93 21.95 6.5 Q19.08 7.08 18.5 9.95 Q17.92 7.08 15.05 6.5 Q17.92 5.93 18.5 3.05 Z" stroke-width="1.5" /><path d="M8.5 7.7 Q9.56 13.44 15.3 14.5 Q9.56 15.56 8.5 21.3 Q7.44 15.56 1.7 14.5 Q7.44 13.44 8.5 7.7 Z" stroke-width="1.7" /></svg> AI Research`;
+    btn.title = 'Generate AI summary';
+    btn.onclick = () => {
+        const node = findNodeByIdGlobal(currentHierarchy, nodeId);
+        const { text, citations } = parseNodeNotes(node ? node.notes : '');
+        const hasContent = (text && text.trim() !== '') || (citations && citations.length > 0);
+
+        if (hasContent) {
+            showAIReplaceConfirmPopup(nodeId, editorDiv);
+        } else {
+            startAIGeneration(nodeId, editorDiv);
+        }
+    };
+
+    const header = drawer.querySelector('.notes-drawer-header');
+    const closeBtn = drawer.querySelector('#notes-drawer-close');
+    if (header && closeBtn) {
+        header.insertBefore(btn, closeBtn);
+    }
+}
+
+function showAIReplaceConfirmPopup(nodeId, editorDiv) {
+    let existing = document.querySelector('.notes-ai-confirm-popup');
+    if (existing) existing.remove();
+
+    const popup = document.createElement('div');
+    popup.className = 'notes-ai-confirm-popup';
+    popup.innerHTML = `
+<div class="notes-ai-confirm-content">
+            <p>Generating an AI summary will replace your current notes.</p>
+            <div class="notes-ai-confirm-actions">
+                <button class="notes-ai-confirm-cancel">Cancel</button>
+                <button class="notes-ai-confirm-generate">Generate</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(popup);
+
+    popup.querySelector('.notes-ai-confirm-cancel').onclick = () => popup.remove();
+    popup.querySelector('.notes-ai-confirm-generate').onclick = () => {
+        popup.remove();
+        const node = findNodeByIdGlobal(currentHierarchy, nodeId);
+        if (node) {
+            delete node.notes;
+            delete node.citations;
+        }
+        startAIGeneration(nodeId, editorDiv);
+    };
+}
+
+const SKELETON_HTML = '<div class="notes-loading-skeleton">' +
+    '<div class="skeleton-line" style="width: 100%;"></div>' +
+    '<div class="skeleton-line" style="width: 94%;"></div>' +
+    '<div class="skeleton-line" style="width: 98%;"></div>' +
+    '<div class="skeleton-line" style="width: 65%;"></div>' +
+    '<div class="skeleton-line" style="width: 100%; margin-top: 12px;"></div>' +
+    '<div class="skeleton-line" style="width: 88%;"></div>' +
+    '<div class="skeleton-line" style="width: 96%;"></div>' +
+    '<div class="skeleton-line" style="width: 91%;"></div>' +
+    '<div class="skeleton-line" style="width: 45%;"></div>' +
+    '</div>';
+
+function showLoadingSkeleton(editorDiv) {
+    editorDiv.innerHTML = SKELETON_HTML;
+}
+
+function startAIGeneration(nodeId, editorDiv) {
+    if (activeNotesGenerations.has(nodeId)) return;
+    showLoadingSkeleton(editorDiv);
+    generateNotesWithAI(nodeId, editorDiv);
+}
+
+window.openNotesDrawer = function (nodeId, source) {
     closeContextMenus();
     const node = findNodeByIdGlobal(currentHierarchy, nodeId);
     if (!node) return;
+    if (source === 'longpress' && window.playHaptic) window.playHaptic('1');
 
     const drawer = document.getElementById('notes-drawer');
     const title = document.getElementById('notes-drawer-title');
     const editorDiv = document.getElementById('notes-drawer-editor');
 
     const isReadOnly = window.MMW_READONLY;
+    const isImage = isImageNode(node);
+
+    window.__mmwNotesActiveNodeId = nodeId;
+    if (typeof window.__mmwApplyNotesOutline === 'function') window.__mmwApplyNotesOutline();
 
     if (drawer && title && editorDiv) {
-        title.textContent = (node.text || 'Node Notes').replace(/[#*`_~\[\]()]/g, '');
+        if (isImage) {
+            title.textContent = 'Image';
+        } else {
+            title.textContent = (node.text || 'Node Notes').replace(/[#*`_~\[\]()]/g, '');
+        }
         editorDiv.setAttribute('data-node-id', nodeId);
 
         editorDiv.setAttribute('contenteditable', isReadOnly ? 'false' : 'true');
@@ -67,12 +159,13 @@ window.openNotesDrawer = function (nodeId) {
             editorDiv.classList.remove('readonly-mode');
         }
 
+        const oldBtn = drawer.querySelector('.notes-ai-research-btn');
+        if (oldBtn) oldBtn.remove();
+
         const { text, citations } = parseNodeNotes(node.notes);
 
         editorDiv.currentCitations = citations;
         node.citations = citations;
-
-        const aiDisabled = Boolean(window.MMW_DISABLE_AI_FEATURES);
 
         if ((!text || text.trim() === '') && (!citations || citations.length === 0)) {
             if (isReadOnly) {
@@ -81,34 +174,25 @@ window.openNotesDrawer = function (nodeId) {
                 return;
             }
 
-            if (aiDisabled) {
+            if (source === 'longpress' && !isImage && !activeNotesGenerations.has(nodeId)) {
+                showLoadingSkeleton(editorDiv);
+                drawer.classList.add('open');
+                setTimeout(() => generateNotesWithAI(nodeId, editorDiv), 350);
+            } else {
                 editorDiv.innerHTML = '';
                 drawer.classList.add('open');
-                setTimeout(() => editorDiv.focus(), 100);
-                return;
+                if (!isReadOnly) {
+                    setTimeout(() => editorDiv.focus(), 100);
+                }
             }
-
-            if (!activeNotesGenerations.has(nodeId)) {
-                editorDiv.innerHTML = '<div class="notes-loading-skeleton">' +
-                    '<div class="skeleton-line" style="width: 100%;"></div>' +
-                    '<div class="skeleton-line" style="width: 94%;"></div>' +
-                    '<div class="skeleton-line" style="width: 98%;"></div>' +
-                    '<div class="skeleton-line" style="width: 65%;"></div>' +
-
-                    '<div class="skeleton-line" style="width: 100%; margin-top: 12px;"></div>' +
-
-                    '<div class="skeleton-line" style="width: 88%;"></div>' +
-                    '<div class="skeleton-line" style="width: 96%;"></div>' +
-                    '<div class="skeleton-line" style="width: 91%;"></div>' +
-                    '<div class="skeleton-line" style="width: 45%;"></div>' +
-                    '</div>';
-                generateNotesWithAI(nodeId, editorDiv);
+            if (source !== 'longpress') {
+                showAIResearchButton(editorDiv, nodeId, drawer);
             }
-            drawer.classList.add('open');
         } else {
             editorDiv.innerHTML = renderNotes(text, citations, true, true);
             drawer.classList.add('open');
             animateResourcesIn(editorDiv);
+            showAIResearchButton(editorDiv, nodeId, drawer);
             if (!isReadOnly) {
                 setTimeout(() => editorDiv.focus(), 100);
             }
@@ -117,20 +201,26 @@ window.openNotesDrawer = function (nodeId) {
 };
 
 window.closeNotesDrawer = function () {
-    const drawer = document.getElementById('notes-drawer');
-    if (drawer) {
+    try {
+        const drawer = document.getElementById('notes-drawer');
+        if (!drawer) return; 
+
         drawer.classList.remove('open');
+        window.__mmwNotesActiveNodeId = null;
+        if (typeof window.__mmwApplyNotesOutline === 'function') window.__mmwApplyNotesOutline();
         const editorDiv = document.getElementById('notes-drawer-editor');
 
         if (window.MMW_READONLY) {
-            if (editorDiv) editorDiv.blur();
+            if (editorDiv && typeof editorDiv.blur === 'function') editorDiv.blur();
             return;
         }
 
         if (editorDiv) {
             const nodeId = editorDiv.getAttribute('data-node-id');
-            const canResolveNode = Boolean(nodeId) && typeof findNodeByIdGlobal === 'function' && currentHierarchy;
-            if (canResolveNode) {
+            
+            const canSearch = typeof findNodeByIdGlobal === 'function' && typeof currentHierarchy !== 'undefined';
+            
+            if (nodeId && canSearch) {
                 const node = findNodeByIdGlobal(currentHierarchy, nodeId);
                 if (node) {
                     const val = editorDiv.innerText;
@@ -138,22 +228,69 @@ window.closeNotesDrawer = function () {
                         delete node.notes;
                         delete node.citations;
 
-                        const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
-                        const editorEl = (typeof editor !== 'undefined') ? editor : document.getElementById('json-editor');
-                        if (editorEl) editorEl.value = json;
-                        localStorage.setItem(localStorageKey, json);
-                        triggerAutoSave();
-                        if (typeof window.updateMindMap === 'function') {
-                            window.updateMindMap();
-                        } else if (typeof updateMindMap === 'function') {
-                            updateMindMap();
+                        if (typeof __mmwComposeJsonWithCurrentSettings === 'function') {
+                            const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+                            
+                            const editorEl = (typeof editor !== 'undefined') ? editor : document.getElementById('json-editor');
+                            if (editorEl) editorEl.value = json;
+
+                            try {
+                                if (typeof localStorageKey !== 'undefined') {
+                                    localStorage.setItem(localStorageKey, json);
+                                }
+                            } catch (lsError) {}
+
+                            if (typeof triggerAutoSave === 'function') triggerAutoSave();
+                            if (typeof window.updateMindMap === 'function') {
+                                window.updateMindMap();
+                            } else if (typeof updateMindMap === 'function') {
+                                updateMindMap();
+                            }
                         }
                     }
                 }
             }
-            editorDiv.blur();
+            if (typeof editorDiv.blur === 'function') editorDiv.blur();
         }
+    } catch (err) {
+        console.warn("closeNotesDrawer failed silently:", err); 
     }
+};
+
+window.getNotesTopic = function (nodeId) {
+    if (!currentHierarchy) return '';
+
+    function findNodeById(node, id) {
+        if (node.id === id) return node;
+        for (const child of node.children) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+        return null;
+    }
+
+    const targetNode = findNodeById(currentHierarchy, nodeId);
+    if (!targetNode) return '';
+
+    const path = [];
+    let curr = targetNode;
+    while (curr) {
+        path.unshift(curr);
+        curr = curr.parent;
+    }
+
+    if (path.length === 0) return '';
+
+    const formattedPath = path.map((node, index) => {
+        const level = index + 1;
+        const prefix = level <= 6 ? '#'.repeat(level) : '-';
+        return `${prefix} ${node.text}`;
+    });
+
+    const topic = formattedPath[formattedPath.length - 1];
+    const context = formattedPath.slice(0, -1).join(' ');
+
+    return context ? `Topic: ${topic} (In the context of: ${context}):` : `Topic: ${topic}:`;
 };
 
 async function generateNotesWithAI(nodeId, editorDiv) {
@@ -303,9 +440,6 @@ async function generateNotesWithAI(nodeId, editorDiv) {
         }
         if (window.rybbit) {
             window.rybbit.event("mm_notes_opened", {});
-        }
-        if (window?.datafast) {
-            window.datafast("mm_notes_opened", {});
         }
         node.citations = citations;
         if (!fullText || fullText.trim() === '') {
@@ -604,10 +738,10 @@ function initNotesDrawer() {
 
     if (editorDiv) {
         editorDiv.addEventListener('input', (e) => {
-            // If Readonly, ignore input events completely
             if (window.MMW_READONLY) return;
 
             const nodeId = e.target.getAttribute('data-node-id');
+            if (activeNotesGenerations.has(nodeId)) return;
             const node = findNodeByIdGlobal(currentHierarchy, nodeId);
 
             if (node) {
@@ -673,13 +807,19 @@ function escapeHtml(text) {
 }
 
 function findNodeByIdGlobal(node, id) {
+    if (!node) return null;
     if (node.id === id) return node;
-    for (const child of node.children) {
-        const found = findNodeByIdGlobal(child, id);
-        if (found) return found;
+
+    if (node.children) {  
+        for (const child of node.children) {
+            const found = findNodeByIdGlobal(child, id);
+            if (found) return found;
+        }
     }
+    
     return null;
 }
+
 
 function domToMarkdown(node) {
     function processChildren(n) {
