@@ -183,33 +183,17 @@ class ChatManager {
                 this.assignIdsToStructure(mmJson['mm-node']);
             }
 
-            const token = await window.Clerk.session.getToken();
-            if (!token) throw new Error("Please sign in to use AI features.");
+            if (!window.handleChatEdit) {
+                throw new Error("Chat handler not loaded. Please refresh the page.");
+            }
 
-            const response = await fetch('https://gen.mindmapwizard.com/chat/edit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    input: text,
-                    mmjson: mmJson,
-                    chatHistory: this.chatHistory
-                })
-            });
+            const result = await window.handleChatEdit(text, mmJson, this.chatHistory);
 
-            const result = await response.json();
-
-            if (result.error === 'LIMIT_ERROR') {
-                if (result.details?.plan === 'pro') {
-                    if (typeof window.showProPlanSpecialAIRequestsPopup === 'function') {
-                        window.showProPlanSpecialAIRequestsPopup(true);
-                    }
+            if (result.error === 'API_KEY_REQUIRED') {
+                if (typeof window.showApiKeyPopup === 'function') {
+                    window.showApiKeyPopup(() => this.sendMessage(), false);
                 } else {
-                    if (typeof window.showFreeLimitPopup === 'function') {
-                        window.showFreeLimitPopup(true, 'assitant');
-                    }
+                    this.addSystemMessage("Please configure your OpenRouter API key in settings.", true);
                 }
                 
                 const userMessages = this.messagesContainer.querySelectorAll('.chat-message.user');

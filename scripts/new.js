@@ -1,4 +1,6 @@
 const API_KEY_ENCRYPTION_KEY = 'mmw_encryption_key_2024';
+// Yes I know, this is not secure, but it's better than nothing ;-)
+
 
 let currentMindmapTopic = '';
 let generationInProgress = false;
@@ -485,14 +487,14 @@ function filterAndRenderModels(searchTerm) {
 		'google/gemini-2.5-flash-lite',
 		'google/gemini-3-flash-preview',
 		'google/gemini-3-pro-preview',
-		'openai/gpt-5.2-codex',
+		'openai/gpt-5.4-codex',
 		'openai/gpt-5',
 		'moonshotai/kimi-k2-thinking',
 		'anthropic/claude-sonnet-4.5',
 		'anthropic/claude-opus-4.5',
 		'anthropic/claude-3.5-sonnet',
 		'anthropic/claude-haiku-4.5',
-		'z-ai/glm-4.7',
+		'z-ai/glm-5',
 		'openai/gpt-oss-120b',
 		'deepseek/deepseek-v3.2',
 		'deepseek/deepseek-r1-0528',
