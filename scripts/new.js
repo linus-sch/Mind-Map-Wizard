@@ -2289,6 +2289,28 @@ function initializeEditMode() {
 				setActive(rightBtn, balancedBtn);
 			};
 		}
+		const styleStandard = document.getElementById('style-standard');
+		const styleLines = document.getElementById('style-lines');
+		const styleMinimal = document.getElementById('style-minimal');
+		if (styleStandard && styleLines && styleMinimal) {
+			const setStyleActive = (activeBtn) => {
+				[styleStandard, styleLines, styleMinimal].forEach(btn => {
+					if (btn === activeBtn) {
+						btn.style.background = 'var(--text-color)';
+						btn.style.color = 'var(--white)';
+						btn.style.borderColor = 'var(--text-color)';
+					} else {
+						btn.style.background = 'var(--mindmap-item-hover-bg)';
+						btn.style.color = 'var(--text-color)';
+						btn.style.borderColor = 'var(--light-grey)';
+					}
+				});
+				updatePreview();
+			};
+			styleStandard.onclick = (e) => { e.preventDefault(); setStyleActive(styleStandard); };
+			styleLines.onclick = (e) => { e.preventDefault(); setStyleActive(styleLines); };
+			styleMinimal.onclick = (e) => { e.preventDefault(); setStyleActive(styleMinimal); };
+		}
 	} catch { }
 }
 
@@ -2402,7 +2424,6 @@ function toggleEditMode(show) {
 			const fontSelect = document.getElementById('fontSelect');
 			const balancedBtn = document.getElementById('align-balanced');
 			const rightBtn = document.getElementById('align-right');
-			const nodeBackgroundsToggle = document.getElementById('nodeBackgroundsToggle');
 
 			const curRadius = Number.isFinite(settings['border-radius']) ? Number(settings['border-radius']) : 4;
 			const curSpacing = Number.isFinite(settings['spacing']) ? Number(settings['spacing']) : 30;
@@ -2414,8 +2435,33 @@ function toggleEditMode(show) {
 			if (spacingRange) spacingRange.value = String(curSpacing);
 			if (branchWidthRange) branchWidthRange.value = String(curWidth);
 
-			if (nodeBackgroundsToggle) {
-				nodeBackgroundsToggle.checked = (settings['style'] !== "2");
+			const styleStandard = document.getElementById('style-standard');
+			const styleLines = document.getElementById('style-lines');
+			const styleMinimal = document.getElementById('style-minimal');
+			const curStyle = typeof settings['style'] === 'string' ? settings['style'] : '1';
+
+			const setStyleButton = (activeBtn) => {
+				[styleStandard, styleLines, styleMinimal].forEach(btn => {
+					if (btn) {
+						if (btn === activeBtn) {
+							btn.style.background = 'var(--text-color)';
+							btn.style.color = 'var(--white)';
+							btn.style.borderColor = 'var(--text-color)';
+						} else {
+							btn.style.background = 'var(--mindmap-item-hover-bg)';
+							btn.style.color = 'var(--text-color)';
+							btn.style.borderColor = 'var(--light-grey)';
+						}
+					}
+				});
+			};
+
+			if (curStyle === '2') {
+				setStyleButton(styleMinimal);
+			} else if (curStyle === '4') {
+				setStyleButton(styleLines);
+			} else {
+				setStyleButton(styleStandard);
 			}
 
 			const setActive = (activeBtn, inactiveBtn) => {
@@ -2448,7 +2494,7 @@ function toggleEditMode(show) {
 
 			updatePreview();
 
-			const inputs = [roundingRange, spacingRange, branchWidthRange, fontSelect, nodeBackgroundsToggle];
+			const inputs = [roundingRange, spacingRange, branchWidthRange, fontSelect];
 			inputs.forEach(input => {
 				if (input) {
 					input.oninput = updatePreview;
@@ -2474,7 +2520,9 @@ function updatePreview() {
 	const spacingRange = document.getElementById('spacingRange');
 	const branchWidthRange = document.getElementById('branchWidthRange');
 	const fontSelect = document.getElementById('fontSelect');
-	const nodeBackgroundsToggle = document.getElementById('nodeBackgroundsToggle');
+	const styleStandard = document.getElementById('style-standard');
+	const styleLines = document.getElementById('style-lines');
+	const styleMinimal = document.getElementById('style-minimal');
 
 	if (!roundingRange || !spacingRange || !branchWidthRange || !fontSelect) return;
 
@@ -2489,16 +2537,24 @@ function updatePreview() {
 		rect.setAttribute('ry', radius);
 	});
 
-	const links = document.querySelectorAll('#preview-svg .mm-link');
+	const links = document.querySelectorAll('#preview-svg .mm-link, #preview-svg .mm-link-straight, #preview-svg .preview-rect-underline, #preview-root-underline');
 	links.forEach(link => {
 		link.setAttribute('stroke-width', width);
 	});
 
-	const style = document.getElementById('preview-style');
-	if (style) {
+	const styleEl = document.getElementById('preview-style');
+	if (styleEl) {
 		const fontFamily = font === 'standard' ? 'sans-serif' : font;
-		style.textContent = `.mm-preview-node text{font-family:${fontFamily}, system-ui, sans-serif;}`;
+		styleEl.textContent = `.mm-preview-node text{font-family:${fontFamily}, system-ui, sans-serif;}`;
 	}
+
+	const getActiveStyle = () => {
+		if (styleMinimal?.style.background === 'var(--text-color)') return '2';
+		if (styleLines?.style.background === 'var(--text-color)') return '4';
+		return '1';
+	};
+
+	const currentStyle = getActiveStyle();
 
 	const rootCenterY = 53;
 	const nodeHeight = 38;
@@ -2518,30 +2574,56 @@ function updatePreview() {
 	const link0 = document.getElementById('preview-link-0');
 	const link1 = document.getElementById('preview-link-1');
 
-	const branch0CenterY = branch0Y + nodeHeight / 2;
-	const branch1CenterY = branch1Y + nodeHeight / 2;
+	const rootY = (currentStyle === '4') ? 77 : 53;
+	const branch0TargetY = (currentStyle === '4') ? (branch0Y + 38) : (branch0Y + 19);
+	const branch1TargetY = (currentStyle === '4') ? (branch1Y + 38) : (branch1Y + 19);
 
 	const curve = levelSpacing * 0.5;
 	const cp1X = rootX + curve;
 	const cp2X = branchX - curve;
 
 	if (link0) {
-		const d0 = `M ${rootX},53 C ${cp1X},53 ${cp2X},${branch0CenterY} ${branchX},${branch0CenterY}`;
+		const d0 = `M ${rootX},${rootY} C ${cp1X},${rootY} ${cp2X},${branch0TargetY} ${branchX},${branch0TargetY}`;
 		link0.setAttribute('d', d0);
 	}
 
 	if (link1) {
-		const d1 = `M ${rootX},53 C ${cp1X},53 ${cp2X},${branch1CenterY} ${branchX},${branch1CenterY}`;
+		const d1 = `M ${rootX},${rootY} C ${cp1X},${rootY} ${cp2X},${branch1TargetY} ${branchX},${branch1TargetY}`;
 		link1.setAttribute('d', d1);
 	}
 
-	if (nodeBackgroundsToggle) {
-		const showBackgrounds = nodeBackgroundsToggle.checked;
-		const colorRects = document.querySelectorAll('#preview-svg rect[fill-opacity]');
-		colorRects.forEach(rect => {
-			rect.style.display = showBackgrounds ? 'block' : 'none';
-		});
+	if (roundingRange) {
+		const isStyle2or4 = (currentStyle === '2' || currentStyle === '4');
+		roundingRange.disabled = isStyle2or4;
+		const container = roundingRange.closest('div');
+		if (container) {
+			container.style.opacity = isStyle2or4 ? '0.5' : '1';
+			container.style.pointerEvents = isStyle2or4 ? 'none' : 'auto';
+			container.style.transition = 'opacity 0.3s ease';
+		}
 	}
+
+	const colorRects = document.querySelectorAll('#preview-svg rect[fill-opacity]');
+	const underlines = document.querySelectorAll('#preview-svg .preview-rect-underline, #preview-root-underline');
+	const curvedLinks = document.querySelectorAll('#preview-svg path.mm-link');
+	const straightLinks = document.querySelectorAll('#preview-svg line.mm-link-straight');
+
+	colorRects.forEach(rect => rect.style.display = 'block');
+	underlines.forEach(line => line.style.display = 'none');
+	curvedLinks.forEach(l => l.style.display = 'block');
+	straightLinks.forEach(l => l.style.display = 'none');
+
+	if (currentStyle === '2') {
+		colorRects.forEach(rect => rect.style.display = 'none');
+	} else if (currentStyle === '4') {
+		colorRects.forEach(rect => rect.style.display = 'none');
+		underlines.forEach(line => line.style.display = 'block');
+	}
+
+	curvedLinks.forEach(l => {
+		l.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+		l.style.transform = 'translateY(0)';
+	});
 }
 
 function handleUrlParameters() {
@@ -2634,7 +2716,9 @@ function updateMindmapFromEdit() {
 		const fontSelect = document.getElementById('fontSelect');
 		const balancedBtn = document.getElementById('align-balanced');
 		const rightBtn = document.getElementById('align-right');
-		const nodeBackgroundsToggle = document.getElementById('nodeBackgroundsToggle');
+		const styleStandard = document.getElementById('style-standard');
+		const styleLines = document.getElementById('style-lines');
+		const styleMinimal = document.getElementById('style-minimal');
 
 		obj['mm-settings'] = obj['mm-settings'] || {};
 		const settings = obj['mm-settings'];
@@ -2643,14 +2727,17 @@ function updateMindmapFromEdit() {
 		if (branchWidthRange) settings['mm-link-width'] = Number(branchWidthRange.value || 2.5);
 		if (roundingRange) settings['border-radius'] = Number(roundingRange.value || 4);
 
-		if (nodeBackgroundsToggle) {
-			if (!nodeBackgroundsToggle.checked) {
-				settings['style'] = "2";
-			} else {
-				if (settings['style'] === "2") {
-					delete settings['style'];
-				}
-			}
+		const getSelectedStyle = () => {
+			if (styleMinimal?.style.background === 'var(--text-color)') return '2';
+			if (styleLines?.style.background === 'var(--text-color)') return '4';
+			return '1';
+		};
+
+		const selectedStyle = getSelectedStyle();
+		if (selectedStyle === '1') {
+			delete settings['style'];
+		} else {
+			settings['style'] = selectedStyle;
 		}
 
 		let align = 'balanced';

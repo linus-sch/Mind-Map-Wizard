@@ -335,7 +335,7 @@ body {
   height: auto;
   border-radius: 32px;
   padding: 0;
-  border: 2px solid var(--light-grey);
+  border: 2px solid var(--white);
   font-size: 1.1rem;
   resize: vertical;
   box-sizing: border-box;

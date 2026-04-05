@@ -580,13 +580,13 @@
                         </div>
                     </div>
 
-                    <div class="field-group"
-                        style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px; margin-bottom: 0;">
-                        <label for="nodeBackgroundsToggle" style="margin: 0; font-weight: 500;">Node Backgrounds</label>
-                        <label class="switch">
-                            <input type="checkbox" id="nodeBackgroundsToggle" checked>
-                            <span class="slider"></span>
-                        </label>
+                    <div class="field-group" style="margin-top: 20px; margin-bottom: 0;">
+                        <label style="margin: 0 0 8px 0; font-weight: 500; display: block;">Node Backgrounds</label>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" id="style-standard" class="seg-btn" style="flex:1;">Standard</button>
+                            <button type="button" id="style-lines" class="seg-btn" style="flex:1;">Lines</button>
+                            <button type="button" id="style-minimal" class="seg-btn" style="flex:1;">Minimal</button>
+                        </div>
                     </div>
 
                     <div class="field-group">
@@ -632,6 +632,7 @@
                                         style="opacity: 1;">
                                         Mind Map
                                     </text>
+                                    <line id="preview-root-underline" x1="0" y1="48" x2="179" y2="48" stroke="#03a9f4" stroke-width="2.5" stroke-linecap="round" style="display:none;"></line>
                                 </g>
 
                                 <!-- Branch node 1 -->
@@ -650,6 +651,7 @@
                                         style="opacity: 1;">
                                         Branch
                                     </text>
+                                    <line class="preview-rect-underline" x1="0" y1="38" x2="102" y2="38" stroke="rgb(255, 127, 15)" stroke-width="2.5" stroke-linecap="round" style="display:none;"></line>
                                 </g>
 
                                 <!-- Branch node 2 -->
@@ -668,6 +670,7 @@
                                         style="opacity: 1;">
                                         Branch
                                     </text>
+                                    <line class="preview-rect-underline" x1="0" y1="38" x2="102" y2="38" stroke="rgb(0, 191, 191)" stroke-width="2.5" stroke-linecap="round" style="display:none;"></line>
                                 </g>
 
                                 <path class="mm-link" id="preview-link-0" d="M 239,53 C 299,53 279,-10 339,-10"
