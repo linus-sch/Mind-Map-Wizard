@@ -2845,7 +2845,10 @@ html.left-sidebar-open #mindmap {
   padding: 6rem 2rem;
   color: var(--dark-grey);
   line-height: 1.5;
-  font-weight: 600;
+}
+
+.no-mindmaps h3 {
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
