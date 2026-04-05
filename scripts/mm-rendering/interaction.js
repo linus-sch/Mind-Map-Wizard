@@ -107,6 +107,19 @@ function __mmwBuildPathToStableMap(node, positionalPath) {
     return map;
 }
 
+function __mmwApplyStableIdsFromMap(node, positionalPath, stableMap) {
+    if (!node || !stableMap) return;
+    if (stableMap[positionalPath]) {
+        node.id = stableMap[positionalPath];
+    }
+    if (node.children) {
+        node.children.forEach((child, index) => {
+            const childPath = positionalPath === 'root' ? '0' : `${positionalPath}-${index}`;
+            __mmwApplyStableIdsFromMap(child, childPath, stableMap);
+        });
+    }
+}
+
 const HistoryManager = {
     undoStack: [],
     redoStack: [],
@@ -202,6 +215,779 @@ function getMindMapStyle(jsonString) {
 
 let currentHierarchy = null;
 let previousHierarchy = null;
+
+let __mmwBranchDragState = null;
+let __mmwSuppressNodeClickUntil = 0;
+
+function __mmwFindNodeById(node, id) {
+    if (!node) return null;
+    if (node.id === id) return node;
+    for (const child of node.children || []) {
+        const found = __mmwFindNodeById(child, id);
+        if (found) return found;
+    }
+    return null;
+}
+
+function __mmwFindNodeAndParentById(node, id, parent = null) {
+    if (!node) return null;
+    if (node.id === id) return { node, parent };
+    for (const child of node.children || []) {
+        const found = __mmwFindNodeAndParentById(child, id, node);
+        if (found) return found;
+    }
+    return null;
+}
+
+function __mmwCollectSubtreeIds(node, out = []) {
+    if (!node) return out;
+    out.push(node.id);
+    (node.children || []).forEach(child => __mmwCollectSubtreeIds(child, out));
+    return out;
+}
+
+function __mmwParseTranslate(transformValue) {
+    const match = /translate\(\s*([-.\d]+)(?:[\s,]+([-.\d]+))?\s*\)/.exec(transformValue || '');
+    return {
+        x: match ? parseFloat(match[1]) : 0,
+        y: match ? parseFloat(match[2] || '0') : 0
+    };
+}
+
+function __mmwGetSvgFitScale(svg) {
+    if (!svg || !preview) return 1;
+
+    const viewBox = svg.getAttribute('viewBox');
+    if (!viewBox) return 1;
+
+    const parts = viewBox.split(' ');
+    if (parts.length !== 4) return 1;
+
+    const vbW = parseFloat(parts[2]);
+    const vbH = parseFloat(parts[3]);
+    const cw = preview.clientWidth || preview.offsetWidth;
+    const ch = preview.clientHeight || preview.offsetHeight;
+
+    if (!(vbW > 0) || !(vbH > 0) || !(cw > 20) || !(ch > 20)) {
+        return 1;
+    }
+
+    return Math.min(cw / vbW, ch / vbH) || 1;
+}
+
+function __mmwApplyDragTranslate(baseTransform, dx, dy) {
+    const safeDx = Number.isFinite(dx) ? dx : 0;
+    const safeDy = Number.isFinite(dy) ? dy : 0;
+    if (!baseTransform) {
+        return `translate(${safeDx}, ${safeDy})`;
+    }
+    if (/translate\(/.test(baseTransform)) {
+        return baseTransform.replace(/translate\(\s*([-.\d]+)(?:[\s,]+([-.\d]+))?\s*\)/, (_, x, y) => {
+            const nextX = parseFloat(x || '0') + safeDx;
+            const nextY = parseFloat(y || '0') + safeDy;
+            return `translate(${nextX}, ${nextY})`;
+        });
+    }
+    return `translate(${safeDx}, ${safeDy}) ${baseTransform}`;
+}
+
+function __mmwGetNodeDimensions(nodeElement) {
+    if (!nodeElement) return null;
+    const boxEl = nodeElement.querySelector('rect:not(.mm-notes-outline), foreignObject');
+    if (!boxEl) return null;
+    const width = parseFloat(boxEl.getAttribute('width') || '0');
+    const height = parseFloat(boxEl.getAttribute('height') || '0');
+    if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+        return null;
+    }
+    return { width, height };
+}
+
+function __mmwGetNodeMetrics(nodeElement) {
+    if (!nodeElement) return null;
+    const dims = __mmwGetNodeDimensions(nodeElement);
+    if (!dims) return null;
+    const { x, y } = __mmwParseTranslate(nodeElement.getAttribute('transform'));
+    return {
+        x,
+        y,
+        width: dims.width,
+        height: dims.height,
+        left: x,
+        right: x + dims.width,
+        top: y,
+        bottom: y + dims.height,
+        centerX: x + dims.width / 2,
+        centerY: y + dims.height / 2
+    };
+}
+
+function __mmwGetNodeElementById(svg, nodeId) {
+    return svg ? svg.querySelector(`.mm-node[data-node-id="${nodeId}"]`) : null;
+}
+
+function __mmwGetRenderedBranchColor(nodeId) {
+    const svg = preview && preview.querySelector('svg');
+    if (!svg || !nodeId) return null;
+
+    const rectEl = svg.querySelector(`.mm-node[data-node-id="${nodeId}"] rect:not(.mm-notes-outline)`);
+    const rectFill = rectEl ? rectEl.getAttribute('fill') : null;
+    if (rectFill && rectFill !== 'none' && rectFill !== 'transparent') {
+        return rectFill;
+    }
+
+    const linkEl = svg.querySelector(`.mm-link[data-link-id="${nodeId}"]`);
+    const linkStroke = linkEl ? linkEl.getAttribute('stroke') : null;
+    if (linkStroke && linkStroke !== 'none' && linkStroke !== 'transparent') {
+        return linkStroke;
+    }
+
+    const collapsedLinkEl = svg.querySelector(`.mm-collapsed-link[data-link-id="${nodeId}-collapsed"]`);
+    const collapsedStroke = collapsedLinkEl ? collapsedLinkEl.getAttribute('stroke') : null;
+    if (collapsedStroke && collapsedStroke !== 'none' && collapsedStroke !== 'transparent') {
+        return collapsedStroke;
+    }
+
+    return null;
+}
+
+function __mmwGetBranchSideFromDom(svg, parentId, childId) {
+    const childEl = __mmwGetNodeElementById(svg, childId);
+    const parentEl = __mmwGetNodeElementById(svg, parentId);
+    const childMetrics = __mmwGetNodeMetrics(childEl);
+    const parentMetrics = __mmwGetNodeMetrics(parentEl);
+    if (!childMetrics || !parentMetrics) return 'right';
+    return childMetrics.centerX < parentMetrics.centerX ? 'left' : 'right';
+}
+
+function __mmwGetMindMapStyleId() {
+    try {
+        const settings = __mmwGetCurrentSettings();
+        const ms = settings ? (settings.style ?? settings.mindmapStyle ?? settings.theme) : null;
+        if (ms === undefined || ms === null) return '1';
+        const s = String(ms).toLowerCase().trim();
+        if (s === 'clean') return '3';
+        if (s === 'default') return '1';
+        return s;
+    } catch {
+        return '1';
+    }
+}
+
+function __mmwGetNodeLinkAnchorY(nodeElement, metrics) {
+    if (!nodeElement || !metrics) return 0;
+    if (nodeElement.classList.contains('mm-image-node')) {
+        return metrics.centerY;
+    }
+    const styleId = __mmwGetMindMapStyleId();
+    return (styleId === '3' || styleId === '4') ? metrics.bottom : metrics.centerY;
+}
+
+function __mmwApplyBranchLinkGeometry(linkEl, parentEl, childEl) {
+    if (!linkEl || !parentEl || !childEl) return;
+    const parentMetrics = __mmwGetNodeMetrics(parentEl);
+    const childMetrics = __mmwGetNodeMetrics(childEl);
+    if (!parentMetrics || !childMetrics) return;
+
+    const isLeft = childMetrics.centerX < parentMetrics.centerX;
+    const startX = isLeft ? parentMetrics.left : parentMetrics.right;
+    const endX = isLeft ? childMetrics.right : childMetrics.left;
+    const startY = __mmwGetNodeLinkAnchorY(parentEl, parentMetrics);
+    const endY = __mmwGetNodeLinkAnchorY(childEl, childMetrics);
+
+    if (linkEl.tagName.toLowerCase() === 'line') {
+        linkEl.setAttribute('x1', String(startX));
+        linkEl.setAttribute('y1', String(startY));
+        linkEl.setAttribute('x2', String(endX));
+        linkEl.setAttribute('y2', String(endY));
+        return;
+    }
+
+    const parentIsTitle = parentEl.getAttribute('data-node-id') === '0';
+    const curveFactor = parentIsTitle ? 0.6 : 0.5;
+    const curve = Math.max(40, Math.abs(endX - startX) * curveFactor);
+    const control1X = isLeft ? startX - curve : startX + curve;
+    const control2X = isLeft ? endX + curve : endX - curve;
+    const d = `M ${startX},${startY} C ${control1X},${startY} ${control2X},${endY} ${endX},${endY}`;
+    linkEl.setAttribute('d', d);
+}
+
+function __mmwApplyCollapsedLinkGeometry(linkEl, nodeEl) {
+    if (!linkEl || !nodeEl) return;
+    const metrics = __mmwGetNodeMetrics(nodeEl);
+    if (!metrics) return;
+
+    const nodeId = nodeEl.getAttribute('data-node-id');
+    const svg = preview && preview.querySelector('svg');
+    const parentId = nodeId ? __mmwFindNodeAndParentById(currentHierarchy, nodeId)?.parent?.id : null;
+    const isLeft = !!(svg && parentId && __mmwGetBranchSideFromDom(svg, parentId, nodeId) === 'left');
+    const startX = isLeft ? metrics.left : metrics.right;
+    const startY = __mmwGetNodeLinkAnchorY(nodeEl, metrics);
+    const endX = isLeft ? startX - 40 : startX + 40;
+
+    linkEl.setAttribute('x1', String(startX));
+    linkEl.setAttribute('y1', String(startY));
+    linkEl.setAttribute('x2', String(endX));
+    linkEl.setAttribute('y2', String(startY));
+}
+
+function __mmwRestoreDynamicGeometry(records) {
+    records.forEach(record => {
+        record.el.style.transition = record.baseTransition;
+        record.el.style.pointerEvents = record.basePointerEvents;
+        if (record.type === 'link') {
+            if (record.baseD == null) {
+                record.el.removeAttribute('d');
+            } else {
+                record.el.setAttribute('d', record.baseD);
+            }
+            if (record.baseX1 != null) record.el.setAttribute('x1', record.baseX1);
+            if (record.baseY1 != null) record.el.setAttribute('y1', record.baseY1);
+            if (record.baseX2 != null) record.el.setAttribute('x2', record.baseX2);
+            if (record.baseY2 != null) record.el.setAttribute('y2', record.baseY2);
+        } else if (record.type === 'collapsed-link') {
+            record.el.setAttribute('x1', record.baseX1);
+            record.el.setAttribute('y1', record.baseY1);
+            record.el.setAttribute('x2', record.baseX2);
+            record.el.setAttribute('y2', record.baseY2);
+        }
+    });
+}
+
+function __mmwCreateBranchDropIndicator(stage, color) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('stroke', color || '#03a9f4');
+    line.setAttribute('stroke-width', '6');
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('opacity', '0.9');
+    line.style.pointerEvents = 'none';
+    line.style.display = 'none';
+    stage.appendChild(line);
+    return line;
+}
+
+function __mmwRemoveBranchDropIndicator(line) {
+    if (line && line.parentNode) {
+        line.parentNode.removeChild(line);
+    }
+}
+
+function __mmwRestoreDragStyles(records) {
+    records.forEach(record => {
+        record.el.style.pointerEvents = record.basePointerEvents;
+        record.el.style.transition = record.baseTransition;
+        record.el.style.opacity = record.baseOpacity;
+        record.el.style.filter = record.baseFilter;
+        record.el.style.cursor = record.baseCursor;
+    });
+}
+
+function __mmwRestoreDragTransforms(records) {
+    records.forEach(record => {
+        if (record.baseTransform == null || record.baseTransform === '') {
+            record.el.removeAttribute('transform');
+        } else {
+            record.el.setAttribute('transform', record.baseTransform);
+        }
+    });
+}
+
+function __mmwBuildReorderedChildren(parentChildren, sideIds, draggedId, targetIndex) {
+    const sideSet = new Set(sideIds);
+    const before = [];
+    const segment = [];
+    const after = [];
+    let segmentStarted = false;
+
+    parentChildren.forEach(child => {
+        if (sideSet.has(child.id)) {
+            segmentStarted = true;
+            segment.push(child);
+            return;
+        }
+        if (!segmentStarted) {
+            before.push(child);
+        } else {
+            after.push(child);
+        }
+    });
+
+    const draggedChild = segment.find(child => child.id === draggedId);
+    if (!draggedChild) return null;
+
+    const remaining = segment.filter(child => child.id !== draggedId);
+    const clampedIndex = Math.max(0, Math.min(targetIndex, remaining.length));
+    const reorderedSegment = [
+        ...remaining.slice(0, clampedIndex),
+        draggedChild,
+        ...remaining.slice(clampedIndex)
+    ];
+
+    return [...before, ...reorderedSegment, ...after];
+}
+
+function __mmwGetIndicatorYForOrderedSlice(sliceIds, draggedId, metricsById, fallbackY) {
+    if (!Array.isArray(sliceIds) || !sliceIds.length) return fallbackY;
+    const draggedIndex = sliceIds.indexOf(draggedId);
+    const existingIds = sliceIds.filter(id => id !== draggedId);
+    if (!existingIds.length) return fallbackY;
+    if (draggedIndex <= 0) {
+        const firstMetrics = metricsById.get(existingIds[0]);
+        return firstMetrics ? firstMetrics.top - 14 : fallbackY;
+    }
+    if (draggedIndex >= sliceIds.length - 1) {
+        const lastMetrics = metricsById.get(existingIds[existingIds.length - 1]);
+        return lastMetrics ? lastMetrics.bottom + 14 : fallbackY;
+    }
+
+    const prevMetrics = metricsById.get(sliceIds[draggedIndex - 1]);
+    const nextMetrics = metricsById.get(sliceIds[draggedIndex + 1]);
+    if (!prevMetrics || !nextMetrics) return fallbackY;
+    return (prevMetrics.bottom + nextMetrics.top) / 2;
+}
+
+function __mmwGetIndicatorXRangeForSide(sideMetrics, fallbackCenterX) {
+    const xPad = 18;
+    if (!Array.isArray(sideMetrics) || !sideMetrics.length) {
+        return { x1: fallbackCenterX - 80, x2: fallbackCenterX + 80 };
+    }
+    return {
+        x1: Math.min(...sideMetrics.map(metric => metric.left)) - xPad,
+        x2: Math.max(...sideMetrics.map(metric => metric.right)) + xPad
+    };
+}
+
+function __mmwResolveRootCrossSideTarget(state, dragCenterX, dragCenterY) {
+    const remainingIds = state.allSiblingIds.filter(id => id !== state.nodeId);
+    const desiredSide = dragCenterX < state.parentMetrics.centerX ? 'left' : 'right';
+    const candidates = [];
+
+    for (let insertIndex = 0; insertIndex <= remainingIds.length; insertIndex++) {
+        const finalIds = [
+            ...remainingIds.slice(0, insertIndex),
+            state.nodeId,
+            ...remainingIds.slice(insertIndex)
+        ];
+        const targetSide = insertIndex < state.leftCount ? 'left' : 'right';
+        if (targetSide !== desiredSide) continue;
+
+        const sliceIds = targetSide === 'left'
+            ? finalIds.slice(0, state.leftCount)
+            : finalIds.slice(state.leftCount);
+        if (!sliceIds.includes(state.nodeId)) continue;
+
+        const y = __mmwGetIndicatorYForOrderedSlice(
+            sliceIds,
+            state.nodeId,
+            state.allSiblingMetricsById,
+            state.parentMetrics.centerY
+        );
+        const sideMetrics = (state.currentSideBuckets[targetSide] || []).filter(metric => metric.id !== state.nodeId);
+        const { x1, x2 } = __mmwGetIndicatorXRangeForSide(sideMetrics, state.parentMetrics.centerX);
+        const score = Math.abs(dragCenterY - y);
+        candidates.push({
+            insertIndex,
+            targetSide,
+            indicator: { x1, x2, y },
+            score
+        });
+    }
+
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => {
+        if (a.score !== b.score) return a.score - b.score;
+        return Math.abs(a.insertIndex - state.originalSideIndex) - Math.abs(b.insertIndex - state.originalSideIndex);
+    });
+    return candidates[0];
+}
+
+function __mmwUpdateBranchDropIndicator(state) {
+    if (!state || !state.indicatorEl) return;
+
+    if (state.rootCrossSideEnabled) {
+        if (!state.targetIndicator || state.targetSideIndex === state.originalSideIndex) {
+            state.indicatorEl.style.display = 'none';
+            return;
+        }
+        state.indicatorEl.setAttribute('x1', String(state.targetIndicator.x1));
+        state.indicatorEl.setAttribute('x2', String(state.targetIndicator.x2));
+        state.indicatorEl.setAttribute('y1', String(state.targetIndicator.y));
+        state.indicatorEl.setAttribute('y2', String(state.targetIndicator.y));
+        state.indicatorEl.style.display = '';
+        return;
+    }
+
+    const remaining = state.sideMetrics.filter(metric => metric.id !== state.nodeId);
+    if (!remaining.length || state.targetSideIndex === state.originalSideIndex) {
+        state.indicatorEl.style.display = 'none';
+        return;
+    }
+
+    let y;
+    if (state.targetSideIndex <= 0) {
+        y = remaining[0].top - 14;
+    } else if (state.targetSideIndex >= remaining.length) {
+        y = remaining[remaining.length - 1].bottom + 14;
+    } else {
+        y = (remaining[state.targetSideIndex - 1].bottom + remaining[state.targetSideIndex].top) / 2;
+    }
+
+    const xPad = 18;
+    const x1 = Math.min(...state.sideMetrics.map(metric => metric.left)) - xPad;
+    const x2 = Math.max(...state.sideMetrics.map(metric => metric.right)) + xPad;
+
+    state.indicatorEl.setAttribute('x1', String(x1));
+    state.indicatorEl.setAttribute('x2', String(x2));
+    state.indicatorEl.setAttribute('y1', String(y));
+    state.indicatorEl.setAttribute('y2', String(y));
+    state.indicatorEl.style.display = '';
+}
+
+function __mmwUpdateDraggedBranch(dx, dy) {
+    const state = __mmwBranchDragState;
+    if (!state || !state.active) return;
+
+    state.dx = dx;
+    state.dy = dy;
+
+    state.movingElements.forEach(record => {
+        record.el.setAttribute('transform', __mmwApplyDragTranslate(record.baseTransform, dx, dy));
+    });
+
+    state.dynamicGeometryRecords.forEach(record => {
+        if (record.type === 'link') {
+            const parentEl = __mmwGetNodeElementById(state.svg, record.parentId);
+            const childEl = __mmwGetNodeElementById(state.svg, record.childId);
+            __mmwApplyBranchLinkGeometry(record.el, parentEl, childEl);
+        } else if (record.type === 'collapsed-link') {
+            const nodeEl = __mmwGetNodeElementById(state.svg, record.nodeId);
+            __mmwApplyCollapsedLinkGeometry(record.el, nodeEl);
+        }
+    });
+
+    const dragCenterY = state.dragMetrics.centerY + dy;
+    if (state.rootCrossSideEnabled) {
+        const dragCenterX = state.dragMetrics.centerX + dx;
+        const resolved = __mmwResolveRootCrossSideTarget(state, dragCenterX, dragCenterY);
+        if (resolved) {
+            state.targetSideIndex = resolved.insertIndex;
+            state.targetIndicator = resolved.indicator;
+            state.targetDropSide = resolved.targetSide;
+        }
+        __mmwUpdateBranchDropIndicator(state);
+        return;
+    }
+
+    const remaining = state.sideMetrics.filter(metric => metric.id !== state.nodeId);
+    let nextIndex = 0;
+
+    for (let i = 0; i < remaining.length; i++) {
+        if (i === 0) {
+            if (dragCenterY < remaining[i].centerY) {
+                nextIndex = 0;
+                break;
+            }
+        } else {
+            const boundary = (remaining[i - 1].centerY + remaining[i].centerY) / 2;
+            if (dragCenterY < boundary) {
+                nextIndex = i;
+                break;
+            }
+        }
+        nextIndex = i + 1;
+    }
+
+    state.targetSideIndex = nextIndex;
+    __mmwUpdateBranchDropIndicator(state);
+}
+
+function __mmwCleanupBranchDrag({ restoreTransforms, restoreGeometry }) {
+    const state = __mmwBranchDragState;
+    if (!state) return;
+
+    window.removeEventListener('mousemove', __mmwHandleBranchDragMove);
+    window.removeEventListener('mouseup', __mmwHandleBranchDragEnd);
+
+    if (restoreTransforms) {
+        __mmwRestoreDragTransforms(state.movingElements);
+    }
+    if (restoreGeometry) {
+        __mmwRestoreDynamicGeometry(state.dynamicGeometryRecords);
+    } else {
+        state.dynamicGeometryRecords.forEach(record => {
+            record.el.style.transition = record.baseTransition;
+            record.el.style.pointerEvents = record.basePointerEvents;
+        });
+    }
+    __mmwRestoreDragStyles(state.movingElements);
+    __mmwRemoveBranchDropIndicator(state.indicatorEl);
+
+    if (preview) {
+        preview.style.cursor = '';
+    }
+
+    __mmwBranchDragState = null;
+}
+
+function __mmwCommitBranchReorder(state) {
+    const parentResult = __mmwFindNodeAndParentById(currentHierarchy, state.parentId);
+    if (!parentResult || !parentResult.node) return;
+
+    if (parentResult.node.id === '0') {
+        parentResult.node.children.forEach(child => {
+            if (child && !child.branchColor) {
+                const renderedColor = __mmwGetRenderedBranchColor(child.id) || child._computedColor || null;
+                if (renderedColor) {
+                    child.branchColor = renderedColor;
+                }
+            }
+        });
+    }
+
+    const reorderedChildren = __mmwBuildReorderedChildren(
+        parentResult.node.children,
+        state.sideChildIds,
+        state.nodeId,
+        state.targetSideIndex
+    );
+
+    if (!reorderedChildren) return;
+
+    parentResult.node.children = reorderedChildren;
+    parentResult.node.children.forEach(child => {
+        child.parent = parentResult.node;
+    });
+
+    HistoryManager.captureState();
+    window.__mmwForcedStablePathMap = __mmwBuildPathToStableMap(currentHierarchy, 'root');
+
+    const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+    editor.value = json;
+    localStorage.setItem(localStorageKey, json);
+    updateMindMap();
+    triggerAutoSave();
+}
+
+function __mmwHandleBranchDragMove(e) {
+    const state = __mmwBranchDragState;
+    if (!state) return;
+    if (e.buttons === 0) {
+        __mmwHandleBranchDragEnd(e);
+        return;
+    }
+
+    const fitScale = __mmwGetSvgFitScale(state.svg);
+    const dragScale = Math.max((scale || 1) * fitScale, 0.001);
+    const dx = (e.clientX - state.startClientX) / dragScale;
+    const dy = (e.clientY - state.startClientY) / dragScale;
+
+    if (!state.active) {
+        if (Math.hypot(e.clientX - state.startClientX, e.clientY - state.startClientY) < state.thresholdPx) {
+            return;
+        }
+
+        state.active = true;
+        state.movingElements.forEach(record => {
+            record.el.style.pointerEvents = 'none';
+            record.el.style.transition = 'none';
+            record.el.style.cursor = 'grabbing';
+            if (record.kind === 'node') {
+                record.el.style.opacity = '0.96';
+                record.el.style.filter = 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.14))';
+            }
+        });
+        state.dynamicGeometryRecords.forEach(record => {
+            record.el.style.pointerEvents = 'none';
+            record.el.style.transition = 'none';
+        });
+        if (preview) {
+            preview.style.cursor = 'grabbing';
+        }
+    }
+
+    e.preventDefault();
+    __mmwUpdateDraggedBranch(dx, dy);
+}
+
+function __mmwHandleBranchDragEnd() {
+    const state = __mmwBranchDragState;
+    if (!state) return;
+
+    const didReorder = state.active && state.targetSideIndex !== state.originalSideIndex;
+    __mmwSuppressNodeClickUntil = Date.now() + (state.active ? 250 : 0);
+
+    if (!didReorder) {
+        __mmwCleanupBranchDrag({ restoreTransforms: true, restoreGeometry: true });
+        return;
+    }
+
+    __mmwCleanupBranchDrag({ restoreTransforms: false, restoreGeometry: false });
+    __mmwCommitBranchReorder(state);
+}
+
+function __mmwBeginBranchDrag(e, nodeElement) {
+    if (window.MMW_READONLY) return false;
+    if (__mmwBranchDragState) return false;
+    if (!nodeElement || e.button !== 0) return false;
+    if (e.target.closest && (e.target.closest('a') || e.target.closest('.mm-add-btn') || e.target.closest('.mmw-checkbox') || e.target.closest('.node-edit-fo'))) {
+        return false;
+    }
+
+    const nodeId = nodeElement.getAttribute('data-node-id');
+    if (!nodeId || nodeId === '0') return false;
+
+    const match = __mmwFindNodeAndParentById(currentHierarchy, nodeId);
+    if (!match || !match.parent || !Array.isArray(match.parent.children) || match.parent.children.length < 2) {
+        return false;
+    }
+
+    const svg = preview && preview.querySelector('svg');
+    const stage = svg && (svg.querySelector('.mm-stage') || svg);
+    if (!svg || !stage) return false;
+
+    const parentId = match.parent.id;
+    const dragSide = __mmwGetBranchSideFromDom(svg, parentId, nodeId);
+    const allSiblingIds = match.parent.children.map(child => child.id);
+    const allSiblingMetrics = allSiblingIds
+        .map(id => {
+            const nodeEl = __mmwGetNodeElementById(svg, id);
+            const metrics = __mmwGetNodeMetrics(nodeEl);
+            return metrics ? { id, side: __mmwGetBranchSideFromDom(svg, parentId, id), ...metrics } : null;
+        })
+        .filter(Boolean);
+    const currentSideBuckets = {
+        left: allSiblingMetrics.filter(metric => metric.side === 'left'),
+        right: allSiblingMetrics.filter(metric => metric.side === 'right')
+    };
+    const rootCrossSideEnabled = parentId === '0' && currentSideBuckets.left.length > 0 && currentSideBuckets.right.length > 0;
+    const sideChildIds = rootCrossSideEnabled
+        ? allSiblingIds
+        : match.parent.children
+            .filter(child => __mmwGetBranchSideFromDom(svg, parentId, child.id) === dragSide)
+            .map(child => child.id);
+
+    if (sideChildIds.length < 2) {
+        return false;
+    }
+
+    const sideMetrics = rootCrossSideEnabled
+        ? allSiblingMetrics
+        : sideChildIds
+            .map(id => {
+                const nodeEl = __mmwGetNodeElementById(svg, id);
+                const metrics = __mmwGetNodeMetrics(nodeEl);
+                return metrics ? { id, ...metrics } : null;
+            })
+            .filter(Boolean);
+
+    const dragMetrics = sideMetrics.find(metric => metric.id === nodeId);
+    if (!dragMetrics) return false;
+    const parentMetrics = __mmwGetNodeMetrics(__mmwGetNodeElementById(svg, parentId));
+    if (!parentMetrics) return false;
+
+    const subtreeIds = __mmwCollectSubtreeIds(match.node);
+    const movingMap = new Map();
+    const dynamicGeometryRecords = [];
+    const allSiblingMetricsById = new Map(allSiblingMetrics.map(metric => [metric.id, metric]));
+    const addRecord = (el, kind) => {
+        if (!el || movingMap.has(el)) return;
+        movingMap.set(el, {
+            el,
+            kind,
+            baseTransform: el.getAttribute('transform'),
+            basePointerEvents: el.style.pointerEvents,
+            baseTransition: el.style.transition,
+            baseOpacity: el.style.opacity,
+            baseFilter: el.style.filter,
+            baseCursor: el.style.cursor
+        });
+    };
+
+    subtreeIds.forEach(id => {
+        const subtreeNodeEl = __mmwGetNodeElementById(svg, id);
+        addRecord(subtreeNodeEl, 'node');
+
+        const linkEl = svg.querySelector(`.mm-link[data-link-id="${id}"]`);
+        if (linkEl) {
+            const parentIdForLink = __mmwFindNodeAndParentById(currentHierarchy, id)?.parent?.id || null;
+            dynamicGeometryRecords.push({
+                type: 'link',
+                el: linkEl,
+                childId: id,
+                parentId: parentIdForLink,
+                baseTransition: linkEl.style.transition,
+                basePointerEvents: linkEl.style.pointerEvents,
+                baseD: linkEl.getAttribute('d'),
+                baseX1: linkEl.getAttribute('x1'),
+                baseY1: linkEl.getAttribute('y1'),
+                baseX2: linkEl.getAttribute('x2'),
+                baseY2: linkEl.getAttribute('y2')
+            });
+        }
+
+        const collapsedLinkEl = svg.querySelector(`.mm-collapsed-link[data-link-id="${id}-collapsed"]`);
+        if (collapsedLinkEl) {
+            dynamicGeometryRecords.push({
+                type: 'collapsed-link',
+                el: collapsedLinkEl,
+                nodeId: id,
+                baseTransition: collapsedLinkEl.style.transition,
+                basePointerEvents: collapsedLinkEl.style.pointerEvents,
+                baseX1: collapsedLinkEl.getAttribute('x1'),
+                baseY1: collapsedLinkEl.getAttribute('y1'),
+                baseX2: collapsedLinkEl.getAttribute('x2'),
+                baseY2: collapsedLinkEl.getAttribute('y2')
+            });
+        }
+
+        const addBtn = svg.querySelector(`.mm-add-btn[data-for-id="${id}"]`);
+        if (addBtn && !addBtn.closest('.mm-node')) {
+            addRecord(addBtn, 'button');
+        }
+
+        const expandBtn = svg.querySelector(`.mm-expand-btn[data-for-id="${id}"]`);
+        addRecord(expandBtn, 'button');
+    });
+
+    const rect = nodeElement.querySelector('rect:not(.mm-notes-outline)');
+    const indicatorColor = rect ? rect.getAttribute('fill') : '#03a9f4';
+
+    __mmwBranchDragState = {
+        nodeId,
+        parentId,
+        startClientX: e.clientX,
+        startClientY: e.clientY,
+        thresholdPx: 6,
+        active: false,
+        dx: 0,
+        dy: 0,
+        dragMetrics,
+        svg,
+        parentMetrics,
+        rootCrossSideEnabled,
+        currentSideBuckets,
+        allSiblingIds,
+        allSiblingMetricsById,
+        leftCount: currentSideBuckets.left.length,
+        movingElements: Array.from(movingMap.values()),
+        dynamicGeometryRecords,
+        sideChildIds,
+        sideMetrics,
+        originalSideIndex: sideChildIds.indexOf(nodeId),
+        targetSideIndex: sideChildIds.indexOf(nodeId),
+        targetIndicator: null,
+        targetDropSide: dragSide,
+        indicatorEl: __mmwCreateBranchDropIndicator(stage, indicatorColor)
+    };
+
+    closeContextMenus();
+    e.stopPropagation();
+    e.preventDefault();
+
+    window.addEventListener('mousemove', __mmwHandleBranchDragMove);
+    window.addEventListener('mouseup', __mmwHandleBranchDragEnd);
+    return true;
+}
 
 let autoSaveTimer = null;
 const AUTO_SAVE_DEBOUNCE_MS = 500;
@@ -477,7 +1263,13 @@ function updateMindMap() {
         newHierarchy = { text: 'Root', children: [], level: 0, id: 'root' };
     }
 
-    __mmwAssignStableIds(newHierarchy, previousHierarchy);
+    const forcedStableMap = window.__mmwForcedStablePathMap || null;
+    if (forcedStableMap) {
+        __mmwApplyStableIdsFromMap(newHierarchy, 'root', forcedStableMap);
+        window.__mmwForcedStablePathMap = null;
+    } else {
+        __mmwAssignStableIds(newHierarchy, previousHierarchy);
+    }
 
     const pathToStable = __mmwBuildPathToStableMap(newHierarchy, 'root');
     window.__mmwPathToStableId = pathToStable;
@@ -636,6 +1428,11 @@ function attachEventListeners() {
 
     const nodes = svg.querySelectorAll('.mm-node');
     nodes.forEach(node => {
+        const nodeId = node.getAttribute('data-node-id');
+        const dragMatch = nodeId ? __mmwFindNodeAndParentById(currentHierarchy, nodeId) : null;
+        const canDragBranch = !!(dragMatch && dragMatch.parent && nodeId !== '0' && Array.isArray(dragMatch.parent.children) && dragMatch.parent.children.length > 1);
+        node.style.cursor = canDragBranch ? 'grab' : '';
+
         let clickCount = 0;
         let clickTimer = null;
         const clickDelay = 360;
@@ -645,12 +1442,14 @@ function attachEventListeners() {
         const longPressDelay = 500;
         let startX = 0;
         let startY = 0;
+        let pendingDragEvent = null;
 
         const handleStart = (e) => {
             if (e.type === 'touchstart') {
                 lastTouchTime = Date.now();
             } else if (e.type === 'mousedown') {
                 if (Date.now() - lastTouchTime < 1000) return;
+                pendingDragEvent = e;
             }
 
             if (e.target.closest && e.target.closest('.mm-add-btn')) return;
@@ -668,6 +1467,7 @@ function attachEventListeners() {
 
             longPressTimer = setTimeout(() => {
                 isLongPress = true;
+                pendingDragEvent = null;
                 const nodeId = node.getAttribute('data-node-id');
                 if (window.openNotesDrawer) {
                     window.openNotesDrawer(nodeId, 'longpress');
@@ -677,7 +1477,7 @@ function attachEventListeners() {
         };
 
         const handleMove = (e) => {
-            if (!longPressTimer) return;
+            if (!longPressTimer && !pendingDragEvent) return;
 
             let clientX, clientY;
             if (e.touches && e.touches.length > 0) {
@@ -690,8 +1490,15 @@ function attachEventListeners() {
 
             const moveThreshold = 10;
             if (Math.abs(clientX - startX) > moveThreshold || Math.abs(clientY - startY) > moveThreshold) {
-                clearTimeout(longPressTimer);
-                longPressTimer = null;
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+                if (pendingDragEvent) {
+                    const dragEvent = pendingDragEvent;
+                    pendingDragEvent = null;
+                    __mmwBeginBranchDrag(dragEvent, node);
+                }
             }
         };
 
@@ -700,6 +1507,7 @@ function attachEventListeners() {
                 clearTimeout(longPressTimer);
                 longPressTimer = null;
             }
+            pendingDragEvent = null;
             if (isLongPress) {
                 if (e.cancelable) e.preventDefault();
                 e.stopPropagation();
@@ -724,6 +1532,12 @@ function attachEventListeners() {
 
         node.addEventListener('click', (e) => {
             if (isLongPress) {
+                e.stopPropagation();
+                e.preventDefault();
+                return;
+            }
+
+            if (Date.now() < __mmwSuppressNodeClickUntil) {
                 e.stopPropagation();
                 e.preventDefault();
                 return;
@@ -755,6 +1569,11 @@ function attachEventListeners() {
         });
 
         node.addEventListener('dblclick', (e) => {
+            if (Date.now() < __mmwSuppressNodeClickUntil) {
+                e.stopPropagation();
+                e.preventDefault();
+                return;
+            }
             e.stopPropagation();
             editNodeText(node);
         });
@@ -1995,6 +2814,47 @@ window.showImageUploadPopup = async function () {
     dialog.className = 'image-upload-dialog';
     
     const storage = window.ImageHandler;
+    const limitReached = await storage.isImageLimitReached();
+    if (limitReached) {
+        const limitMessage = document.createElement('div');
+        limitMessage.className = 'image-limit-message';
+        limitMessage.style.cssText = 'text-align: center; padding: 40px 20px;';
+        
+        const messageText = document.createElement('p');
+        messageText.style.cssText = 'color: var(--text-color); font-size: 1rem; margin: 0 0 20px 0;';
+        messageText.textContent = 'Please sign in to upload more images to mind maps';
+        limitMessage.appendChild(messageText);
+        
+        const signUpBtn = document.createElement('a');
+        signUpBtn.href = '/sign-up';
+        signUpBtn.className = 'pill-button';
+        signUpBtn.style.cssText = 'display: inline-block; padding: 10px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 25px; font-size: 14px; font-weight: 500; transition: background 0.2s;';
+        signUpBtn.textContent = 'Sign up';
+        signUpBtn.onmouseenter = () => signUpBtn.style.background = 'var(--primary-color);';
+        signUpBtn.onmouseleave = () => signUpBtn.style.background = 'var(--primary-color);';
+        limitMessage.appendChild(signUpBtn);
+        
+        dialog.appendChild(limitMessage);
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.textContent = 'Close';
+        closeBtn.className = 'image-upload-btn image-upload-btn-cancel';
+        closeBtn.style.cssText = 'margin-top: 20px;';
+        closeBtn.onclick = () => document.body.removeChild(backdrop);
+        dialog.appendChild(closeBtn);
+        
+        backdrop.appendChild(dialog);
+        document.body.appendChild(backdrop);
+        
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) {
+                document.body.removeChild(backdrop);
+            }
+        });
+        
+        return;
+    }
     
     const title = document.createElement('h3');
     title.textContent = 'Add Image';
@@ -3879,23 +4739,7 @@ function updateTransform() {
     let fitScale = 1;
 
     if (svg) {
-        const viewBox = svg.getAttribute('viewBox');
-        if (viewBox) {
-            const parts = viewBox.split(' ');
-            if (parts.length === 4) {
-                const vbW = parseFloat(parts[2]);
-                const vbH = parseFloat(parts[3]);
-                const cw = preview.clientWidth || preview.offsetWidth;
-                const ch = preview.clientHeight || preview.offsetHeight;
-
-                if (vbW > 0 && vbH > 0 && cw > 20 && ch > 20) {
-                    const scaleX = cw / vbW;
-                    const scaleY = ch / vbH;
-                    fitScale = Math.min(scaleX, scaleY);
-                }
-            }
-        }
-
+        fitScale = __mmwGetSvgFitScale(svg);
         svg.style.transform = `scale(${scale}) translate(${currentPoint.x / scale}px, ${currentPoint.y / scale}px)`;
         svg.style.transformOrigin = '0 0';
     }
@@ -4005,9 +4849,9 @@ function attachCanvasListeners() {
             return;
         }
         if (t && typeof t.closest === 'function' && t.closest('.mm-node')) {
-        } else {
-            e.preventDefault();
+            return;
         }
+        e.preventDefault();
         closeContextMenus();
         isPanning = true;
         startPoint = { x: e.clientX - currentPoint.x, y: e.clientY - currentPoint.y };
