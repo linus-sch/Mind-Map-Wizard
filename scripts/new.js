@@ -4420,6 +4420,47 @@ const DownloadHandler = {
 				const root = obj['mm-node'] || obj.mmNode || obj;
 				const lines = [];
 				const maxHeading = 6;
+				const cleanMarkdownNotes = (rawNotes) => {
+					let notes = String(rawNotes || '')
+						.replace(/<!--MM_CITATIONS_DATA:[\s\S]*?-->/g, '')
+						.trim();
+
+					if (!notes) return '';
+
+					if (/<[a-z][\s\S]*>/i.test(notes)) {
+						try {
+							const parser = new DOMParser();
+							const doc = parser.parseFromString(`<div>${notes}</div>`, 'text/html');
+							doc.querySelectorAll('.yt-embed, .citation-tooltip, .notes-resources').forEach(el => el.remove());
+
+							if (typeof window.domToMarkdown === 'function') {
+								notes = window.domToMarkdown(doc.body);
+							} else {
+								doc.querySelectorAll('br').forEach(el => el.replaceWith('\n'));
+								doc.querySelectorAll('a[href]').forEach(el => {
+									const href = el.getAttribute('href') || '';
+									const text = el.textContent || href;
+									el.replaceWith(text === href ? text : `[${text}](${href})`);
+								});
+								notes = doc.body.textContent || '';
+							}
+						} catch { }
+					}
+
+					return notes
+						.replace(/\n{3,}/g, '\n\n')
+						.trim();
+				};
+
+				const appendNotes = (rawNotes) => {
+					const notes = cleanMarkdownNotes(rawNotes);
+					if (!notes) return;
+					lines.push('');
+					for (const noteLine of notes.split(/\r?\n/)) {
+						lines.push(noteLine.trim() ? `> ${noteLine}` : '>');
+					}
+				};
+
 				(function walk(node, level) {
 					if (!node || typeof node !== 'object') return;
 					const text = String(node.content ?? '').trim();
@@ -4429,6 +4470,9 @@ const DownloadHandler = {
 						} else {
 							lines.push(`- ${text}`.trim());
 						}
+					}
+					if (node.notes && typeof node.notes === 'string') {
+						appendNotes(node.notes);
 					}
 					if (Array.isArray(node.children)) {
 						for (const child of node.children) walk(child, level + 1);
