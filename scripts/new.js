@@ -117,7 +117,7 @@ function showApiKeyPopup(onSavedAction = null, showLoading = false) {
 					<button id="save-and-generate-btn" class="popup-save-btn">Save & Generate Mind Map</button>
 				</div>
 				<div style="font-size: 0.85em; color: var(--text-color); opacity: 0.6; text-align: center;">
-					Your API key is stored locally and encrypted on this device.
+					Your API key is stored locally on this device.
 				</div>
 			</div>
 		</div>
@@ -1227,7 +1227,7 @@ function initiateGenerationProcess(providedTopic) {
 	}
 
 	const headerLines = mindmapTopic.split('\n').filter(line => line.trim().startsWith('#'));
-	if (headerLines.length > 10) {
+	if (headerLines.length > 6) {
 		createLocalMindMapFromMarkdown(mindmapTopic)
 			.catch(error => {
 				console.error('Error during local mindmap generation:', error);

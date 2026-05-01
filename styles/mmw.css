@@ -275,6 +275,10 @@ body {
   opacity: 0;
   transform: translateY(-20px);
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 750px) {

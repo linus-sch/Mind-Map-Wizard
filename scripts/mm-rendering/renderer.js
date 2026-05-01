@@ -1029,7 +1029,7 @@ function generateSVG(jsonString, options = {}) {
                 
                 svg += `<foreignObject x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}">`;
                 svg += `<div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:${nodeRadius}px;">`;
-                svg += `<img data-local-image-id="${escapeAttr(imageRef)}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:${nodeRadius}px;" alt="Mind map image"/>`;
+                svg += `<img data-local-image-id="${escapeAttr(imageRef)}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:${nodeRadius}px;" draggable="false" alt="Mind map image"/>`;
                 svg += `</div>`;
                 svg += `</foreignObject>`;
                 
@@ -1306,7 +1306,7 @@ function generateSVG(jsonString, options = {}) {
             
             s += `<foreignObject x="0" y="0" width="${node.rectWidth}" height="${node.rectHeight}">`;
             s += `<div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:${nodeRadius}px;">`;
-            s += `<img data-local-image-id="${escapeAttr(imageRef)}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:${nodeRadius}px;" alt="Mind map image"/>`;
+            s += `<img data-local-image-id="${escapeAttr(imageRef)}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:${nodeRadius}px;" draggable="false" alt="Mind map image"/>`;
             s += `</div>`;
             s += `</foreignObject>`;
             
