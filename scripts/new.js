@@ -914,7 +914,10 @@ Structure your response exactly like this:
 		const contextUrls = useWebSearch ? extractContextUrlsFromBackend(data) : [];
 
 		if (finalMarkdown) {
-			await window.renderMindmap(finalMarkdown, contextUrls.length ? { contextUrls } : {});
+			await window.renderMindmap(finalMarkdown, {
+				...(contextUrls.length ? { contextUrls } : {}),
+				playPopAnimation: true
+			});
 			try {
 				await fetch(
 				'https://stats.mindmapwizard.com/hit/mmw-os/mind-map-generated', {
@@ -1507,6 +1510,27 @@ function updateSignUpButton() {
 			t = setTimeout(() => fn.apply(self, args), ms);
 		};
 	}
+
+	function __mmwPlayMindmapPopAnimation() {
+		requestAnimationFrame(() => {
+			const svgEl = document.querySelector('#svg-output svg');
+			if (!svgEl) return;
+
+			svgEl.classList.remove('appearing');
+			void svgEl.getBoundingClientRect();
+			svgEl.classList.add('appearing');
+
+			const stageEl = svgEl.querySelector('.mm-stage');
+			const cleanup = () => svgEl.classList.remove('appearing');
+			if (stageEl) {
+				stageEl.addEventListener('animationend', cleanup, { once: true });
+			}
+			setTimeout(cleanup, 700);
+		});
+	}
+
+	window.__mmwPlayMindmapPopAnimation = __mmwPlayMindmapPopAnimation;
+
 	function __mmwAutoSave() {
 		try {
 			const ed = document.getElementById('json-editor');
@@ -1734,6 +1758,10 @@ function updateSignUpButton() {
 				const bc = document.getElementById('button-container');
 				if (bc) bc.style.display = 'flex';
 			} catch { }
+
+			if (options && options.playPopAnimation) {
+				__mmwPlayMindmapPopAnimation();
+			}
 
 			try {
 			} catch { }
@@ -2113,7 +2141,7 @@ async function handlePdfUpload(file) {
 		const { topic: finalTopic, markdown: finalMarkdown } = formatMarkdown(responseData);
 		if (!finalMarkdown) throw new Error('Generated markdown content is empty or invalid after processing.');
 		hideHeader();
-		await window.renderMindmap(finalMarkdown);
+		await window.renderMindmap(finalMarkdown, { playPopAnimation: true });
 		try {
 			await fetch(
 			'https://stats.mindmapwizard.com/hit/mmw-os/mind-map-generated-pdf', {
@@ -4423,7 +4451,304 @@ const DownloadHandler = {
 		this.triggerDownload(blob, `${topic}.svg`);
 	},
 
-	async downloadPDF(svgContent, width, height, topic) {
+	getOutlineData() {
+		try {
+			const editor = document.getElementById('json-editor');
+			const jsonStr = editor?.value || window.currentMarkdown || '';
+			if (!jsonStr.trim().startsWith('{')) return null;
+			return JSON.parse(jsonStr);
+		} catch {
+			return null;
+		}
+	},
+
+	async addOutlinePage(pdf, dataObj) {
+		const root = dataObj?.['mm-node'] || dataObj?.mmNode;
+		if (!root) return;
+
+		const PW = 595.28, PH = 841.89;
+		const ML = 56, MT = 64, MB = 52;
+		const UW = PW - ML - 56;
+		const INDENT = 14;
+
+		const C_PRIMARY = [29, 29, 31];
+		const C_SECONDARY = [99, 99, 102];
+		const C_TERTIARY = [142, 142, 147];
+		const C_QUATERNARY = [174, 174, 178];
+		const C_SEPARATOR = [209, 209, 214];
+		const C_GUIDE = [220, 220, 224];
+		const C_HDR_BG = [246, 246, 246];
+
+		const imageRefs = new Set();
+		const collectImageRefs = (node) => {
+			if (!node || typeof node !== 'object') return;
+			const t = String(node.content ?? '').trim();
+			if (window.ImageHandler?.isImageRef(t)) imageRefs.add(t);
+			if (Array.isArray(node.children)) node.children.forEach(collectImageRefs);
+		};
+		collectImageRefs(root);
+
+		const imageDataMap = {};
+		if (imageRefs.size > 0 && window.ImageHandler) {
+			await Promise.all([...imageRefs].map(async (ref) => {
+				try {
+					const url = await window.ImageHandler.loadImageAsync(ref);
+					if (!url) return;
+					await new Promise((resolve) => {
+						const tmpImg = new Image();
+						tmpImg.onload = () => {
+							const canvas = document.createElement('canvas');
+							canvas.width = tmpImg.naturalWidth || 400;
+							canvas.height = tmpImg.naturalHeight || 300;
+							const ctx = canvas.getContext('2d');
+							ctx.fillStyle = '#ffffff';
+							ctx.fillRect(0, 0, canvas.width, canvas.height);
+							ctx.drawImage(tmpImg, 0, 0);
+							imageDataMap[ref] = {
+								dataUrl: canvas.toDataURL('image/jpeg', 0.85),
+								width: canvas.width,
+								height: canvas.height,
+							};
+							canvas.remove();
+							resolve();
+						};
+						tmpImg.onerror = () => resolve();
+						tmpImg.src = url;
+					});
+				} catch { }
+			}));
+		}
+
+		pdf.addPage('a4', 'portrait');
+
+		pdf.setFillColor(...C_HDR_BG);
+		pdf.rect(0, 0, PW, 70, 'F');
+		pdf.setDrawColor(...C_SEPARATOR);
+		pdf.setLineWidth(0.5);
+		pdf.line(0, 70, PW, 70);
+
+		const titleText = String(root.content || 'Mind Map').trim();
+		pdf.setFont('helvetica', 'bold');
+		pdf.setFontSize(19);
+		pdf.setTextColor(...C_PRIMARY);
+		const titleLines = pdf.splitTextToSize(titleText, UW);
+		pdf.text(titleLines, ML, titleLines.length > 1 ? 23 : 31);
+
+		pdf.setFont('helvetica', 'normal');
+		pdf.setFontSize(9);
+		pdf.setTextColor(...C_TERTIARY);
+		pdf.text('Outline', ML, 57);
+
+		let y = 88;
+		let pageCount = 1;
+
+		const addFooter = () => {
+			pdf.setFont('helvetica', 'normal');
+			pdf.setFontSize(8);
+			pdf.setTextColor(...C_QUATERNARY);
+			pdf.text('mindmapwizard.com', PW / 2, PH - 24, { align: 'center' });
+		};
+
+		const ensureSpace = (needed) => {
+			if (y + needed > PH - MB) {
+				addFooter();
+				pdf.addPage('a4', 'portrait');
+				pageCount++;
+				y = MT;
+			}
+		};
+
+		const cleanNotesText = (raw) =>
+			raw
+				.replace(/<!--MM_CITATIONS_DATA:[\s\S]*?-->/g, '')
+				.replace(/<[^>]*>/g, '')
+				.replace(/\*\*/g, '')
+				.replace(/\*/g, '')
+				.replace(/^#{1,6}\s+/gm, '')
+				.trim();
+
+		const parseLinkSegments = (rawText) => {
+			const segs = [];
+			const re = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+			let lastIdx = 0, m;
+			while ((m = re.exec(rawText)) !== null) {
+				if (m.index > lastIdx) segs.push({ type: 'text', content: rawText.slice(lastIdx, m.index) });
+				segs.push({ type: 'link', text: m[1], url: m[2] });
+				lastIdx = m.index + m[0].length;
+			}
+			if (lastIdx < rawText.length) segs.push({ type: 'text', content: rawText.slice(lastIdx) });
+			if (segs.length === 1 && segs[0].type === 'text' && /^https?:\/\/\S+$/.test(segs[0].content.trim())) {
+				const t = segs[0].content.trim();
+				return [{ type: 'link', text: t, url: t }];
+			}
+			return segs;
+		};
+
+		const getVisibleText = (segs) => segs.map(s => s.type === 'link' ? s.text : s.content).join('');
+
+		const renderLines = (vis, segs, textX, baseY, textW, fSize, lineH, normalColor) => {
+			const lines = pdf.splitTextToSize(vis, textW);
+			const hasLink = segs.some(s => s.type === 'link');
+
+			if (!hasLink) {
+				pdf.setTextColor(...normalColor);
+				pdf.text(lines, textX, baseY);
+				return lines.length;
+			}
+
+			const urlMap = [];
+			for (const seg of segs) {
+				const t = seg.type === 'link' ? seg.text : seg.content;
+				const url = seg.type === 'link' ? seg.url : null;
+				for (let i = 0; i < t.length; i++) urlMap.push(url);
+			}
+
+			let charIdx = 0;
+			for (let li = 0; li < lines.length; li++) {
+				const line = lines[li];
+				const lineY = baseY + li * lineH;
+				let x = textX;
+				let runStart = 0;
+
+				while (runStart < line.length) {
+					const runUrl = charIdx + runStart < urlMap.length ? urlMap[charIdx + runStart] : null;
+					let runEnd = runStart + 1;
+					while (runEnd < line.length) {
+						const nextUrl = charIdx + runEnd < urlMap.length ? urlMap[charIdx + runEnd] : null;
+						if (nextUrl !== runUrl) break;
+						runEnd++;
+					}
+					const runText = line.slice(runStart, runEnd);
+					const w = pdf.getTextWidth(runText);
+					if (runUrl) {
+						pdf.setTextColor(0, 102, 204);
+						pdf.text(runText, x, lineY);
+						pdf.link(x, lineY - fSize * 0.85, w, fSize * 1.1, { url: runUrl });
+					} else {
+						pdf.setTextColor(...normalColor);
+						pdf.text(runText, x, lineY);
+					}
+					x += w;
+					runStart = runEnd;
+				}
+
+				charIdx += line.length;
+				if (li < lines.length - 1) charIdx++;
+			}
+
+			pdf.setTextColor(...normalColor);
+			return lines.length;
+		};
+
+		const renderNode = (node, level) => {
+			if (!node || typeof node !== 'object') return;
+			const text = String(node.content ?? '').trim();
+
+			if (text) {
+				if (window.ImageHandler?.isImageRef(text)) {
+					const imgData = imageDataMap[text];
+					if (imgData) {
+						const indent = level >= 3 ? (level - 2) * INDENT : 0;
+						const maxW = UW - indent;
+						const maxH = 160;
+						const aspect = imgData.width / imgData.height;
+						let imgW = Math.min(maxW, imgData.width);
+						let imgH = imgW / aspect;
+						if (imgH > maxH) { imgH = maxH; imgW = imgH * aspect; }
+						ensureSpace(imgH + 12);
+						y += 6;
+						pdf.addImage(imgData.dataUrl, 'JPEG', ML + indent, y, imgW, imgH);
+						y += imgH + 6;
+					}
+				} else if (level === 2) {
+					const fSize = 12.5;
+					const lineH = fSize * 1.5;
+					pdf.setFont('helvetica', 'bold');
+					pdf.setFontSize(fSize);
+					const segs = parseLinkSegments(text);
+					const vis = getVisibleText(segs);
+					const lines = pdf.splitTextToSize(vis, UW);
+					const blockH = lines.length * lineH;
+
+					ensureSpace(blockH + 30);
+					y += 28;
+
+					pdf.setDrawColor(...C_SEPARATOR);
+					pdf.setLineWidth(0.5);
+					pdf.line(ML, y - 8, ML + UW, y - 8);
+
+					renderLines(vis, segs, ML, y + fSize * 0.82, UW, fSize, lineH, C_PRIMARY);
+					y += blockH;
+
+				} else {
+					const indent = (level - 2) * INDENT;
+					const fSize = level === 3 ? 10.5 : (level === 4 ? 10 : 9.5);
+					const fStyle = level === 3 ? 'bold' : 'normal';
+					const fColor = level === 3 ? C_SECONDARY : (level === 4 ? C_TERTIARY : C_QUATERNARY);
+					const lineH = fSize * 1.45;
+					const textX = ML + indent;
+					const textW = UW - indent;
+
+					pdf.setFont('helvetica', fStyle);
+					pdf.setFontSize(fSize);
+					const segs = parseLinkSegments(text);
+					const vis = getVisibleText(segs);
+					const lines = pdf.splitTextToSize(vis, textW);
+					const blockH = lines.length * lineH;
+
+					ensureSpace(blockH + (level === 3 ? 10 : 4));
+					y += level === 3 ? 8 : 3;
+
+					renderLines(vis, segs, textX, y + fSize * 0.82, textW, fSize, lineH, fColor);
+					y += blockH;
+				}
+			}
+
+			if (node.notes && typeof node.notes === 'string') {
+				const notes = cleanNotesText(node.notes);
+				if (notes) {
+					const noteIndent = (level - 2) * INDENT;
+					const noteFSize = 8.5;
+					const noteLineH = noteFSize * 1.4;
+					const noteSegs = parseLinkSegments(notes);
+					const noteVis = getVisibleText(noteSegs);
+
+					pdf.setFont('helvetica', 'normal');
+					pdf.setFontSize(noteFSize);
+
+					const noteLines = pdf.splitTextToSize(noteVis, UW - noteIndent);
+					const noteBlockH = noteLines.length * noteLineH + 4;
+
+					ensureSpace(noteBlockH);
+					y += 3;
+					renderLines(noteVis, noteSegs, ML + noteIndent, y + noteFSize * 0.82, UW - noteIndent, noteFSize, noteLineH, C_QUATERNARY);
+					y += noteBlockH;
+				}
+			}
+
+			if (Array.isArray(node.children) && node.children.length > 0) {
+				const childrenStartY = y;
+				const childrenStartPage = pageCount;
+
+				for (const child of node.children) renderNode(child, level + 1);
+
+				if (level + 1 >= 3 && y > childrenStartY && pageCount === childrenStartPage) {
+					const guideX = ML + (level - 2) * INDENT + 5;
+					pdf.setDrawColor(...C_GUIDE);
+					pdf.setLineWidth(0.4);
+					pdf.line(guideX, childrenStartY, guideX, y - 2);
+				}
+			}
+		};
+
+		if (Array.isArray(root.children)) {
+			for (const child of root.children) renderNode(child, 2);
+		}
+
+		addFooter();
+	},
+
+	async downloadPDF(svgContent, width, height, topic, scaleFactor = 1) {
 		const watermarkSVG = await this.loadWatermarkSVG();
 		const watermarkedSVG = this.addWatermarkToSVG(svgContent, watermarkSVG, width, height);
 
@@ -4432,67 +4757,80 @@ const DownloadHandler = {
 		const svgEl = container.firstElementChild;
 		const svgData = new XMLSerializer().serializeToString(svgEl);
 
+		const outlineData = this.getOutlineData();
 		const img = new Image();
 		img.crossOrigin = 'Anonymous';
 
-		img.onload = () => {
-			const pdf = new jsPDF({
-				orientation: width > height ? 'landscape' : 'portrait',
-				unit: 'pt',
-				format: 'letter',
-			});
+		await new Promise((resolve, reject) => {
+			img.onload = async () => {
+				try {
+					const pdf = new jsPDF({
+						orientation: width > height ? 'landscape' : 'portrait',
+						unit: 'pt',
+						format: 'letter',
+					});
 
-			const pdfW = pdf.internal.pageSize.getWidth();
-			const pdfH = pdf.internal.pageSize.getHeight();
+					const pdfW = pdf.internal.pageSize.getWidth();
+					const pdfH = pdf.internal.pageSize.getHeight();
 
-			const margin = 36;
-			const maxW = pdfW - margin * 2;
-			const maxH = pdfH - margin * 2;
-			const aspect = width / height;
+					const margin = 36;
+					const maxW = pdfW - margin * 2;
+					const maxH = pdfH - margin * 2;
+					const aspect = width / height;
 
-			let renderW = maxW;
-			let renderH = renderW / aspect;
-			if (renderH > maxH) {
-				renderH = maxH;
-				renderW = renderH * aspect;
-			}
+					let renderW = maxW;
+					let renderH = renderW / aspect;
+					if (renderH > maxH) {
+						renderH = maxH;
+						renderW = renderH * aspect;
+					}
 
-			const targetPxW = Math.min(Math.round(renderW) * 2, 4000);
-			const scale = targetPxW / width;
-			const targetPxH = Math.max(1, Math.round(height * scale));
+					const targetPxW = Math.max(Math.round(width * scaleFactor), 100);
+					const targetPxH = Math.max(Math.round(height * scaleFactor), 100);
 
-			const canvas = document.createElement('canvas');
-			canvas.width = Math.max(1, targetPxW);
-			canvas.height = targetPxH;
-			const ctx = canvas.getContext('2d');
+					const canvas = document.createElement('canvas');
+					canvas.width = Math.max(1, targetPxW);
+					canvas.height = Math.max(1, targetPxH);
+					const ctx = canvas.getContext('2d');
 
-			ctx.fillStyle = '#ffffff';
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+					ctx.fillStyle = '#ffffff';
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-			const x = (pdfW - renderW) / 2;
-			const y = (pdfH - renderH) / 2;
+					const x = (pdfW - renderW) / 2;
+					const y = (pdfH - renderH) / 2;
 
-			pdf.addImage(
-				canvas.toDataURL('image/jpeg', 0.92),
-				'JPEG',
-				x,
-				y,
-				renderW,
-				renderH
-			);
+					pdf.addImage(
+						canvas.toDataURL('image/jpeg', 0.92),
+						'JPEG',
+						x,
+						y,
+						renderW,
+						renderH
+					);
 
-			pdf.save(`${topic}.pdf`);
-			canvas.remove();
+					if (outlineData) {
+						await this.addOutlinePage(pdf, outlineData);
+					}
 
-			trackEvent('mm_downloaded', {
-				download_format: 'pdf',
-				watermark_inserted: 'false'
-			});
-		};
+					pdf.save(`${topic}.pdf`);
+					canvas.remove();
 
-		img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+					trackEvent('mm_downloaded', {
+						download_format: 'pdf',
+						watermark_inserted: 'false',
+						quality_scale: scaleFactor
+					});
+					resolve();
+				} catch (error) {
+					reject(error);
+				}
+			};
+			img.onerror = () => reject(new Error('Failed to render PDF image.'));
+
+			img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+		});
 	},
 
 	async downloadJPG(svg, topic) {
@@ -4824,7 +5162,7 @@ async function createLocalMindMapFromMarkdown(markdownInput) {
 		url.searchParams.set('id', newId);
 		window.history.replaceState({}, '', url.toString());
 
-		await renderMindmap(markdownInput);
+		await renderMindmap(markdownInput, { playPopAnimation: true });
 
 		document.getElementById('loading-animation').style.display = 'none';
 		document.getElementById('button-container').style.display = 'flex';
