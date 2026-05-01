@@ -133,9 +133,11 @@ body {
   z-index: 1;
   background: #f8fafc;
   display: none;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
 }
 
-#mindmap > svg {
+#svg-output > svg {
   width: 100% !important;
   height: 100% !important;
   display: block;
