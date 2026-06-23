@@ -472,6 +472,160 @@ function __mmwRemoveBranchDropIndicator(line) {
     }
 }
 
+function __mmwPointBoxDistance(px, py, box) {
+    const dx = Math.max(box.left - px, 0, px - box.right);
+    const dy = Math.max(box.top - py, 0, py - box.bottom);
+    return Math.hypot(dx, dy);
+}
+
+// Where would a new child attach on this prospective parent? Mirror the side of
+// its existing children; fall back to the parent's own side (or the pointer for
+// the center node, which can host branches on either side).
+function __mmwGetReparentAttachSide(svg, parentNode, parentMetrics, pointerX) {
+    if (!parentNode) return 'right';
+    const kids = parentNode.children || [];
+    if (kids.length > 0) {
+        return __mmwGetBranchSideFromDom(svg, parentNode.id, kids[0].id);
+    }
+    if (parentNode.id === '0') {
+        return (typeof pointerX === 'number' && parentMetrics && pointerX < parentMetrics.centerX) ? 'left' : 'right';
+    }
+    const located = __mmwFindNodeAndParentById(currentHierarchy, parentNode.id);
+    if (located && located.parent && located.parent.id) {
+        return __mmwGetBranchSideFromDom(svg, located.parent.id, parentNode.id);
+    }
+    return 'right';
+}
+
+function __mmwCreateReparentIndicator(stage, color) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const group = document.createElementNS(NS, 'g');
+    group.setAttribute('class', 'mmw-reparent-indicator');
+    group.style.pointerEvents = 'none';
+    group.style.display = 'none';
+
+    const ring = document.createElementNS(NS, 'rect');
+    ring.setAttribute('fill', 'none');
+    ring.setAttribute('stroke', color);
+    ring.setAttribute('stroke-width', '3');
+    ring.setAttribute('stroke-dasharray', '7 5');
+    ring.setAttribute('opacity', '0.85');
+
+    const connector = document.createElementNS(NS, 'line');
+    connector.setAttribute('stroke', color);
+    connector.setAttribute('stroke-width', '4');
+    connector.setAttribute('stroke-linecap', 'round');
+    connector.setAttribute('stroke-dasharray', '2 7');
+    connector.setAttribute('opacity', '0.9');
+
+    const dot = document.createElementNS(NS, 'circle');
+    dot.setAttribute('r', '9');
+    dot.setAttribute('fill', color);
+    dot.setAttribute('stroke', '#ffffff');
+    dot.setAttribute('stroke-width', '2.5');
+
+    const pulse = document.createElementNS(NS, 'animate');
+    pulse.setAttribute('attributeName', 'r');
+    pulse.setAttribute('values', '8;11;8');
+    pulse.setAttribute('dur', '0.9s');
+    pulse.setAttribute('repeatCount', 'indefinite');
+    dot.appendChild(pulse);
+
+    group.appendChild(ring);
+    group.appendChild(connector);
+    group.appendChild(dot);
+    stage.appendChild(group);
+    return { group, ring, connector, dot };
+}
+
+function __mmwRemoveReparentIndicator(indicator) {
+    if (indicator && indicator.group && indicator.group.parentNode) {
+        indicator.group.parentNode.removeChild(indicator.group);
+    }
+}
+
+// Choose which node (if any) the dragged branch should re-parent onto. Pulling
+// the node clear of its sibling column means "re-parent onto the nearest node";
+// staying in the column keeps it in reorder mode unless it is dropped squarely
+// onto an unrelated node.
+function __mmwPickReparentTarget(state, cx, cy) {
+    const candidates = state.reparentCandidates;
+    if (!candidates || !candidates.length) return null;
+
+    // The "column" is the horizontal band occupied by the dragged node and its
+    // reorder siblings. Staying inside it reads as a reorder; leaving it reads as
+    // intent to re-parent elsewhere. (For a lone child the band is just its own
+    // box, so a small nudge stays put until it is dragged onto another node.)
+    const columnPad = 50;
+    const outsideColumn = cx < state.columnMinX - columnPad || cx > state.columnMaxX + columnPad;
+
+    const maxReachDistance = 200;
+    let best = null;
+    let bestDistance = Infinity;
+
+    for (const candidate of candidates) {
+        const box = candidate.metrics;
+        const distance = __mmwPointBoxDistance(cx, cy, box);
+        let eligible = false;
+
+        if (outsideColumn) {
+            // Pulled clear of the sibling column: snap to the nearest node within reach.
+            eligible = distance <= maxReachDistance;
+        } else {
+            // Still in the column: only re-parent when dropped squarely onto an
+            // unrelated node, so plain vertical reordering is never disturbed.
+            const inside = cx >= box.left && cx <= box.right && cy >= box.top && cy <= box.bottom;
+            eligible = inside && !state.reorderSiblingIds.has(candidate.id);
+        }
+
+        if (eligible && distance < bestDistance) {
+            bestDistance = distance;
+            best = candidate;
+        }
+    }
+    return best;
+}
+
+function __mmwApplyReparentTarget(state, target, pointerX) {
+    const indicator = state.reparentIndicator;
+    if (!indicator) return;
+
+    const changed = state.reparentTargetId !== target.id;
+    state.reparentTargetId = target.id;
+
+    const box = target.metrics;
+    const targetEl = __mmwGetNodeElementById(state.svg, target.id);
+    const side = __mmwGetReparentAttachSide(state.svg, target.node, box, pointerX);
+
+    if (changed) {
+        const color = __mmwGetRenderedBranchColor(target.id) || state.indicatorColor || '#03a9f4';
+        state.reparentColor = color;
+        indicator.ring.setAttribute('stroke', color);
+        indicator.connector.setAttribute('stroke', color);
+        indicator.dot.setAttribute('fill', color);
+    }
+
+    const ringPad = 6;
+    indicator.ring.setAttribute('x', String(box.left - ringPad));
+    indicator.ring.setAttribute('y', String(box.top - ringPad));
+    indicator.ring.setAttribute('width', String(box.width + ringPad * 2));
+    indicator.ring.setAttribute('height', String(box.height + ringPad * 2));
+    indicator.ring.setAttribute('rx', '12');
+
+    const isLeft = side === 'left';
+    const anchorX = isLeft ? box.left : box.right;
+    const anchorY = targetEl ? __mmwGetNodeLinkAnchorY(targetEl, box) : box.centerY;
+    const dotX = isLeft ? box.left - 34 : box.right + 34;
+
+    indicator.connector.setAttribute('x1', String(anchorX));
+    indicator.connector.setAttribute('y1', String(anchorY));
+    indicator.connector.setAttribute('x2', String(dotX));
+    indicator.connector.setAttribute('y2', String(anchorY));
+    indicator.dot.setAttribute('cx', String(dotX));
+    indicator.dot.setAttribute('cy', String(anchorY));
+    indicator.group.style.display = '';
+}
+
 function __mmwRestoreDragStyles(records) {
     records.forEach(record => {
         record.el.style.pointerEvents = record.basePointerEvents;
@@ -643,6 +797,21 @@ function __mmwUpdateBranchDropIndicator(state) {
     state.indicatorEl.style.display = '';
 }
 
+function __mmwSetDraggedBranchMode(state, mode) {
+    if (state.mode === mode) return;
+    state.mode = mode;
+    const nodeOpacity = mode === 'reparent' ? '0.82' : '0.96';
+    state.movingElements.forEach(record => {
+        if (record.kind === 'node') {
+            record.el.style.opacity = nodeOpacity;
+        }
+    });
+    if (state.incomingLinkEl) {
+        state.incomingLinkEl.style.transition = 'opacity 120ms ease';
+        state.incomingLinkEl.style.opacity = mode === 'reparent' ? '0.12' : '';
+    }
+}
+
 function __mmwUpdateDraggedBranch(dx, dy) {
     const state = __mmwBranchDragState;
     if (!state || !state.active) return;
@@ -665,9 +834,27 @@ function __mmwUpdateDraggedBranch(dx, dy) {
         }
     });
 
+    const dragCenterX = state.dragMetrics.centerX + dx;
     const dragCenterY = state.dragMetrics.centerY + dy;
+
+    const reparentTarget = __mmwPickReparentTarget(state, dragCenterX, dragCenterY);
+    if (reparentTarget) {
+        __mmwSetDraggedBranchMode(state, 'reparent');
+        if (state.indicatorEl) state.indicatorEl.style.display = 'none';
+        __mmwApplyReparentTarget(state, reparentTarget, dragCenterX);
+        return;
+    }
+
+    __mmwSetDraggedBranchMode(state, 'reorder');
+    state.reparentTargetId = null;
+    if (state.reparentIndicator) state.reparentIndicator.group.style.display = 'none';
+
+    if (!state.reorderEnabled) {
+        if (state.indicatorEl) state.indicatorEl.style.display = 'none';
+        return;
+    }
+
     if (state.rootCrossSideEnabled) {
-        const dragCenterX = state.dragMetrics.centerX + dx;
         const resolved = __mmwResolveRootCrossSideTarget(state, dragCenterX, dragCenterY);
         if (resolved) {
             state.targetSideIndex = resolved.insertIndex;
@@ -720,7 +907,12 @@ function __mmwCleanupBranchDrag({ restoreTransforms, restoreGeometry }) {
         });
     }
     __mmwRestoreDragStyles(state.movingElements);
+    if (state.incomingLinkEl) {
+        state.incomingLinkEl.style.opacity = '';
+        state.incomingLinkEl.style.transition = '';
+    }
     __mmwRemoveBranchDropIndicator(state.indicatorEl);
+    __mmwRemoveReparentIndicator(state.reparentIndicator);
 
     if (preview) {
         preview.style.cursor = '';
@@ -757,6 +949,50 @@ function __mmwCommitBranchReorder(state) {
     parentResult.node.children.forEach(child => {
         child.parent = parentResult.node;
     });
+
+    HistoryManager.captureState();
+    window.__mmwForcedStablePathMap = __mmwBuildPathToStableMap(currentHierarchy, 'root');
+
+    const json = __mmwComposeJsonWithCurrentSettings(currentHierarchy);
+    editor.value = json;
+    localStorage.setItem(localStorageKey, json);
+    updateMindMap();
+    triggerAutoSave();
+}
+
+function __mmwFreezeRootChildColors(parentNode, exceptId) {
+    if (!parentNode || parentNode.id !== '0' || !Array.isArray(parentNode.children)) return;
+    parentNode.children.forEach(child => {
+        if (!child || child.id === exceptId || child.branchColor) return;
+        const color = __mmwGetRenderedBranchColor(child.id) || child._computedColor || null;
+        if (color) {
+            child.branchColor = color;
+        }
+    });
+}
+
+function __mmwCommitBranchReparent(state) {
+    const targetId = state.reparentTargetId;
+    if (!targetId) return;
+
+    const moving = __mmwFindNodeAndParentById(currentHierarchy, state.nodeId);
+    const target = __mmwFindNodeById(currentHierarchy, targetId);
+    if (!moving || !moving.node || !moving.parent || !target) return;
+    if (moving.parent.id === target.id) return;
+
+    const subtreeIds = __mmwCollectSubtreeIds(moving.node);
+    if (subtreeIds.indexOf(targetId) !== -1) return;
+
+    __mmwFreezeRootChildColors(moving.parent, state.nodeId);
+    __mmwFreezeRootChildColors(target, null);
+
+    moving.parent.children = moving.parent.children.filter(child => child.id !== state.nodeId);
+
+    if (!Array.isArray(target.children)) target.children = [];
+    target.children.push(moving.node);
+    moving.node.parent = target;
+
+    if (target.collapsed) target.collapsed = false;
 
     HistoryManager.captureState();
     window.__mmwForcedStablePathMap = __mmwBuildPathToStableMap(currentHierarchy, 'root');
@@ -813,16 +1049,27 @@ function __mmwHandleBranchDragEnd() {
     const state = __mmwBranchDragState;
     if (!state) return;
 
-    const didReorder = state.active && state.targetSideIndex !== state.originalSideIndex;
+    let action = 'none';
+    if (state.active) {
+        if (state.mode === 'reparent' && state.reparentTargetId) {
+            action = 'reparent';
+        } else if (state.mode === 'reorder' && state.reorderEnabled && state.targetSideIndex !== state.originalSideIndex) {
+            action = 'reorder';
+        }
+    }
     __mmwSuppressNodeClickUntil = Date.now() + (state.active ? 250 : 0);
 
-    if (!didReorder) {
+    if (action === 'none') {
         __mmwCleanupBranchDrag({ restoreTransforms: true, restoreGeometry: true });
         return;
     }
 
     __mmwCleanupBranchDrag({ restoreTransforms: false, restoreGeometry: false });
-    __mmwCommitBranchReorder(state);
+    if (action === 'reparent') {
+        __mmwCommitBranchReparent(state);
+    } else {
+        __mmwCommitBranchReorder(state);
+    }
 }
 
 function __mmwBeginBranchDrag(e, nodeElement) {
@@ -837,7 +1084,7 @@ function __mmwBeginBranchDrag(e, nodeElement) {
     if (!nodeId || nodeId === '0') return false;
 
     const match = __mmwFindNodeAndParentById(currentHierarchy, nodeId);
-    if (!match || !match.parent || !Array.isArray(match.parent.children) || match.parent.children.length < 2) {
+    if (!match || !match.parent || !Array.isArray(match.parent.children) || match.parent.children.length < 1) {
         return false;
     }
 
@@ -866,9 +1113,6 @@ function __mmwBeginBranchDrag(e, nodeElement) {
             .filter(child => __mmwGetBranchSideFromDom(svg, parentId, child.id) === dragSide)
             .map(child => child.id);
 
-    if (sideChildIds.length < 2) {
-        return false;
-    }
 
     const sideMetrics = rootCrossSideEnabled
         ? allSiblingMetrics
@@ -949,6 +1193,33 @@ function __mmwBeginBranchDrag(e, nodeElement) {
         addRecord(expandBtn, 'button');
     });
 
+    const subtreeIdSet = new Set(subtreeIds);
+    const reparentCandidates = [];
+    svg.querySelectorAll('.mm-node').forEach(candidateEl => {
+        const candidateId = candidateEl.getAttribute('data-node-id');
+        if (!candidateId || subtreeIdSet.has(candidateId) || candidateId === parentId) return;
+        const candidateMetrics = __mmwGetNodeMetrics(candidateEl);
+        if (!candidateMetrics) return;
+        const candidateNode = __mmwFindNodeById(currentHierarchy, candidateId);
+        if (!candidateNode) return;
+        reparentCandidates.push({ id: candidateId, node: candidateNode, metrics: candidateMetrics });
+    });
+
+    const reorderEnabled = rootCrossSideEnabled
+        ? allSiblingIds.length >= 2
+        : sideChildIds.length >= 2;
+
+    if (!reorderEnabled && reparentCandidates.length === 0) {
+        return false;
+    }
+
+    const reorderSiblingIds = new Set(rootCrossSideEnabled ? allSiblingIds : sideChildIds);
+    const columnMetricsForBand = sideMetrics.length ? sideMetrics : [dragMetrics];
+    const columnMinX = Math.min(...columnMetricsForBand.map(metric => metric.left));
+    const columnMaxX = Math.max(...columnMetricsForBand.map(metric => metric.right));
+    const incomingLinkRecord = dynamicGeometryRecords.find(record => record.type === 'link' && record.childId === nodeId);
+    const incomingLinkEl = incomingLinkRecord ? incomingLinkRecord.el : null;
+
     const rect = nodeElement.querySelector('rect:not(.mm-notes-outline)');
     const indicatorColor = rect ? rect.getAttribute('fill') : '#03a9f4';
 
@@ -959,6 +1230,7 @@ function __mmwBeginBranchDrag(e, nodeElement) {
         startClientY: e.clientY,
         thresholdPx: 6,
         active: false,
+        mode: 'reorder',
         dx: 0,
         dy: 0,
         dragMetrics,
@@ -973,11 +1245,21 @@ function __mmwBeginBranchDrag(e, nodeElement) {
         dynamicGeometryRecords,
         sideChildIds,
         sideMetrics,
+        reorderEnabled,
         originalSideIndex: sideChildIds.indexOf(nodeId),
         targetSideIndex: sideChildIds.indexOf(nodeId),
         targetIndicator: null,
         targetDropSide: dragSide,
-        indicatorEl: __mmwCreateBranchDropIndicator(stage, indicatorColor)
+        indicatorEl: __mmwCreateBranchDropIndicator(stage, indicatorColor),
+        reparentCandidates,
+        reorderSiblingIds,
+        columnMinX,
+        columnMaxX,
+        reparentTargetId: null,
+        reparentColor: null,
+        indicatorColor,
+        incomingLinkEl,
+        reparentIndicator: __mmwCreateReparentIndicator(stage, indicatorColor)
     };
 
     closeContextMenus();
@@ -1430,7 +1712,7 @@ function attachEventListeners() {
     nodes.forEach(node => {
         const nodeId = node.getAttribute('data-node-id');
         const dragMatch = nodeId ? __mmwFindNodeAndParentById(currentHierarchy, nodeId) : null;
-        const canDragBranch = !!(dragMatch && dragMatch.parent && nodeId !== '0' && Array.isArray(dragMatch.parent.children) && dragMatch.parent.children.length > 1);
+        const canDragBranch = !!(dragMatch && dragMatch.parent && nodeId !== '0' && Array.isArray(dragMatch.parent.children));
         node.style.cursor = canDragBranch ? 'grab' : '';
 
         let clickCount = 0;
