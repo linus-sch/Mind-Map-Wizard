@@ -169,17 +169,37 @@ function applyCommands(mmJson, commands) {
   };
 }
 
+// Resolve AI provider config from new.js, falling back to OpenRouter cloud.
+function aiChatUrl() {
+  return window.getChatCompletionsUrl
+    ? window.getChatCompletionsUrl()
+    : "https://openrouter.ai/api/v1/chat/completions";
+}
+
+function aiHeaders(apiKey) {
+  if (window.getAiRequestHeaders) return window.getAiRequestHeaders(apiKey);
+  return {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json',
+    'HTTP-Referer': window.location.origin,
+    'X-Title': 'Mind Map Wizard'
+  };
+}
+
+function aiBody(payload) {
+  return JSON.stringify(window.finalizeAiPayload ? window.finalizeAiPayload(payload) : payload);
+}
+
+function aiNeedsApiKey() {
+  return window.aiRequiresApiKey ? window.aiRequiresApiKey() : true;
+}
+
 async function performAiSearch(query, apiKey) {
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch(aiChatUrl(), {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': window.location.origin,
-        'X-Title': 'Mind Map Wizard'
-      },
-      body: JSON.stringify({
+      headers: aiHeaders(apiKey),
+      body: aiBody({
         model: window.getSelectedModel ? window.getSelectedModel() : "google/gemini-2.5-flash-lite",
         messages: [
           { role: "system", content: "You are a search assistant. Provide a concise summary of the search results found for the query." },
@@ -350,8 +370,8 @@ GENERAL RULES
 
 export async function handleChatEdit(input, mmjson, chatHistory) {
   const apiKey = getStoredApiKey();
-  
-  if (!apiKey) {
+
+  if (aiNeedsApiKey() && !apiKey) {
     return {
       error: 'API_KEY_REQUIRED',
       message: 'Please configure your OpenRouter API key in settings.'
@@ -381,15 +401,10 @@ User Request: "${input}"
 
     const retryResult = await withAiRetry(async () => {
       const fetchAi = async (messages) => {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const response = await fetch(aiChatUrl(), {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'Mind Map Wizard'
-          },
-          body: JSON.stringify({
+          headers: aiHeaders(apiKey),
+          body: aiBody({
             model: model,
             messages: messages,
             response_format: { type: "json_object" },
@@ -399,7 +414,7 @@ User Request: "${input}"
         });
 
         if (!response.ok) {
-            throw new Error(`OpenRouter error: ${response.status}`);
+            throw new Error(`AI request error: ${response.status}`);
         }
         return await response.json();
       };

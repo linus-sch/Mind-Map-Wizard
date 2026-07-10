@@ -73,6 +73,71 @@ function getStoredApiKey() {
 	return decryptApiKey(encryptedApiKey);
 }
 
+// ---- AI provider configuration (cloud OpenRouter or local Ollama) ----
+const AI_PROVIDER_KEY = 'mmw-ai-provider';
+const OLLAMA_BASE_URL_KEY = 'mmw-ollama-base-url';
+const DEFAULT_OLLAMA_BASE_URL = 'http://localhost:11434';
+
+function getAiProvider() {
+	return localStorage.getItem(AI_PROVIDER_KEY) === 'ollama' ? 'ollama' : 'openrouter';
+}
+
+function isLocalProvider() {
+	return getAiProvider() === 'ollama';
+}
+
+function getOllamaBaseUrl() {
+	const stored = (localStorage.getItem(OLLAMA_BASE_URL_KEY) || '').trim();
+	return (stored || DEFAULT_OLLAMA_BASE_URL).replace(/\/+$/, '');
+}
+
+// Ollama exposes an OpenAI-compatible API, so the request shape is shared.
+function getChatCompletionsUrl() {
+	return isLocalProvider()
+		? `${getOllamaBaseUrl()}/v1/chat/completions`
+		: 'https://openrouter.ai/api/v1/chat/completions';
+}
+
+function getModelsUrl() {
+	return isLocalProvider()
+		? `${getOllamaBaseUrl()}/v1/models`
+		: 'https://openrouter.ai/api/v1/models';
+}
+
+// Local providers run on the user's machine and need no API key.
+function aiRequiresApiKey() {
+	return !isLocalProvider();
+}
+
+function getAiRequestHeaders(apiKey) {
+	const headers = {
+		'Content-Type': 'application/json',
+		'HTTP-Referer': window.location.origin,
+		'X-Title': 'Mind Map Wizard'
+	};
+	if (!isLocalProvider()) {
+		headers['Authorization'] = `Bearer ${apiKey || getStoredApiKey()}`;
+	}
+	return headers;
+}
+
+// OpenRouter-only request fields (web search, PDF parsing, reasoning control)
+// are not understood by local providers, so drop them there.
+function finalizeAiPayload(payload) {
+	if (!isLocalProvider()) return payload;
+	const clean = { ...payload };
+	delete clean.plugins;
+	delete clean.reasoning;
+	return clean;
+}
+
+// Exposed for other scripts (e.g. chat-edits.js).
+window.getChatCompletionsUrl = getChatCompletionsUrl;
+window.getAiRequestHeaders = getAiRequestHeaders;
+window.finalizeAiPayload = finalizeAiPayload;
+window.isLocalProvider = isLocalProvider;
+window.aiRequiresApiKey = aiRequiresApiKey;
+
 function showApiKeyPopup(onSavedAction = null, showLoading = false) {
 	const existingPopup = document.getElementById('api-key-popup');
 	if (existingPopup) {
@@ -180,6 +245,8 @@ function showApiKeyManagement() {
 	}
 
 	const currentApiKey = getStoredApiKey();
+	let selectedProvider = getAiProvider();
+	const currentOllamaUrl = getOllamaBaseUrl();
 
 	const popup = document.createElement('div');
 	popup.id = 'api-key-manage-popup';
@@ -187,7 +254,7 @@ function showApiKeyManagement() {
 	popup.innerHTML = `
 		<div class="api-key-popup-content">
 			<div class="popup-header">
-				<h3>API Key Management</h3>
+				<h3>AI Settings</h3>
 				<button class="popup-close" id="close-api-key-manage-popup">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M18 6 6 18"></path>
@@ -197,12 +264,29 @@ function showApiKeyManagement() {
 			</div>
 			<div class="popup-body">
 				<div>
-					<label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-color);">OpenRouter API Key</label>
-					<input type="password" id="manage-api-key-input" placeholder="Enter your OpenRouter API key" class="popup-input" style="width: 100%; margin-bottom: 12px;" value="${currentApiKey || ''}">
-					<div style="font-size: 0.85em; color: var(--text-color); opacity: 0.7; margin-bottom: 15px;">
-						Get your API key at: <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--primary-color);">openrouter.ai/keys</a>
+					<label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-color);">AI Provider</label>
+					<div class="provider-options" style="display: flex; gap: 10px; margin-bottom: 20px;">
+						<button type="button" class="provider-option ${selectedProvider === 'openrouter' ? 'selected' : ''}" data-provider="openrouter">OpenRouter (Cloud)</button>
+						<button type="button" class="provider-option ${selectedProvider === 'ollama' ? 'selected' : ''}" data-provider="ollama">Local (Ollama)</button>
 					</div>
-					<div style="display: flex; gap: 10px; margin-top: 40px;">
+
+					<div id="openrouter-settings" style="display: ${selectedProvider === 'openrouter' ? 'block' : 'none'};">
+						<label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-color);">OpenRouter API Key</label>
+						<input type="password" id="manage-api-key-input" placeholder="Enter your OpenRouter API key" class="popup-input" style="width: 100%; margin-bottom: 12px;" value="${currentApiKey || ''}">
+						<div style="font-size: 0.85em; color: var(--text-color); opacity: 0.7; margin-bottom: 15px;">
+							Get your API key at: <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--primary-color);">openrouter.ai/keys</a>
+						</div>
+					</div>
+
+					<div id="ollama-settings" style="display: ${selectedProvider === 'ollama' ? 'block' : 'none'};">
+						<label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-color);">Ollama Server URL</label>
+						<input type="text" id="manage-ollama-url-input" placeholder="${DEFAULT_OLLAMA_BASE_URL}" class="popup-input" style="width: 100%; margin-bottom: 12px;" value="${currentOllamaUrl}">
+						<div style="font-size: 0.85em; color: var(--text-color); opacity: 0.7; margin-bottom: 15px; line-height: 1.5;">
+							Runs models locally & privately with <a href="https://ollama.com" target="_blank" style="color: var(--primary-color);">Ollama</a>. Allow the browser to reach it by starting the server with <code>OLLAMA_ORIGINS='*' ollama serve</code>.
+						</div>
+					</div>
+
+					<div style="display: flex; gap: 10px; margin-top: 30px;">
 						${currentApiKey ? `<button id="remove-api-key-btn" class="remove-btn" style="flex: 1; margin: 0;">Remove API Key</button>` : ''}
 						<button id="update-api-key-btn" class="popup-save-btn" style="flex: 1;">Done</button>
 					</div>
@@ -217,28 +301,45 @@ function showApiKeyManagement() {
 	const updateBtn = document.getElementById('update-api-key-btn');
 	const removeBtn = document.getElementById('remove-api-key-btn');
 	const input = document.getElementById('manage-api-key-input');
+	const ollamaInput = document.getElementById('manage-ollama-url-input');
+	const openrouterSettings = document.getElementById('openrouter-settings');
+	const ollamaSettings = document.getElementById('ollama-settings');
+	const providerButtons = popup.querySelectorAll('.provider-option');
+
+	providerButtons.forEach(btn => {
+		btn.addEventListener('click', () => {
+			selectedProvider = btn.dataset.provider;
+			providerButtons.forEach(b => b.classList.toggle('selected', b === btn));
+			openrouterSettings.style.display = selectedProvider === 'openrouter' ? 'block' : 'none';
+			ollamaSettings.style.display = selectedProvider === 'ollama' ? 'block' : 'none';
+		});
+	});
+
+	const applyAndClose = () => {
+		localStorage.setItem(AI_PROVIDER_KEY, selectedProvider);
+
+		const apiKey = input?.value?.trim();
+		if (apiKey) {
+			localStorage.setItem('openrouter-api-key-encrypted', encryptApiKey(apiKey));
+		}
+
+		const ollamaUrl = ollamaInput?.value?.trim();
+		localStorage.setItem(OLLAMA_BASE_URL_KEY, ollamaUrl || DEFAULT_OLLAMA_BASE_URL);
+
+		// Refresh the model list to reflect the chosen provider.
+		loadModels();
+
+		popup.style.opacity = '0';
+		setTimeout(() => {
+			popup.remove();
+		}, 300);
+	};
 
 	closeBtn.addEventListener('click', () => {
 		popup.remove();
 	});
 
-	updateBtn.addEventListener('click', () => {
-		const apiKey = input.value.trim();
-		if (apiKey) {
-			const encryptedApiKey = encryptApiKey(apiKey);
-			localStorage.setItem('openrouter-api-key-encrypted', encryptedApiKey);
-
-			popup.style.opacity = '0';
-			setTimeout(() => {
-				popup.remove();
-			}, 300);
-		} else {
-			input.style.borderColor = '#dc3545';
-			setTimeout(() => {
-				input.style.borderColor = '';
-			}, 2000);
-		}
-	});
+	updateBtn.addEventListener('click', applyAndClose);
 
 	if (removeBtn) {
 		removeBtn.addEventListener('click', () => {
@@ -252,6 +353,14 @@ function showApiKeyManagement() {
 			updateBtn.click();
 		}
 	});
+
+	if (ollamaInput) {
+		ollamaInput.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') {
+				updateBtn.click();
+			}
+		});
+	}
 
 	setTimeout(() => input.focus(), 100);
 }
@@ -373,7 +482,7 @@ function cacheModels(models) {
 
 async function fetchAvailableModels() {
 	try {
-		const response = await fetch('https://openrouter.ai/api/v1/models', {
+		const response = await fetch(getModelsUrl(), {
 			method: 'GET',
 			headers: {}
 		});
@@ -383,7 +492,14 @@ async function fetchAvailableModels() {
 		}
 
 		const data = await response.json();
-		return data.data || [];
+		const models = data.data || [];
+
+		// Ollama's model list only carries ids, so synthesise a display name.
+		if (isLocalProvider()) {
+			return models.map(m => ({ id: m.id, name: m.id }));
+		}
+
+		return models;
 	} catch (error) {
 		console.error('Error fetching models:', error);
 		return [];
@@ -452,21 +568,32 @@ async function loadModels() {
 	try {
 		let models;
 
-		if (isModelsCacheValid()) {
+		// Local models are fetched fresh (fast, on localhost) and never cached,
+		// since the cache is keyed for the OpenRouter catalogue.
+		if (!isLocalProvider() && isModelsCacheValid()) {
 			models = getCachedModels();
 		} else {
 			models = await fetchAvailableModels();
-			if (models.length > 0) {
+			if (!isLocalProvider() && models.length > 0) {
 				cacheModels(models);
 			}
 		}
 
-		availableModels = models.filter(model =>
-			model.id &&
-			model.name &&
-			model.architecture?.modality?.includes('text') &&
-			!model.id.includes('vision')
-		);
+		if (isLocalProvider()) {
+			availableModels = models;
+			// A previously selected cloud model won't exist locally; fall back.
+			if (availableModels.length && !availableModels.some(m => m.id === selectedModel)) {
+				selectedModel = availableModels[0].id;
+				setPreferredModel(selectedModel);
+			}
+		} else {
+			availableModels = models.filter(model =>
+				model.id &&
+				model.name &&
+				model.architecture?.modality?.includes('text') &&
+				!model.id.includes('vision')
+			);
+		}
 
 		filterAndRenderModels('');
 
@@ -756,7 +883,7 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 			apiKey = apiKeyInput?.value?.trim();
 		}
 
-		if (!apiKey) {
+		if (aiRequiresApiKey() && !apiKey) {
 			const fallbackPrompt = mindmapTopic;
 			generationInProgress = false;
 			const loadingAnimEl = document.getElementById('loading-animation');
@@ -821,15 +948,10 @@ Structure your response exactly like this:
 			reasoning: { exclude: true }
 		};
 
-		const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+		const response = await fetch(getChatCompletionsUrl(), {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${apiKey}`,
-				'HTTP-Referer': window.location.origin,
-				'X-Title': 'Mind Map Wizard'
-			},
-			body: JSON.stringify(requestPayload)
+			headers: getAiRequestHeaders(apiKey),
+			body: JSON.stringify(finalizeAiPayload(requestPayload))
 		});
 
 		if (!response.ok) {
@@ -1041,7 +1163,7 @@ async function expandMindMapNodeCore() {
 
 	try {
 		const apiKey = getStoredApiKey();
-		if (!apiKey) {
+		if (aiRequiresApiKey() && !apiKey) {
 			console.error('OpenRouter API key required to expand a node');
 			showApiKeyPopup(() => expandMindMapNodeCore());
 			return;
@@ -1098,15 +1220,10 @@ Context: ${branchContext}`;
 				reasoning: { exclude: true }
 			};
 
-			const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+			const response = await fetch(getChatCompletionsUrl(), {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${apiKey}`,
-					'HTTP-Referer': window.location.origin,
-					'X-Title': 'Mind Map Wizard'
-				},
-				body: JSON.stringify(requestPayload)
+				headers: getAiRequestHeaders(apiKey),
+				body: JSON.stringify(finalizeAiPayload(requestPayload))
 			});
 
 			if (!response.ok) {
@@ -2032,6 +2149,12 @@ function readFileAsDataUrl(file) {
 async function handlePdfUpload(file) {
 	if (!file) return;
 	if (generationInProgress) return;
+
+	// PDF parsing relies on OpenRouter's file-parser plugin, unavailable locally.
+	if (isLocalProvider()) {
+		showErrorPopup('PDF upload is only available with the OpenRouter (cloud) provider. Switch providers in API key settings to use it.', '');
+		return;
+	}
 
 	const maxSizeBytes = 15 * 1024 * 1024;
 	if (file.size > maxSizeBytes) {

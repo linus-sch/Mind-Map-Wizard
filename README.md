@@ -38,6 +38,7 @@
 ## Features
 
 - 🤖 AI Mind Map Generation
+- 🔒 Local AI support (Ollama)
 - 🌐 Web Search
 - 🖼️ Image inserting
 - ✏️ Direct mind map editing 
@@ -151,6 +152,7 @@ Structure your response exactly like this:
 - **✅ Private & Fast:** Your mind maps are stored locally on your browser, making them truly private. As a side effect, navigating the site is lightning fast!
 - **✅ Simple:** Mind Map Wizard is designed to be simple and user-friendly, allowing you to focus on your work without distractions.
 - **✅ BYOK:** Use your own Openrouter API key for enhanced privacy and control over your mind map generation. 
+- **✅ Fully local option:** Prefer to keep everything on your machine? Connect a [local Ollama](#using-a-local-ai-model-ollama) model and generate mind maps completely offline and privately.
 
 
 <br>
@@ -177,6 +179,37 @@ To get started with Mind Map Wizard locally:
 4. Open your browser and go to `http://localhost:8000/index.html`
 
 That's it! The application should work locally.
+
+## Using a Local AI Model (Ollama)
+
+Prefer to keep your data on your own machine? Mind Map Wizard can talk to a
+local [Ollama](https://ollama.com) server instead of the OpenRouter cloud, so
+topics never leave your computer.
+
+1. Install [Ollama](https://ollama.com/download) and pull a model, e.g.:
+   ```
+   ollama pull llama3.1
+   ```
+
+2. Start Ollama so the browser is allowed to reach it (CORS):
+   ```
+   OLLAMA_ORIGINS='*' ollama serve
+   ```
+   > On macOS you can instead run `launchctl setenv OLLAMA_ORIGINS '*'` and
+   > restart the Ollama app. You may scope `OLLAMA_ORIGINS` to a specific
+   > origin (e.g. `http://localhost:8000`) if you prefer.
+
+3. In Mind Map Wizard, open the **API key / AI settings** dialog, choose
+   **Local (Ollama)**, and (optionally) adjust the server URL — it defaults to
+   `http://localhost:11434`.
+
+4. Pick one of your locally installed models from the model selector and
+   generate mind maps as usual.
+
+**Notes:**
+- Node expansion and the AI editing assistant work with local models too.
+- PDF upload and web search rely on OpenRouter-specific features and remain
+  available only with the cloud provider.
 
 ## Mind Map Generation Process
 Creating a mind map involves a few simple steps. Here’s how it works:
