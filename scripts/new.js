@@ -141,15 +141,15 @@ window.aiRequiresApiKey = aiRequiresApiKey;
 // ---- Input attachments (PDF badges + pasted/attached images) ----
 // Attachments are kept fully in-memory and sent inline with the generation
 // request. Nothing is ever uploaded or persisted to disk.
-const MMW_MAX_IMAGES_FREE = 3;
-const MMW_MAX_IMAGES_PRO = 10;
 const MAX_ATTACHMENT_IMAGE_BYTES = 10 * 1024 * 1024; // 10 MB per image
 const MAX_ATTACHMENT_PDF_BYTES = 15 * 1024 * 1024;   // 15 MB per PDF
 
-// The open-source build runs on the user's own key, so it defaults to the pro
-// image allowance. window.MMW_IS_PRO can be set to false to emulate free tier.
+// The open-source build runs entirely on the user's own key with no plans or
+// backend, so there are no tiered limits. This is only a practical per-request
+// cap to keep payloads sane.
+const MMW_MAX_IMAGES = 10;
 function getMaxImages() {
-	return (window.MMW_IS_PRO === false) ? MMW_MAX_IMAGES_FREE : MMW_MAX_IMAGES_PRO;
+	return MMW_MAX_IMAGES;
 }
 
 let attachedItems = []; // { id, kind: 'pdf'|'image', name, dataUrl, mime, size }
