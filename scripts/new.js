@@ -138,6 +138,161 @@ window.finalizeAiPayload = finalizeAiPayload;
 window.isLocalProvider = isLocalProvider;
 window.aiRequiresApiKey = aiRequiresApiKey;
 
+// ---- Input attachments (PDF badges + pasted/attached images) ----
+// Attachments are kept fully in-memory and sent inline with the generation
+// request. Nothing is ever uploaded or persisted to disk.
+const MMW_MAX_IMAGES_FREE = 3;
+const MMW_MAX_IMAGES_PRO = 10;
+const MAX_ATTACHMENT_IMAGE_BYTES = 10 * 1024 * 1024; // 10 MB per image
+const MAX_ATTACHMENT_PDF_BYTES = 15 * 1024 * 1024;   // 15 MB per PDF
+
+// The open-source build runs on the user's own key, so it defaults to the pro
+// image allowance. window.MMW_IS_PRO can be set to false to emulate free tier.
+function getMaxImages() {
+	return (window.MMW_IS_PRO === false) ? MMW_MAX_IMAGES_FREE : MMW_MAX_IMAGES_PRO;
+}
+
+let attachedItems = []; // { id, kind: 'pdf'|'image', name, dataUrl, mime, size }
+
+function getAttachedItems() {
+	return attachedItems.slice();
+}
+
+function hasAttachments() {
+	return attachedItems.length > 0;
+}
+
+function clearAttachments() {
+	attachedItems = [];
+	renderAttachmentBadges();
+}
+
+function removeAttachment(id) {
+	attachedItems = attachedItems.filter((a) => a.id !== id);
+	renderAttachmentBadges();
+}
+
+function formatAttachmentSize(bytes) {
+	if (!bytes || bytes < 0) return '';
+	const kb = bytes / 1024;
+	if (kb < 1024) return Math.max(1, Math.round(kb)) + ' KB';
+	return (kb / 1024).toFixed(1) + ' MB';
+}
+
+async function addAttachmentFile(file) {
+	if (!file) return;
+	const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+	const isImage = (file.type || '').startsWith('image/');
+
+	if (!isPdf && !isImage) {
+		showErrorPopup('Only PDF and image files can be attached.', '');
+		return;
+	}
+
+	if (isPdf) {
+		// PDF parsing relies on OpenRouter's file-parser plugin, unavailable locally.
+		if (isLocalProvider()) {
+			showErrorPopup('PDF attachments are only available with the OpenRouter (cloud) provider. Switch providers in API key settings to use it.', '');
+			return;
+		}
+		if (file.size > MAX_ATTACHMENT_PDF_BYTES) {
+			showErrorPopup('The PDF file is too large. Please attach a file under 15 MB.', '');
+			return;
+		}
+		if (attachedItems.some((a) => a.kind === 'pdf')) {
+			showInfoSnackbar('You can attach one PDF at a time.');
+			return;
+		}
+	} else {
+		if (file.size > MAX_ATTACHMENT_IMAGE_BYTES) {
+			showErrorPopup('That image is too large. Please attach images under 10 MB.', '');
+			return;
+		}
+		const imageCount = attachedItems.filter((a) => a.kind === 'image').length;
+		if (imageCount >= getMaxImages()) {
+			showInfoSnackbar(`You can attach up to ${getMaxImages()} images.`);
+			return;
+		}
+	}
+
+	try {
+		const dataUrl = await readFileAsDataUrl(file);
+		attachedItems.push({
+			id: 'att_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+			kind: isPdf ? 'pdf' : 'image',
+			name: file.name || (isPdf ? 'document.pdf' : 'Pasted image'),
+			dataUrl,
+			mime: file.type || (isPdf ? 'application/pdf' : 'image/png'),
+			size: file.size
+		});
+		renderAttachmentBadges();
+		const promptEl = document.getElementById('prompt');
+		if (promptEl && window.innerWidth > 770) promptEl.focus();
+	} catch (e) {
+		console.error('Failed to read attachment:', e);
+		showErrorPopup('Could not read the file. Please try again.', '');
+	}
+}
+
+const ATTACHMENT_PDF_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
+const ATTACHMENT_REMOVE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>';
+
+function renderAttachmentBadges() {
+	const container = document.getElementById('attachment-badges');
+	if (!container) return;
+	container.innerHTML = '';
+	if (!attachedItems.length) {
+		container.classList.remove('has-items');
+		return;
+	}
+	container.classList.add('has-items');
+
+	for (const item of attachedItems) {
+		const badge = document.createElement('div');
+		badge.className = 'attachment-badge attachment-badge-' + item.kind;
+		badge.title = item.name;
+
+		if (item.kind === 'image') {
+			const thumb = document.createElement('img');
+			thumb.className = 'attachment-thumb';
+			thumb.src = item.dataUrl;
+			thumb.alt = item.name;
+			badge.appendChild(thumb);
+		} else {
+			const icon = document.createElement('span');
+			icon.className = 'attachment-icon';
+			icon.innerHTML = ATTACHMENT_PDF_ICON;
+			badge.appendChild(icon);
+
+			const meta = document.createElement('span');
+			meta.className = 'attachment-meta';
+			const nameEl = document.createElement('span');
+			nameEl.className = 'attachment-name';
+			nameEl.textContent = item.name;
+			meta.appendChild(nameEl);
+			const sizeEl = document.createElement('span');
+			sizeEl.className = 'attachment-size';
+			sizeEl.textContent = formatAttachmentSize(item.size);
+			meta.appendChild(sizeEl);
+			badge.appendChild(meta);
+		}
+
+		const remove = document.createElement('button');
+		remove.type = 'button';
+		remove.className = 'attachment-remove';
+		remove.setAttribute('aria-label', 'Remove ' + item.name);
+		remove.innerHTML = ATTACHMENT_REMOVE_ICON;
+		remove.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			removeAttachment(item.id);
+		});
+		badge.appendChild(remove);
+
+		container.appendChild(badge);
+	}
+}
+
 function showApiKeyPopup(onSavedAction = null, showLoading = false) {
 	const existingPopup = document.getElementById('api-key-popup');
 	if (existingPopup) {
@@ -854,9 +1009,22 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 		return;
 	}
 
-	if (!mindmapTopic) {
+	// Attachments (pasted images / attached PDFs) are consumed on fresh
+	// generations only, never on regenerate.
+	const attachments = isRegenerate ? [] : getAttachedItems();
+	const hasAttached = attachments.length > 0;
+
+	if (!mindmapTopic && !hasAttached) {
 		console.error('Mindmap generation stopped: missing topic.');
 		return;
+	}
+
+	// Derive an internal title when the user only attached files with no prompt.
+	if (!mindmapTopic && hasAttached) {
+		const firstPdf = attachments.find((a) => a.kind === 'pdf');
+		mindmapTopic = firstPdf
+			? firstPdf.name.replace(/\.pdf$/i, '')
+			: 'Uploaded images';
 	}
 
 	generationInProgress = true;
@@ -905,12 +1073,17 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 			? '- Use web search for current, factual information about the topic (up to 3 sources)'
 			: '- Use only your internal knowledge (no web search)';
 
-		const requestPayload = {
-			model: getSelectedModel(),
-			messages: [
-				{
-					role: 'user',
-					content: `Create a comprehensive, fact-rich mind map about ${mindmapTopic.trim()} using the following structure:
+		const topicText = (mindmapTopic || '').trim();
+		let opening;
+		if (hasAttached && topicText) {
+			opening = `Create a comprehensive, fact-rich mind map about "${topicText}", using the attached file(s) and image(s) as primary source material, using the following structure:`;
+		} else if (hasAttached) {
+			opening = `Create a comprehensive, fact-rich mind map from the content of the attached file(s) and image(s) using the following structure:`;
+		} else {
+			opening = `Create a comprehensive, fact-rich mind map about ${topicText} using the following structure:`;
+		}
+
+		const promptText = `${opening}
 
 # Matching Mind Map Title
 ## Branch 1
@@ -923,13 +1096,13 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 - For large enumerations (6+ items), combine related items into comma-separated lists within a single branch rather than creating excessive sub-branches
 
 - Include **specific, concrete details and facts**, not just category labels
-  - Bad: "## Education" 
+  - Bad: "## Education"
   - Good: "## Education: PhD in Physics from MIT (2015)"
 - Avoid generic structural sections like "Overview," "Introduction," or "Conclusion" this is a mind map, not an essay
 - If the topic contains extensive information, prioritize breadth over depth and consolidate where necessary
 - Focus on the most relevant and interesting information that creates a useful knowledge structure
 - Make the branches have different lengths for making the mind map visually more interesting.
-- The mind map should be in the language of the user input.
+- The mind map should be in the language of the user input${hasAttached ? ' or attached content' : ''}.
 - The title should be as short as possible.
 - The mind map should have at least 3 branches going out of the title node.
 - Research Instruction: ${searchInstruction}
@@ -938,13 +1111,43 @@ async function generateMindmap(mindmapTopic, isRegenerate = false) {
 Structure your response exactly like this:
 {
 	"markdown": "# Main Topic\\n\\n## Subtopic 1\\n- Point A\\n- Point B\\n\\n## Subtopic 2\\n- Point C\\n- Point D"
-}  
-`
+}
+`;
+
+		// Build multimodal content when attachments are present: images are sent
+		// natively as image parts, PDFs via OpenRouter's file-parser plugin.
+		const imageAttachments = attachments.filter((a) => a.kind === 'image');
+		const pdfAttachments = attachments.filter((a) => a.kind === 'pdf');
+
+		let userContent;
+		if (hasAttached) {
+			userContent = [{ type: 'text', text: promptText }];
+			for (const img of imageAttachments) {
+				userContent.push({ type: 'image_url', image_url: { url: img.dataUrl } });
+			}
+			for (const pdf of pdfAttachments) {
+				userContent.push({ type: 'file', file: { filename: pdf.name, file_data: pdf.dataUrl } });
+			}
+		} else {
+			userContent = promptText;
+		}
+
+		const requestPlugins = useWebSearch ? [{ id: 'web', max_results: 3 }] : [];
+		if (pdfAttachments.length > 0) {
+			requestPlugins.push({ id: 'file-parser', pdf: { engine: 'pdf-text' } });
+		}
+
+		const requestPayload = {
+			model: getSelectedModel(),
+			messages: [
+				{
+					role: 'user',
+					content: userContent
 				}
 			],
 			max_tokens: 2000,
 			temperature: 0.7,
-			plugins: useWebSearch ? [{ id: 'web', max_results: 3 }] : [],
+			plugins: requestPlugins,
 			reasoning: { exclude: true }
 		};
 
@@ -1036,6 +1239,9 @@ Structure your response exactly like this:
 		const contextUrls = useWebSearch ? extractContextUrlsFromBackend(data) : [];
 
 		if (finalMarkdown) {
+			// Generation succeeded — consume the attachments so they don't leak
+			// into the next mind map.
+			if (hasAttached) clearAttachments();
 			await window.renderMindmap(finalMarkdown, {
 				...(contextUrls.length ? { contextUrls } : {}),
 				playPopAnimation: true
@@ -1338,13 +1544,14 @@ function initiateGenerationProcess(providedTopic) {
 		return;
 	}
 
-	const mindmapTopic = providedTopic || document.getElementById('prompt')?.value.trim();
-	if (!mindmapTopic) {
+	const mindmapTopic = providedTopic || document.getElementById('prompt')?.value.trim() || '';
+	// Allow generating from attachments alone, with no typed prompt.
+	if (!mindmapTopic && !hasAttachments()) {
 		return;
 	}
 
 	const headerLines = mindmapTopic.split('\n').filter(line => line.trim().startsWith('#'));
-	if (headerLines.length > 6) {
+	if (headerLines.length > 6 && !hasAttachments()) {
 		createLocalMindMapFromMarkdown(mindmapTopic)
 			.catch(error => {
 				console.error('Error during local mindmap generation:', error);
@@ -1976,13 +2183,18 @@ function initializeWebSearchToggle() {
 
 function initializePdfUpload() {
 	const uploadButton = document.querySelector('.upload-pdf-button');
+
+	// Paste-to-attach works even without the upload button present.
+	initializeImagePaste();
+
 	if (!uploadButton) return;
 
 	let fileInput = document.getElementById('pdf-file-input');
 	if (!fileInput) {
 		fileInput = document.createElement('input');
 		fileInput.type = 'file';
-		fileInput.accept = 'application/pdf,.pdf';
+		fileInput.accept = 'application/pdf,.pdf,image/*';
+		fileInput.multiple = true;
 		fileInput.id = 'pdf-file-input';
 		fileInput.style.display = 'none';
 		document.body.appendChild(fileInput);
@@ -1997,14 +2209,8 @@ function initializePdfUpload() {
 	});
 
 	fileInput.addEventListener('change', (e) => {
-		const file = e.target.files && e.target.files[0];
-		if (!file) return;
-		if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-			showErrorPopup('Please select a PDF file.', '');
-			fileInput.value = '';
-			return;
-		}
-		handlePdfUpload(file);
+		const files = Array.from(e.target.files || []);
+		files.forEach((file) => addAttachmentFile(file));
 		fileInput.value = '';
 	});
 
@@ -2065,15 +2271,17 @@ function initializePdfUpload() {
 		overlay.addEventListener('drop', (e) => {
 			preventDefaults(e);
 			const dt = e.dataTransfer;
-			const files = dt?.files || [];
+			const files = Array.from(dt?.files || []);
 			unhighlight();
-			if (files.length > 0) {
-				const file = files[0];
-				if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-					handlePdfUpload(file);
-				} else {
-					showErrorPopup('Please drop a PDF file.', '');
-				}
+			const accepted = files.filter((file) =>
+				file.type === 'application/pdf' ||
+				file.name.toLowerCase().endsWith('.pdf') ||
+				(file.type || '').startsWith('image/')
+			);
+			if (files.length > 0 && accepted.length === 0) {
+				showErrorPopup('Please drop a PDF or image file.', '');
+			} else {
+				accepted.forEach((file) => addAttachmentFile(file));
 			}
 			hideDragDropOverlay();
 		}, false);
@@ -2097,6 +2305,25 @@ function initializePdfUpload() {
 	}, false);
 }
 
+// Let users paste images straight from the clipboard into the prompt.
+function initializeImagePaste() {
+	const promptEl = document.getElementById('prompt');
+	if (!promptEl || promptEl.dataset.pasteBound === 'true') return;
+	promptEl.dataset.pasteBound = 'true';
+
+	promptEl.addEventListener('paste', (e) => {
+		const items = Array.from(e.clipboardData?.items || []);
+		const imageFiles = items
+			.filter((it) => it.kind === 'file' && (it.type || '').startsWith('image/'))
+			.map((it) => it.getAsFile())
+			.filter(Boolean);
+		if (imageFiles.length > 0) {
+			e.preventDefault();
+			imageFiles.forEach((file) => addAttachmentFile(file));
+		}
+	});
+}
+
 function ensureDragDropOverlay() {
 	let overlay = document.getElementById('drag-drop-overlay');
 	if (overlay) return overlay;
@@ -2114,8 +2341,8 @@ function ensureDragDropOverlay() {
 					<line x1="12" x2="12" y1="2" y2="12"></line>
 				</svg>
 			</div>
-			<h2>Drop your PDF file here</h2>
-			<p>Release to upload and generate a mind map</p>
+			<h2>Drop your PDF or images here</h2>
+			<p>Release to attach — then add a prompt and hit enter</p>
 		</div>
 	`;
 
@@ -2146,173 +2373,6 @@ function readFileAsDataUrl(file) {
 	});
 }
 
-async function handlePdfUpload(file) {
-	if (!file) return;
-	if (generationInProgress) return;
-
-	// PDF parsing relies on OpenRouter's file-parser plugin, unavailable locally.
-	if (isLocalProvider()) {
-		showErrorPopup('PDF upload is only available with the OpenRouter (cloud) provider. Switch providers in API key settings to use it.', '');
-		return;
-	}
-
-	const maxSizeBytes = 15 * 1024 * 1024;
-	if (file.size > maxSizeBytes) {
-		showErrorPopup('The PDF file is too large. Please upload a file under 15 MB.', '');
-		return;
-	}
-
-	generationInProgress = true;
-	try {
-		const loadingAnim = document.getElementById('loading-animation');
-		if (loadingAnim) loadingAnim.style.display = 'flex';
-
-		let apiKey = getStoredApiKey();
-		if (!apiKey) {
-			const apiKeyInput = document.getElementById('openrouter-api-key');
-			apiKey = apiKeyInput?.value?.trim();
-		}
-		if (!apiKey) {
-			const pendingFile = file;
-			generationInProgress = false;
-			const loadingAnimEl = document.getElementById('loading-animation');
-			if (loadingAnimEl) loadingAnimEl.style.display = 'none';
-			showApiKeyPopup(() => handlePdfUpload(pendingFile), true);
-			return;
-		}
-
-		const dataUrl = await readFileAsDataUrl(file);
-		const systemPrompt = 'You are a mind map generator. Return only valid JSON that matches the provided schema.';
-
-		const requestBody = {
-			model: getSelectedModel(),
-			plugins: [{ id: 'file-parser', pdf: { engine: 'pdf-text' } }],
-			messages: [
-				{ role: 'system', content: systemPrompt },
-				{
-					role: 'user',
-					content: [
-						{ type: 'text', text: `Generate a mind map from the document: ${file.name} in its content language` },
-						{ type: 'file', file: { filename: file.name, file_data: dataUrl } }
-					]
-				}
-			],
-			max_tokens: 2200,
-			reasoning: { enabled: false },
-			temperature: 0.7,
-			response_format: {
-				type: 'json_schema',
-				json_schema: {
-					name: 'mind_map_response',
-					strict: true,
-					schema: {
-						type: 'object',
-						properties: {
-							title: { type: 'string', description: 'A concise, descriptive title for the mind map. Should not contain: Mind Map' },
-							markdown: { type: 'string', description: 'The complete mind map in markdown format' }
-						},
-						required: ['title', 'markdown'],
-						additionalProperties: false
-					}
-				}
-			}
-		};
-
-		const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-			method: 'POST',
-			headers: {
-				'Authorization': `Bearer ${apiKey}`,
-				'Content-Type': 'application/json',
-				'HTTP-Referer': window.location.origin,
-				'X-Title': 'Mind Map Wizard'
-			},
-			body: JSON.stringify(requestBody)
-		});
-
-		if (!response.ok) {
-			const errorText = await response.text();
-			if (response.status === 400 && errorText.includes('File is too large')) throw new Error('FILE_TOO_LARGE');
-			if (response.status === 503 && errorText.includes('Cloudflare')) throw new Error('FILE_TOO_LARGE');
-			throw new Error(`OpenRouter API error: ${response.status} ${errorText}`);
-		}
-
-		const data = await response.json();
-		const message = data?.choices?.[0]?.message?.content;
-		if (!message) throw new Error('Invalid response from OpenRouter API');
-
-		let parsed = null;
-		if (typeof message === 'string') {
-			try {
-				parsed = JSON.parse(message);
-			} catch {
-				const jsonMatch = message.match(/\{[\s\S]*\}/);
-				if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
-			}
-		} else if (typeof message === 'object') {
-			parsed = message;
-		}
-
-		if (!parsed || !parsed.markdown) {
-			throw new Error('Invalid response from API: missing required markdown field');
-		}
-
-		const responseData = {
-			topic: parsed.title || file.name.replace(/\.pdf$/i, ''),
-			raw: String(parsed.markdown || '').trim()
-		};
-
-		const { topic: finalTopic, markdown: finalMarkdown } = formatMarkdown(responseData);
-		if (!finalMarkdown) throw new Error('Generated markdown content is empty or invalid after processing.');
-		hideHeader();
-		await window.renderMindmap(finalMarkdown, { playPopAnimation: true });
-		try {
-			await fetch(
-			'https://stats.mindmapwizard.com/hit/mmw-os/mind-map-generated-pdf', {
-			method: 'GET',
-			});
-		} catch (trackingError) {
-			console.error('Tracking Error:', trackingError);
-		}
-		let mmjsonStr = '';
-		try {
-			const ed = document.getElementById('json-editor');
-			mmjsonStr = ed?.value || localStorage.getItem('json-mindmap-content') || '';
-		} catch { }
-
-		if (!mmjsonStr || !mmjsonStr.trim().startsWith('{')) {
-			const fallback = {
-				"mm-settings": { "spacing": 30, "border-radius": 4 },
-				"mm-node": { "content": finalTopic, "children": [] }
-			};
-			mmjsonStr = JSON.stringify(fallback);
-		}
-
-		const newId = saveMindmapToHistory(mmjsonStr);
-		currentMindmapTitle = finalTopic;
-
-		const url = new URL(window.location);
-		if (url.searchParams.has('q')) {
-			url.searchParams.delete('q');
-		}
-		if (newId) {
-			url.searchParams.set('id', newId);
-		}
-		window.history.replaceState({}, '', url.toString());
-
-		showMindMapElements();
-	} catch (error) {
-		console.error('PDF upload error:', error);
-		if (error.message === 'FILE_TOO_LARGE') {
-			showErrorPopup('The PDF file is too large for processing. Please try a smaller file.', '');
-		} else {
-			showErrorPopup(error.message || 'An error occurred while generating the mind map.', '');
-		}
-	} finally {
-		generationInProgress = false;
-		const loadingAnim = document.getElementById('loading-animation');
-		if (loadingAnim) loadingAnim.style.display = 'none';
-	}
-}
 
 
 
