@@ -159,26 +159,40 @@ Structure your response exactly like this:
 
 ## Getting Started
 
-To get started with Mind Map Wizard locally:
+## Getting Started
+
+Mind Map Wizard is a static site (HTML/CSS/JS) with no build step. You just need to serve the folder over HTTP and open it in a browser. Opening `index.html` directly via `file://` will **not** work, because browsers block the module/fetch requests the app makes.
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/linus-sch/Mind-Map-Wizard.git
-   ```
 
-2. Navigate to the project directory:
-   ```
+   ```bash
+   git clone https://github.com/linus-sch/Mind-Map-Wizard.git
    cd Mind-Map-Wizard
    ```
 
-3. Start a local server. For example, using Python:
-   ```
+2. Start a local server using any one of these:
+
+   **Python 3** (preinstalled on macOS/Linux; on Windows install from [python.org](https://www.python.org/downloads/)):
+   ```bash
+   # macOS / Linux
+   python3 -m http.server 8000
+
+   # Windows
    python -m http.server 8000
    ```
 
-4. Open your browser and go to `http://localhost:8000/index.html`
+   **Node.js** (no install beyond Node itself):
+   ```bash
+   npx serve -l 8000
+   # or
+   npx http-server -p 8000
+   ```
 
-That's it! The application should work locally.
+   **VS Code:** install the *Live Server* extension, then right-click `index.html` → "Open with Live Server".
+
+3. Open your browser to `http://localhost:8000/index.html` (Node's `serve` may use a different port — check its output).
+
+That's it! The app runs entirely in your browser.
 
 ## Using a Local AI Model (Ollama)
 
