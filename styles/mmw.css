@@ -468,6 +468,156 @@ body {
   transform: scale(0.9);
 }
 
+/* ---- Attachment badges (PDF + pasted/attached images) ---- */
+.input-wrapper {
+  flex-wrap: wrap;
+}
+
+.attachment-badges {
+  display: none;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px 2px 16px;
+  box-sizing: border-box;
+  order: -1;
+}
+
+.attachment-badges.has-items {
+  display: flex;
+}
+
+.attachment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 220px;
+  background-color: var(--light-grey);
+  border: 1px solid var(--light-grey-dark);
+  border-radius: 14px;
+  padding: 6px 8px 6px 10px;
+  box-sizing: border-box;
+  position: relative;
+  animation: attachment-pop 0.18s ease-out;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.attachment-badge:hover {
+  border-color: var(--primary-color);
+}
+
+@keyframes attachment-pop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.attachment-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--primary-color);
+}
+
+.attachment-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.attachment-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.attachment-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.attachment-size {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--dark-grey);
+}
+
+/* Image badges are compact square thumbnails */
+.attachment-badge-image {
+  padding: 0;
+  width: 46px;
+  height: 46px;
+  max-width: 46px;
+  border-radius: 12px;
+  overflow: visible;
+  background-color: var(--light-grey-dark);
+}
+
+.attachment-thumb {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 11px;
+  display: block;
+}
+
+.attachment-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--dark-grey);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.attachment-remove svg {
+  width: 13px;
+  height: 13px;
+}
+
+.attachment-remove:hover {
+  background-color: var(--red);
+  color: #fff;
+}
+
+/* On image badges, float the remove button into the top-right corner */
+.attachment-badge-image .attachment-remove {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 19px;
+  height: 19px;
+  background-color: var(--text-color);
+  color: var(--white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.15s ease;
+}
+
+.attachment-badge-image .attachment-remove:hover {
+  background-color: var(--red);
+  color: #fff;
+}
+
 .centered-div {
   justify-content: center;
   align-items: flex-start;
